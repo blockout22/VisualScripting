@@ -13,7 +13,7 @@
         <maven.compiler.target>15</maven.compiler.target>
         <lwjgl.version>3.3.1-SNAPSHOT</lwjgl.version>
         <lwjgl.natives>natives-windows</lwjgl.natives>
-        <imgui.java.version>1.85.1</imgui.java.version>
+        <imgui.java.version>1.86.0</imgui.java.version>
     </properties>
 
     <dependencyManagement>

@@ -15,6 +15,8 @@ import static org.lwjgl.system.MemoryUtil.*;
 public class GLFWWindow {
 
     private static long windowID;
+    private static int curWidth;
+    private static int curHeight;
 
     public static void createWindow(int width, int height, String title){
         GLFWErrorCallback.createPrint(System.err).set();
@@ -51,10 +53,19 @@ public class GLFWWindow {
             );
         }
 
+        glfwSetWindowSizeCallback(windowID, (window, w, h) -> {
+            GLFWWindow.curWidth = w;
+            GLFWWindow.curHeight = h;
+        });
+
         glfwMakeContextCurrent(windowID);
         glfwSwapInterval(1);
         glfwShowWindow(windowID);
         GL.createCapabilities();
+
+        GLFWWindow.curWidth = width;
+        GLFWWindow.curHeight = height;
+
     }
 
     public static boolean shouldClose(){
@@ -68,6 +79,19 @@ public class GLFWWindow {
 
         glfwSwapBuffers(windowID);
         glfwPollEvents();
+    }
+
+    public static long getWindowID()
+    {
+        return windowID;
+    }
+
+    public static int getWidth(){
+        return curWidth;
+    }
+
+    public static int getHeight(){
+        return curHeight;
     }
 
     public static void close()
