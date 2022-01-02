@@ -1,5 +1,9 @@
 package visual.scripting.node;
 
+import imgui.type.ImBoolean;
+import imgui.type.ImFloat;
+import imgui.type.ImInt;
+import imgui.type.ImString;
 import visual.scripting.Graph;
 import visual.scripting.Pin;
 
@@ -40,13 +44,22 @@ public class NodeBuilder {
         for(String pin : inputPins){
             switch (pin){
                 case "Flow":
-                    node.addInputPin(Pin.DataType.Flow, node);
+                    Pin flowPin = node.addInputPin(Pin.DataType.Flow, node);
+                    break;
+                case "Bool":
+                    Pin boolPin = node.addInputPin(Pin.DataType.Bool, node);
+                    break;
+                case "Int":
+                    Pin intPin = node.addInputPin(Pin.DataType.Int, node);
                     break;
                 case "Float":
-                    node.addInputPin(Pin.DataType.Float, node);
+                    Pin floatPin = node.addInputPin(Pin.DataType.Float, node);
                     break;
                 case "Double":
-                    node.addInputPin(Pin.DataType.Double, node);
+                    Pin doublePin = node.addInputPin(Pin.DataType.Double, node);
+                    break;
+                case "String":
+                    Pin stringPin = node.addInputPin(Pin.DataType.String, node);
                     break;
             }
         }
@@ -54,13 +67,22 @@ public class NodeBuilder {
         for(String pin : outputPins){
             switch (pin){
                 case "Flow":
-                    node.addOutputPin(Pin.DataType.Flow, node);
+                    Pin flowPin = node.addOutputPin(Pin.DataType.Flow, node);
+                    break;
+                case "Bool":
+                    Pin boolPin = node.addOutputPin(Pin.DataType.Bool, node);
+                    break;
+                case "Int":
+                    Pin intPin = node.addOutputPin(Pin.DataType.Int, node);
                     break;
                 case "Float":
-                    node.addOutputPin(Pin.DataType.Float, node);
+                    Pin floatPin = node.addOutputPin(Pin.DataType.Float, node);
                     break;
                 case "Double":
-                    node.addOutputPin(Pin.DataType.Double, node);
+                    Pin doublePin = node.addOutputPin(Pin.DataType.Double, node);
+                    break;
+                case "String":
+                    Pin stringPin = node.addOutputPin(Pin.DataType.String, node);
                     break;
             }
         }

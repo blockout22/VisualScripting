@@ -2,9 +2,12 @@ package visual.scripting;
 
 import imgui.extension.imnodes.ImNodes;
 import imgui.extension.imnodes.ImNodesContext;
+import imgui.extension.imnodes.flag.ImNodesAttributeFlags;
+import imgui.extension.imnodes.flag.ImNodesColorStyle;
 import imgui.extension.imnodes.flag.ImNodesPinShape;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiMouseButton;
 import imgui.type.ImBoolean;
@@ -52,6 +55,8 @@ public class GraphWindow {
         setNextWindowSize(GLFWWindow.getWidth(), GLFWWindow.getHeight() - menuBarHeight, ImGuiCond.Once);
         setNextWindowPos(getMainViewport().getPosX(), getMainViewport().getPosY() + menuBarHeight, ImGuiCond.Once);
 
+        pushStyleColor(ImNodesColorStyle.TitleBar, 255, 0, 0, 255);
+        pushStyleColor(ImNodesColorStyle.TitleBarSelected, 255, 0, 0, 255);
         if(begin(id, closable)){
             //checks is value has been changed from clicking the close button
             if(closable.get() == false){
@@ -106,6 +111,8 @@ public class GraphWindow {
 
         }
         end();
+        popStyleColor();
+        popStyleColor();
 
         checkPinConnections();
 
@@ -186,7 +193,7 @@ public class GraphWindow {
                     default:
                         beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
                 }
-//                configurePinType(pin);
+                configurePinUI(pin);
                 endOutputAttribute();
                 sameLine();
                 break;
@@ -199,10 +206,43 @@ public class GraphWindow {
                         beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
                 }
 //                sameLine(curNodeSize / 2);
+                sameLine();
 //                configurePinType(pin);
                 text(pin.getName());
                 endOutputAttribute();
                 sameLine();
+                break;
+        }
+    }
+
+    private void configurePinUI(Pin pin) {
+        switch (pin.getDataType()){
+            case Flow:
+                break;
+            case Bool:
+                if(checkbox(pin.getName(), pin.getBoolean())){
+
+                }
+                break;
+            case Int:
+                if(inputInt(pin.getName(), pin.getInt())){
+
+                }
+                break;
+            case Float:
+                if(inputFloat(pin.getName(), pin.getFloat())){
+
+                }
+                break;
+            case Double:
+                if(inputDouble(pin.getName(), pin.getDouble())){
+
+                }
+                break;
+            case String:
+                if(inputText(pin.getName(), pin.getString())){
+
+                }
                 break;
         }
     }
