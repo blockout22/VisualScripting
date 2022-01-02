@@ -37,6 +37,7 @@ public class GraphWindow {
         graph = new Graph();
         NodeEditorConfig config = new NodeEditorConfig();
         context = new NodeEditorContext(config);
+        ImNodes.createContext();
 
         try {
             loadNodeTypes();

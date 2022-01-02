@@ -1,9 +1,6 @@
 package visual.scripting;
 
-import imgui.ImFontConfig;
-import imgui.ImFontGlyphRangesBuilder;
-import imgui.ImGui;
-import imgui.ImGuiIO;
+import imgui.*;
 import imgui.extension.imnodes.ImNodes;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiConfigFlags;
@@ -34,9 +31,11 @@ public class ImGuiWindow {
 
     private File workingDir = new File(System.getProperty("user.dir"));
 
+    private DarkStyle darkStyle;
+
     public ImGuiWindow(){
         //Create ImGui
-        ImNodes.createContext();
+//        ImNodes.createContext();
         ImGui.createContext();
 
         ImGuiIO io = ImGui.getIO();
@@ -67,6 +66,14 @@ public class ImGuiWindow {
 
         imGuiGLFW.init(GLFWWindow.getWindowID(), true);
         imGuiGl3.init("#version 150");
+
+        darkStyle = new DarkStyle();
+//        try {
+//            darkStyle.convertToJava(new File("C:\\Users\\kie\\Downloads\\colors.txt"));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        getStyle().setColors(darkStyle.getColors());
     }
 
     private byte[] loadFromResources(String name){
@@ -114,6 +121,7 @@ public class ImGuiWindow {
                 }
             }
             end();
+//            showStyleEditor();
             for(GraphWindow graphWindow : graphWindows){
                 graphWindow.show(menuBarHeight);
             }
