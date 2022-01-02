@@ -28,7 +28,9 @@ public class ImGuiWindow {
     private final ImGuiImplGlfw imGuiGLFW = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
+    //stores the list of open Graph Windows
     private ArrayList<GraphWindow> graphWindows = new ArrayList<>();
+    private ArrayList<GraphWindow> queueRemoveGraphWindow = new ArrayList<>();
 
     private File workingDir = new File(System.getProperty("user.dir"));
 
@@ -115,6 +117,10 @@ public class ImGuiWindow {
             for(GraphWindow graphWindow : graphWindows){
                 graphWindow.show(menuBarHeight);
             }
+
+            for (int i = 0; i < queueRemoveGraphWindow.size(); i++) {
+                graphWindows.remove(queueRemoveGraphWindow.get(i));
+            }
         }
 
 
@@ -129,13 +135,17 @@ public class ImGuiWindow {
         }
     }
 
+    public void removeGraphWindow(GraphWindow graphWindow){
+        queueRemoveGraphWindow.add(graphWindow);
+    }
+
     private void createMainMenuBar()
     {
         beginMainMenuBar();
         {
             if(beginMenu("File", true)){
                 if(menuItem("New Graph")){
-                    graphWindows.add(new GraphWindow());
+                    graphWindows.add(new GraphWindow(this));
                 }
                 endMenu();
             }
