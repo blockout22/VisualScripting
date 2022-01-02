@@ -35,7 +35,7 @@ public class ImGuiWindow {
 
     public ImGuiWindow(){
         //Create ImGui
-//        ImNodes.createContext();
+        ImNodes.createContext();
         ImGui.createContext();
 
         ImGuiIO io = ImGui.getIO();
@@ -162,6 +162,7 @@ public class ImGuiWindow {
     }
 
     public void close(){
+        ImNodes.destroyContext();
         ImGui.destroyContext();
     }
 }

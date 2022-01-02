@@ -1,6 +1,7 @@
 package visual.scripting;
 
 import imgui.extension.imnodes.ImNodes;
+import imgui.extension.imnodes.ImNodesContext;
 import imgui.extension.imnodes.flag.ImNodesPinShape;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
@@ -26,7 +27,8 @@ public class GraphWindow {
     private ImGuiWindow window;
     private String id;
     private Graph graph;
-    private NodeEditorContext context;
+    private ImNodesContext context;
+    private boolean windowFocused;
 
     private ArrayList<NodeBuilder> nodesTypes = new ArrayList<>();
 
@@ -37,9 +39,7 @@ public class GraphWindow {
         this.window = window;
         this.id = "new" + new Random().nextInt(100);
         graph = new Graph();
-        NodeEditorConfig config = new NodeEditorConfig();
-        context = new NodeEditorContext(config);
-        ImNodes.createContext();
+        context = ImNodes.editorContextCreate();
 
         try {
             loadNodeTypes();
@@ -57,52 +57,53 @@ public class GraphWindow {
             if(closable.get() == false){
                 //should init save
                 window.removeGraphWindow(this);
+//                editorContextFree(context);
             }
 
-            if(beginChild(id + "1")) {
-                beginNodeEditor();
-                {
-                    for (Node node : graph.getNodes().values()) {
-                        beginNode(node.getID());
-                        {
-                            beginNodeTitleBar();
-                            text(node.getName());
-                            endNodeTitleBar();
+            editorContextSet(context);
+            beginNodeEditor();
+            {
+                for (Node node : graph.getNodes().values()) {
+                    beginNode(node.getID());
+                    {
+                        beginNodeTitleBar();
+                        text(node.getName());
+                        endNodeTitleBar();
 
-                            //add node pins
-                            int max = Math.max(node.outputPins.size(), node.inputPins.size());
-                            for (int i = 0; i < max; i++) {
+                        //add node pins
+                        int max = Math.max(node.outputPins.size(), node.inputPins.size());
+                        for (int i = 0; i < max; i++) {
 
-                                if (node.inputPins.size() > i) {
-                                    Pin inPin = node.inputPins.get(i);
-                                    addPin(inPin);
-                                }
-
-                                dummy(150, 0);
-
-                                if (node.outputPins.size() > i) {
-                                    Pin outPin = node.outputPins.get(i);
-                                    addPin(outPin);
-                                }
-                                newLine();
+                            if (node.inputPins.size() > i) {
+                                Pin inPin = node.inputPins.get(i);
+                                addPin(inPin);
                             }
+
+                            dummy(150, 0);
+
+                            if (node.outputPins.size() > i) {
+                                Pin outPin = node.outputPins.get(i);
+                                addPin(outPin);
+                            }
+                            newLine();
                         }
-                        endNode();
                     }
+                    endNode();
+                }
 
-                    //link node pins together
-                    int uniqueLinkId = 1;
-                    for (Node node : graph.getNodes().values()) {
-                        for (Pin pin : node.outputPins) {
-                            if (pin.connectedTo != -1) {
-                                link(uniqueLinkId++, pin.getID(), pin.connectedTo);
-                            }
+                //link node pins together
+                int uniqueLinkId = 1;
+                for (Node node : graph.getNodes().values()) {
+                    for (Pin pin : node.outputPins) {
+                        if (pin.connectedTo != -1) {
+                            link(uniqueLinkId++, pin.getID(), pin.connectedTo);
                         }
                     }
                 }
-                endNodeEditor();
             }
-            endChild();
+            windowFocused = isWindowHovered();
+            endNodeEditor();
+
         }
         end();
 
@@ -111,31 +112,27 @@ public class GraphWindow {
         if(isMouseClicked(ImGuiMouseButton.Right)){
             final int hoveredNode = getHoveredNode();
             if(hoveredNode != -1){
-                openPopup("node_menu");
+                openPopup("node_menu" + id);
                 getStateStorage().setInt(getID("delete_node_id"), hoveredNode);
             }else{
-                openPopup("context_menu");
+                System.out.println("Popup : " + id);
+                if(windowFocused) {
+                    openPopup("context_menu" + id);
+                }
             }
         }
 
-        if(isPopupOpen("context_menu")){
-            if(beginPopup("context_menu")){
+        if(isPopupOpen("context_menu" + id)){
+            if(beginPopup("context_menu" + id)){
                 for(NodeBuilder nb : nodesTypes){
                     if(menuItem(nb.getName()))
                     {
                         Node node = nb.build(graph);
                         graph.addNode(node.getName(), node);
+                        System.out.println(graph + " : " + id);
                         closeCurrentPopup();
                     }
                 }
-                if(menuItem("Add Node")){
-                    Node node = new Node(graph);
-                    graph.addNode("TestNode", node);
-                    node.setName("name");
-
-                    closeCurrentPopup();
-                }
-
                 endPopup();
             }
         }
