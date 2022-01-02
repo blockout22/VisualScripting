@@ -7,15 +7,18 @@ import imgui.ImGuiIO;
 import imgui.extension.imnodes.ImNodes;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiConfigFlags;
+import imgui.flag.ImGuiDockNodeFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import static imgui.ImGui.*;
 import static imgui.flag.ImGuiWindowFlags.*;
@@ -24,6 +27,10 @@ public class ImGuiWindow {
 
     private final ImGuiImplGlfw imGuiGLFW = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
+
+    private ArrayList<GraphWindow> graphWindows = new ArrayList<>();
+
+    private File workingDir = new File(System.getProperty("user.dir"));
 
     public ImGuiWindow(){
         //Create ImGui
@@ -73,35 +80,67 @@ public class ImGuiWindow {
         ImGui.newFrame();
         {
             //do UI stuff here
+            createMainMenuBar();
+            float menuBarHeight = 20f;
             //fill screen widget here to enable snapping on viewport it's self
             setNextWindowSize(GLFWWindow.getWidth(), GLFWWindow.getHeight(), ImGuiCond.Always);
             setNextWindowPos(getMainViewport().getPosX(), getMainViewport().getPosY(), ImGuiCond.Always);
             setNextWindowViewport(getMainViewport().getID());
-            if(begin("New Window", NoBringToFrontOnFocus | NoBackground | NoTitleBar )){
 
+
+            if(begin("New Window", NoBringToFrontOnFocus | NoBackground | NoTitleBar | NoDocking | NoScrollbar)){
+                setCursorScreenPos(getMainViewport().getPosX(), getMainViewport().getPosY() + menuBarHeight);
+                dockSpace(1, GLFWWindow.getWidth(), GLFWWindow.getHeight() - menuBarHeight, ImGuiDockNodeFlags.NoResize | NoScrollbar);
             }
             end();
 
             //content starts here
-            if(begin("Some window")){
+            setNextWindowSize(GLFWWindow.getWidth() / 2, GLFWWindow.getHeight() / 2, ImGuiCond.Once);
+            setNextWindowPos(getMainViewport().getPosX(), getMainViewport().getPosY() + 20, ImGuiCond.Once);
+            if(begin("FileViewer")){
 
+                for(File file : workingDir.listFiles()) {
+                    if(button(file.getName())){
+                        System.out.println(file.length());
+                    }
+                    sameLine();
+                    if(file.isDirectory()){
+                        text("Directory");
+                    }else{
+                        text("File");
+                    }
+                }
             }
             end();
-
-            if(begin("another window")){
-
+            for(GraphWindow graphWindow : graphWindows){
+                graphWindow.show(menuBarHeight);
             }
-            end();
         }
+
+
         ImGui.render();
         imGuiGl3.renderDrawData(ImGui.getDrawData());
 
         if(ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)){
             final long backupWindowPtr = GLFW.glfwGetCurrentContext();
             ImGui.updatePlatformWindows();
-            ImGui.renderPlatformWindowsDefault();;
+            ImGui.renderPlatformWindowsDefault();
             GLFW.glfwMakeContextCurrent(backupWindowPtr);
         }
+    }
+
+    private void createMainMenuBar()
+    {
+        beginMainMenuBar();
+        {
+            if(beginMenu("File", true)){
+                if(menuItem("New Graph")){
+                    graphWindows.add(new GraphWindow());
+                }
+                endMenu();
+            }
+        }
+        endMainMenuBar();
     }
 
     public void close(){
