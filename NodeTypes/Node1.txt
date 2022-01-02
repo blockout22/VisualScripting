@@ -5,3 +5,4 @@ in=Float
 in=Double
 
 out=Flow
+out=Float

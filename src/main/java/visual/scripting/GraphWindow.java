@@ -2,18 +2,17 @@ package visual.scripting;
 
 import imgui.extension.imnodes.ImNodes;
 import imgui.extension.imnodes.flag.ImNodesPinShape;
-import imgui.extension.nodeditor.NodeEditor;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiMouseButton;
 import imgui.type.ImBoolean;
+import imgui.type.ImInt;
 import visual.scripting.node.Node;
 import visual.scripting.node.NodeBuilder;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.Random;
 
 import static imgui.ImGui.*;
@@ -30,6 +29,9 @@ public class GraphWindow {
     private NodeEditorContext context;
 
     private ArrayList<NodeBuilder> nodesTypes = new ArrayList<>();
+
+    private static final ImInt LINK_A = new ImInt();
+    private static final ImInt LINK_B = new ImInt();
 
     public GraphWindow(ImGuiWindow window){
         this.window = window;
@@ -87,12 +89,24 @@ public class GraphWindow {
                         }
                         endNode();
                     }
+
+                    //link node pins together
+                    int uniqueLinkId = 1;
+                    for (Node node : graph.getNodes().values()) {
+                        for (Pin pin : node.outputPins) {
+                            if (pin.connectedTo != -1) {
+                                link(uniqueLinkId++, pin.getID(), pin.connectedTo);
+                            }
+                        }
+                    }
                 }
                 endNodeEditor();
             }
             endChild();
         }
         end();
+
+        checkPinConnections();
 
         if(isMouseClicked(ImGuiMouseButton.Right)){
             final int hoveredNode = getHoveredNode();
@@ -123,6 +137,44 @@ public class GraphWindow {
                 }
 
                 endPopup();
+            }
+        }
+    }
+
+    private void checkPinConnections(){
+        if(isLinkCreated(LINK_A, LINK_B)){
+            final Pin sourcePin = graph.findPinById(LINK_A.get());
+            final Pin targetPin = graph.findPinById(LINK_B.get());
+
+            if(!(sourcePin.getDataType() == targetPin.getDataType())){
+                System.out.println("Types are not the same");
+            }else{
+                if(sourcePin.connectedTo != -1){
+                    Pin oldPin = graph.findPinById(sourcePin.connectedTo);
+                    oldPin.connectedTo = -1;
+                }
+
+                if(targetPin.connectedTo != -1){
+                    Pin oldPin = graph.findPinById(targetPin.connectedTo);
+                    oldPin.connectedTo = -1;
+                }
+
+                if(sourcePin != null && targetPin != null){
+                    if (sourcePin.connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || sourcePin.connectedTo == -1)) {
+                        sourcePin.connectedTo = targetPin.getID();
+                        targetPin.connectedTo = sourcePin.getID();
+                    }
+                }
+            }
+        }
+
+        if(isLinkDropped(LINK_A, false)) {
+
+            Pin pin1 = graph.findPinById(LINK_A.get());
+            if (pin1.connectedTo != -1) {
+                Pin pin2 = graph.findPinById(pin1.connectedTo);
+                pin1.connectedTo = -1;
+                pin2.connectedTo = -1;
             }
         }
     }

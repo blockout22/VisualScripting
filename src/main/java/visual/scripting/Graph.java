@@ -39,4 +39,22 @@ public class Graph {
     public static int getNextAvailablePinID(){
         return nextPinID++;
     }
+
+    public Pin findPinById(final int ID) {
+        for(Node node : nodes.values()){
+            for(Pin pin : node.inputPins){
+                if(pin.getID() == ID){
+                    return pin;
+                }
+            }
+
+            for(Pin pin : node.outputPins){
+                if(pin.getID() == ID){
+                    return pin;
+                }
+            }
+        }
+
+        return null;
+    }
 }
