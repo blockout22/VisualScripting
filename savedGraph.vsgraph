@@ -1,0 +1,2 @@
+class=visual.scripting.node.NodeEntry,posX=100.0,posY=100.0
+class=com.nodes.Node_AddInt,posX=88.0,posY=215.0

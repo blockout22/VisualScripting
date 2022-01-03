@@ -22,8 +22,5 @@ public class NodeModule extends Node{
 
     @Override
     public void execute() {
-        if(button("New Pin")){
-            System.out.println("button");
-        }
     }
 }

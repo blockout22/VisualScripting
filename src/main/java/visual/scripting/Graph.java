@@ -16,9 +16,9 @@ public class Graph {
     private static int nextNodeID = 1;
     private static int nextPinID = 1;
 
-    public boolean addNode(String name, Node node){
+    public boolean addNode(Node node){
         node.setID(nextNodeID++);
-        node.setName(name);
+        node.setName(node.getName());
         nodes.put(node.getID(), node);
         return true;
     }

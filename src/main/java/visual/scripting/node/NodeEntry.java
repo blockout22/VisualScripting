@@ -9,7 +9,7 @@ public class NodeEntry extends Node{
 
     public NodeEntry(Graph graph) {
         super(graph);
-        setName("Entry");
+        setName("Start");
 
         output = addOutputPin(Pin.DataType.Flow, this);
     }

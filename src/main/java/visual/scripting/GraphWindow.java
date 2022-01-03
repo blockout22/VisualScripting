@@ -44,11 +44,7 @@ public class GraphWindow {
     private NodeCompiler nodeCompiler = new NodeCompiler();
     private static TextEditor EDITOR = new TextEditor();
 
-    private String title = "";
-    ImVec2 editorSpacePos = new ImVec2();
-    ImVec2 editorGridSpacePos = new ImVec2();
-
-    private Map<Integer, ImVec2> nodeQPos = new HashMap<>();
+    public static Map<Integer, ImVec2> nodeQPos = new HashMap<>();
 
     public GraphWindow(ImGuiWindow window){
         this.window = window;
@@ -60,8 +56,8 @@ public class GraphWindow {
         addNodeToList(NodeSplitFlow.class);
         addNodeToList(NodeModule.class);
 //        addNodeToList(NodeEntry.class);
-//        graph.addNode("Start", new NodeEntry(graph));
-        graph.addNode("", new Node(graph));
+        graph.addNode(new NodeEntry(graph));
+//        graph.addNode("", new Node(graph));
 
         for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
             plugin.init(this);
@@ -82,11 +78,13 @@ public class GraphWindow {
 //                editorContextFree(context);
             }
 
-            text(title);
-            title = "";
-
             if(button("Compile")){
                 EDITOR.setText(nodeCompiler.compile(graph));
+                GraphSaver.save(graph);
+            }
+
+            if(button("load")){
+                GraphSaver.load(graph);
             }
 
             if(beginTabBar("TabBar")) {
@@ -98,12 +96,16 @@ public class GraphWindow {
                         for (Node node : graph.getNodes().values()) {
                             beginNode(node.getID());
                             {
-//                                getNodeEditorSpacePos(node.getID(), editorSpacePos);
-//                                getNodeGridSpacePos(node.getID(), editorGridSpacePos);
-//                                title += editorSpacePos + " : " + editorGridSpacePos + " : " + getCursorScreenPos();
+//                                if(node.getID() == 1){
+//                                    ImVec2 pos = new ImVec2();
+//                                    getNodeEditorSpacePos(node.getID(), pos);
+//                                    System.out.println(pos);
+//                                }
                                 beginNodeTitleBar();
                                 text(node.getName());
+
                                 endNodeTitleBar();
+
 
                                 //add node pins
                                 int max = Math.max(node.outputPins.size(), node.inputPins.size());
@@ -196,7 +198,9 @@ public class GraphWindow {
         for(Integer id : nodeQPos.keySet()){
             ImVec2 pos = nodeQPos.get(id);
             getNodeEditorSpacePos(id, pos);
+//            setNodeGridSpacePos(id, -pos.x + 300, -pos.y + 300);
             setNodeGridSpacePos(id, -pos.x + 300, -pos.y + 300);
+
         }
         nodeQPos.clear();
 
@@ -236,7 +240,7 @@ public class GraphWindow {
                     if(menuItem(instance.getName()))
                     {
                         try {
-                            graph.addNode(instance.getName(), instance);
+                            graph.addNode(instance);
                             instance.init();
                             nodeQPos.put(instance.getID(), new ImVec2());
                             } catch (Exception e) {
