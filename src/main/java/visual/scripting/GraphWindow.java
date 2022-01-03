@@ -4,11 +4,14 @@ import imgui.extension.imnodes.ImNodes;
 import imgui.extension.imnodes.ImNodesContext;
 import imgui.extension.imnodes.flag.ImNodesColorStyle;
 import imgui.extension.imnodes.flag.ImNodesPinShape;
+import imgui.extension.texteditor.TextEditor;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.*;
 import visual.scripting.node.Node;
+import visual.scripting.node.NodeEntry;
+import visual.scripting.node.NodeResults;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -34,12 +37,19 @@ public class GraphWindow {
     private static final ImInt LINK_A = new ImInt();
     private static final ImInt LINK_B = new ImInt();
 
+    private NodeCompiler nodeCompiler = new NodeCompiler();
+    private static TextEditor EDITOR = new TextEditor();
+
     public GraphWindow(ImGuiWindow window){
         this.window = window;
         //id will be changed to file name
         this.id = "new" + new Random().nextInt(100);
         graph = new Graph();
         context = ImNodes.editorContextCreate();
+
+        addNodeToList(NodeResults.class);
+//        addNodeToList(NodeEntry.class);
+        graph.addNode("Start", new NodeEntry(graph));
 
         for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
             plugin.init(this);
@@ -60,91 +70,110 @@ public class GraphWindow {
 //                editorContextFree(context);
             }
 
-            editorContextSet(context);
-            beginNodeEditor();
-            {
-                for (Node node : graph.getNodes().values()) {
-                    beginNode(node.getID());
+            if(button("Compile")){
+                EDITOR.setText(nodeCompiler.compile(graph));
+            }
+
+            if(beginTabBar("TabBar")) {
+
+                if(beginTabItem("NodeEditor")) {
+
+                    editorContextSet(context);
+                    beginNodeEditor();
                     {
-                        beginNodeTitleBar();
-                        text(node.getName());
-                        endNodeTitleBar();
+                        for (Node node : graph.getNodes().values()) {
+                            beginNode(node.getID());
+                            {
+                                beginNodeTitleBar();
+                                text(node.getName());
+                                endNodeTitleBar();
 
-                        //add node pins
-                        int max = Math.max(node.outputPins.size(), node.inputPins.size());
-                        for (int i = 0; i < max; i++) {
+                                //add node pins
+                                int max = Math.max(node.outputPins.size(), node.inputPins.size());
+                                for (int i = 0; i < max; i++) {
 
-                            if (node.inputPins.size() > i) {
-                                Pin inPin = node.inputPins.get(i);
-                                addPin(inPin);
+                                    if (node.inputPins.size() > i) {
+                                        Pin inPin = node.inputPins.get(i);
+                                        addPin(inPin);
+                                    }
+
+                                    dummy(150, 0);
+
+                                    if (node.outputPins.size() > i) {
+                                        Pin outPin = node.outputPins.get(i);
+                                        addPin(outPin);
+                                    }
+                                    newLine();
+                                }
+                            }
+                            endNode();
+
+                            //calculate connect pins values
+                            for (int i = 0; i < node.outputPins.size(); i++) {
+                                Pin pin = node.outputPins.get(i);
+
+                                if (pin.connectedTo != -1) {
+                                    //find the input pin that is connect to this output pin
+                                    Pin otherPin = graph.findPinById(pin.connectedTo);
+
+                                    switch (pin.getDataType()) {
+                                        case Bool:
+                                            NodeData<ImBoolean> boolOutData = otherPin.getData();
+                                            NodeData<ImBoolean> boolInData = pin.getData();
+                                            boolOutData.getValue().set(boolInData.value.get());
+                                            break;
+                                        case Int:
+                                            NodeData<ImInt> intOutData = otherPin.getData();
+                                            NodeData<ImInt> intInData = pin.getData();
+                                            intOutData.getValue().set(intInData.value.get());
+                                            break;
+                                        case Float:
+                                            NodeData<ImFloat> floatOutData = otherPin.getData();
+                                            NodeData<ImFloat> floatInData = pin.getData();
+                                            floatOutData.getValue().set(floatInData.value.get());
+                                            break;
+                                        case Double:
+                                            NodeData<ImDouble> doubleOutData = otherPin.getData();
+                                            NodeData<ImDouble> doubleInData = pin.getData();
+                                            doubleOutData.getValue().set(doubleInData.value.get());
+                                            break;
+                                        case String:
+                                            NodeData<ImString> stringOutData = otherPin.getData();
+                                            NodeData<ImString> stringInData = pin.getData();
+                                            stringOutData.getValue().set(stringInData.value.get());
+                                            break;
+                                    }
+                                }
                             }
 
-                            dummy(150, 0);
+                            node.execute();
+                        }
 
-                            if (node.outputPins.size() > i) {
-                                Pin outPin = node.outputPins.get(i);
-                                addPin(outPin);
+                        //link node pins together
+                        int uniqueLinkId = 1;
+                        for (Node node : graph.getNodes().values()) {
+                            for (Pin pin : node.outputPins) {
+                                if (pin.connectedTo != -1) {
+                                    link(uniqueLinkId++, pin.getID(), pin.connectedTo);
+                                }
                             }
-                            newLine();
                         }
                     }
-                    endNode();
-
-                    //calculate connect pins values
-                    for(int i = 0; i < node.outputPins.size(); i++){
-                        Pin pin = node.outputPins.get(i);
-
-                        if(pin.connectedTo != -1){
-                            //find the input pin that is connect to this output pin
-                            Pin otherPin = graph.findPinById(pin.connectedTo);
-
-                            switch (pin.getDataType()){
-                                case Bool:
-                                    NodeData<ImBoolean> boolOutData = otherPin.getData();
-                                    NodeData<ImBoolean> boolInData = pin.getData();
-                                    boolOutData.getValue().set(boolInData.value.get());
-                                    break;
-                                case Int:
-                                    NodeData<ImInt> intOutData = otherPin.getData();
-                                    NodeData<ImInt> intInData = pin.getData();
-                                    intOutData.getValue().set(intInData.value.get());
-                                    break;
-                                case Float:
-                                    NodeData<ImFloat> floatOutData = otherPin.getData();
-                                    NodeData<ImFloat> floatInData = pin.getData();
-                                    floatOutData.getValue().set(floatInData.value.get());
-                                    break;
-                                case Double:
-                                    NodeData<ImDouble> doubleOutData = otherPin.getData();
-                                    NodeData<ImDouble> doubleInData = pin.getData();
-                                    doubleOutData.getValue().set(doubleInData.value.get());
-                                    break;
-                                case String:
-                                    NodeData<ImString> stringOutData = otherPin.getData();
-                                    NodeData<ImString> stringInData = pin.getData();
-                                    stringOutData.getValue().set(stringInData.value.get());
-                                    break;
-                            }
-                        }
-                    }
-
-                    node.execute();
+                    windowFocused = isWindowHovered();
+                    endNodeEditor();
+                    endTabItem();
                 }
 
-                //link node pins together
-                int uniqueLinkId = 1;
-                for (Node node : graph.getNodes().values()) {
-                    for (Pin pin : node.outputPins) {
-                        if (pin.connectedTo != -1) {
-                            link(uniqueLinkId++, pin.getID(), pin.connectedTo);
-                        }
-                    }
+                if(beginTabItem("Output")){
+                    EDITOR.render("output");
+                    EDITOR.setReadOnly(true);
+                    endTabItem();
                 }
             }
-            windowFocused = isWindowHovered();
-            endNodeEditor();
+            endTabBar();
 
         }
+
         end();
         popStyleColor();
         popStyleColor();
@@ -183,6 +212,7 @@ public class GraphWindow {
                     {
                         try {
                             graph.addNode(instance.getName(), instance);
+                            instance.init();
                         } catch (Exception e) {
                             e.printStackTrace();
                             return;

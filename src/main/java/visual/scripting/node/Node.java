@@ -12,11 +12,17 @@ public class Node {
     private String name = "";
     private int linkID = 0;
 
+    private boolean handled = false;
+
     public ArrayList<Pin> outputPins = new ArrayList<>();
     public ArrayList<Pin> inputPins = new ArrayList<>();
 
     public Node(Graph graph){
         this.graph = graph;
+    }
+
+    public void init(){
+
     }
 
     public void setID(int id){
@@ -48,6 +54,10 @@ public class Node {
         this.name = name;
     }
 
+    public String printSource(StringBuilder sb){
+        return "";
+    }
+
     public String getName()
     {
         return name;
@@ -61,5 +71,13 @@ public class Node {
     public Graph getGraph()
     {
         return graph;
+    }
+
+    public boolean getHandled(){
+        return handled;
+    }
+
+    public void setHandled(boolean handled){
+        this.handled = handled;
     }
 }

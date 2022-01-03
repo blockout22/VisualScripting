@@ -42,6 +42,8 @@ public class Pin {
 
     private NodeData data;
 
+    private String variable;
+
     public Pin(Node node, int ID, DataType dataType, PinType pinType, int linkID){
         this.node = node;
         this.ID = ID;
@@ -76,6 +78,14 @@ public class Pin {
             case Function:
                 break;
         }
+    }
+
+    public void setVariable(String var){
+        this.variable = var;
+    }
+
+    public String getVariable(){
+        return variable;
     }
 
     public int getID(){

@@ -32,6 +32,10 @@ public class Graph {
         return nodes;
     }
 
+    public static void resetLocalVariableID(){
+        Graph.localeVariableID = 0;
+    }
+
     public static int getNextLocalVariableID(){
         return localeVariableID++;
     }

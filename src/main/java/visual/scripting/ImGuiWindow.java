@@ -100,6 +100,7 @@ public class ImGuiWindow {
     }
 
     public void update(){
+//        Graph.resetLocalVariableID();
         imGuiGLFW.newFrame();
         ImGui.newFrame();
         {
