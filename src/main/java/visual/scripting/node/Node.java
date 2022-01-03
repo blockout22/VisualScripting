@@ -37,6 +37,10 @@ public class Node {
         return pin;
     }
 
+    public void execute(){
+
+    }
+
     public void setName(String name){
         if(name == null){
             name = "";

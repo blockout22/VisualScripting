@@ -2,20 +2,16 @@ package visual.scripting;
 
 import imgui.extension.imnodes.ImNodes;
 import imgui.extension.imnodes.ImNodesContext;
-import imgui.extension.imnodes.flag.ImNodesAttributeFlags;
 import imgui.extension.imnodes.flag.ImNodesColorStyle;
 import imgui.extension.imnodes.flag.ImNodesPinShape;
-import imgui.extension.nodeditor.NodeEditorConfig;
-import imgui.extension.nodeditor.NodeEditorContext;
-import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiMouseButton;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import visual.scripting.node.Node;
-import visual.scripting.node.NodeBuilder;
 
-import java.io.*;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -33,21 +29,21 @@ public class GraphWindow {
     private ImNodesContext context;
     private boolean windowFocused;
 
-    private ArrayList<NodeBuilder> nodesTypes = new ArrayList<>();
+//    private ArrayList<NodeBuilder> nodesTypes = new ArrayList<>();
+    private ArrayList<Class<? extends Node>> nodeList = new ArrayList<>();
 
     private static final ImInt LINK_A = new ImInt();
     private static final ImInt LINK_B = new ImInt();
 
     public GraphWindow(ImGuiWindow window){
         this.window = window;
+        //id will be changed to file name
         this.id = "new" + new Random().nextInt(100);
         graph = new Graph();
         context = ImNodes.editorContextCreate();
 
-        try {
-            loadNodeTypes();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
+            plugin.init(this);
         }
     }
 
@@ -57,7 +53,7 @@ public class GraphWindow {
 
         pushStyleColor(ImNodesColorStyle.TitleBar, 255, 0, 0, 255);
         pushStyleColor(ImNodesColorStyle.TitleBarSelected, 255, 0, 0, 255);
-        if(begin(id, closable)){
+        if(begin(id, closable, ImGuiWindowFlags.NoCollapse)){
             //checks is value has been changed from clicking the close button
             if(closable.get() == false){
                 //should init save
@@ -131,18 +127,40 @@ public class GraphWindow {
 
         if(isPopupOpen("context_menu" + id)){
             if(beginPopup("context_menu" + id)){
-                for(NodeBuilder nb : nodesTypes){
-                    if(menuItem(nb.getName()))
+                //get all loaded nodes and show them in the right click menu
+                for(Class<? extends Node> node : nodeList){
+                    Constructor<? extends Node> nodeClass = null;
+                    Node instance = null;
+                    try {
+                        nodeClass = node.getDeclaredConstructor(Graph.class);
+                        //not very good, this creates a new Object each frame
+                        //an alternative should be used to get Objects set Variables without creating 100s of instances while context menu is open
+                        //(Maybe create an array the same size as the nodeList array and store an instance there (destroy instances after menu is closed))
+                        instance = nodeClass.newInstance(graph);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if(menuItem(instance.getName()))
                     {
-                        Node node = nb.build(graph);
-                        graph.addNode(node.getName(), node);
-                        System.out.println(graph + " : " + id);
+                        try {
+                            graph.addNode(instance.getName(), instance);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return;
+                        }
                         closeCurrentPopup();
                     }
                 }
                 endPopup();
             }
         }
+    }
+
+    /**
+     * Called by Plugins to a node to the context menu and allow it to be created in the graph
+     */
+    public void addNodeToList(Class<? extends Node> node){
+        nodeList.add(node);
     }
 
     private void checkPinConnections(){
@@ -193,7 +211,9 @@ public class GraphWindow {
                     default:
                         beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
                 }
+                pushItemWidth(250);
                 configurePinUI(pin);
+                popItemWidth();
                 endOutputAttribute();
                 sameLine();
                 break;
@@ -206,7 +226,8 @@ public class GraphWindow {
                         beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
                 }
 //                sameLine(curNodeSize / 2);
-                sameLine();
+//                sameLine();
+                newLine();
 //                configurePinType(pin);
                 text(pin.getName());
                 endOutputAttribute();
@@ -244,37 +265,6 @@ public class GraphWindow {
 
                 }
                 break;
-        }
-    }
-
-    private void loadNodeTypes() throws IOException {
-        File file = new File("NodeTypes" + File.separator);
-
-
-        for(File f : file.listFiles()){
-            BufferedReader br = new BufferedReader(new FileReader(f));
-
-            NodeBuilder nb = new NodeBuilder();
-            String line;
-            while((line = br.readLine()) != null){
-                if(line.startsWith("name")){
-                    String value = line.split("=")[1];
-                    nb.setName(value);
-                }
-
-                if(line.startsWith("in")){
-                    String value = line.split("=")[1];
-                    nb.addInputPin(value);
-                }
-
-                if(line.startsWith("out")){
-                    String value = line.split("=")[1];
-                    nb.addOutputPin(value);
-                }
-            }
-
-            nodesTypes.add(nb);
-//            graph.addNode(node.getName(), node);
         }
     }
 }

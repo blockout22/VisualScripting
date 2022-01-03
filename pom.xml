@@ -14,6 +14,7 @@
         <lwjgl.version>3.3.1-SNAPSHOT</lwjgl.version>
         <lwjgl.natives>natives-windows</lwjgl.natives>
         <imgui.java.version>1.86.0</imgui.java.version>
+        <pf4j.version>3.6.0</pf4j.version>
     </properties>
 
     <dependencyManagement>
@@ -88,6 +89,13 @@
             <artifactId>imgui-java-natives-windows</artifactId>
             <version>${imgui.java.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.pf4j</groupId>
+            <artifactId>pf4j</artifactId>
+            <version>${pf4j.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

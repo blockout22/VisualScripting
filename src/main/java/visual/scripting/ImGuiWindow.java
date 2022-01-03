@@ -5,17 +5,18 @@ import imgui.extension.imnodes.ImNodes;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiDockNodeFlags;
-import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.glfw.GLFW;
+import org.pf4j.DefaultPluginManager;
+import org.pf4j.PluginManager;
+import org.pf4j.PluginWrapper;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 import static imgui.ImGui.*;
 import static imgui.flag.ImGuiWindowFlags.*;
@@ -32,6 +33,8 @@ public class ImGuiWindow {
     private File workingDir = new File(System.getProperty("user.dir"));
 
     private DarkStyle darkStyle;
+
+    public static PluginManager pluginManager;
 
     public ImGuiWindow(){
         //Create ImGui
@@ -74,6 +77,18 @@ public class ImGuiWindow {
 //            e.printStackTrace();
 //        }
         getStyle().setColors(darkStyle.getColors());
+        try {
+            loadPlugins();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadPlugins() throws Exception {
+        File file = new File("plugins");
+        pluginManager = new DefaultPluginManager();
+        pluginManager.loadPlugins();
+        pluginManager.startPlugins();
     }
 
     private byte[] loadFromResources(String name){
