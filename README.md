@@ -39,6 +39,7 @@
 * Create a new Class that `extends VisualScriptingPlugin`
 * Inside the `VisualScriptingPlugin` class in the `init` function you can add you custom Nodes by calling `graph.addNodeToList(InsertCustomNodeNameHere.class);`
 * To create an actual Custom node, create a new class that extends `Node` and from that node class you can deside what happens with your node (example below)
+* In your MANIFEST.MF you need to include the following `Plugin-Class: <package>.<PluginClass>` `Plugin-Id: <Anything>` `Plugin-Version: 0.0.1` (full example below)
 
 ```java
 import imgui.type.ImInt;
@@ -78,6 +79,13 @@ public class Node_Print extends Node {
         output.setName(output.getData().value + "");
     }
 }
+```
+
+```mf
+Manifest-Version: 1.0
+Plugin-Class: com.PluginTest
+Plugin-Id: PluginTest
+Plugin-Version: 0.0.1
 ```
 
  
