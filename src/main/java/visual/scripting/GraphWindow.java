@@ -7,8 +7,7 @@ import imgui.extension.imnodes.flag.ImNodesPinShape;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
-import imgui.type.ImBoolean;
-import imgui.type.ImInt;
+import imgui.type.*;
 import visual.scripting.node.Node;
 
 import java.lang.reflect.Constructor;
@@ -90,6 +89,46 @@ public class GraphWindow {
                         }
                     }
                     endNode();
+
+                    //calculate connect pins values
+                    for(int i = 0; i < node.outputPins.size(); i++){
+                        Pin pin = node.outputPins.get(i);
+
+                        if(pin.connectedTo != -1){
+                            //find the input pin that is connect to this output pin
+                            Pin otherPin = graph.findPinById(pin.connectedTo);
+
+                            switch (pin.getDataType()){
+                                case Bool:
+                                    NodeData<ImBoolean> boolOutData = otherPin.getData();
+                                    NodeData<ImBoolean> boolInData = pin.getData();
+                                    boolOutData.getValue().set(boolInData.value.get());
+                                    break;
+                                case Int:
+                                    NodeData<ImInt> intOutData = otherPin.getData();
+                                    NodeData<ImInt> intInData = pin.getData();
+                                    intOutData.getValue().set(intInData.value.get());
+                                    break;
+                                case Float:
+                                    NodeData<ImFloat> floatOutData = otherPin.getData();
+                                    NodeData<ImFloat> floatInData = pin.getData();
+                                    floatOutData.getValue().set(floatInData.value.get());
+                                    break;
+                                case Double:
+                                    NodeData<ImDouble> doubleOutData = otherPin.getData();
+                                    NodeData<ImDouble> doubleInData = pin.getData();
+                                    doubleOutData.getValue().set(doubleInData.value.get());
+                                    break;
+                                case String:
+                                    NodeData<ImString> stringOutData = otherPin.getData();
+                                    NodeData<ImString> stringInData = pin.getData();
+                                    stringOutData.getValue().set(stringInData.value.get());
+                                    break;
+                            }
+                        }
+                    }
+
+                    node.execute();
                 }
 
                 //link node pins together
@@ -226,8 +265,8 @@ public class GraphWindow {
                         beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
                 }
 //                sameLine(curNodeSize / 2);
-//                sameLine();
-                newLine();
+                sameLine();
+//                newLine();
 //                configurePinType(pin);
                 text(pin.getName());
                 endOutputAttribute();
