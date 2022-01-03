@@ -1,5 +1,6 @@
 package visual.scripting;
 
+import imgui.ImVec2;
 import imgui.extension.imnodes.ImNodes;
 import imgui.extension.imnodes.ImNodesContext;
 import imgui.extension.imnodes.flag.ImNodesColorStyle;
@@ -11,10 +12,13 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.*;
 import visual.scripting.node.Node;
 import visual.scripting.node.NodeEntry;
-import visual.scripting.node.NodeResults;
+import visual.scripting.node.NodeModule;
+import visual.scripting.node.NodeSplitFlow;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import static imgui.ImGui.*;
@@ -40,6 +44,12 @@ public class GraphWindow {
     private NodeCompiler nodeCompiler = new NodeCompiler();
     private static TextEditor EDITOR = new TextEditor();
 
+    private String title = "";
+    ImVec2 editorSpacePos = new ImVec2();
+    ImVec2 editorGridSpacePos = new ImVec2();
+
+    private Map<Integer, ImVec2> nodeQPos = new HashMap<>();
+
     public GraphWindow(ImGuiWindow window){
         this.window = window;
         //id will be changed to file name
@@ -47,9 +57,11 @@ public class GraphWindow {
         graph = new Graph();
         context = ImNodes.editorContextCreate();
 
-        addNodeToList(NodeResults.class);
+        addNodeToList(NodeSplitFlow.class);
+        addNodeToList(NodeModule.class);
 //        addNodeToList(NodeEntry.class);
-        graph.addNode("Start", new NodeEntry(graph));
+//        graph.addNode("Start", new NodeEntry(graph));
+        graph.addNode("", new Node(graph));
 
         for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
             plugin.init(this);
@@ -70,12 +82,14 @@ public class GraphWindow {
 //                editorContextFree(context);
             }
 
+            text(title);
+            title = "";
+
             if(button("Compile")){
                 EDITOR.setText(nodeCompiler.compile(graph));
             }
 
             if(beginTabBar("TabBar")) {
-
                 if(beginTabItem("NodeEditor")) {
 
                     editorContextSet(context);
@@ -84,6 +98,9 @@ public class GraphWindow {
                         for (Node node : graph.getNodes().values()) {
                             beginNode(node.getID());
                             {
+//                                getNodeEditorSpacePos(node.getID(), editorSpacePos);
+//                                getNodeGridSpacePos(node.getID(), editorGridSpacePos);
+//                                title += editorSpacePos + " : " + editorGridSpacePos + " : " + getCursorScreenPos();
                                 beginNodeTitleBar();
                                 text(node.getName());
                                 endNodeTitleBar();
@@ -174,6 +191,15 @@ public class GraphWindow {
 
         }
 
+
+        //set nodes position to the current graphs pos
+        for(Integer id : nodeQPos.keySet()){
+            ImVec2 pos = nodeQPos.get(id);
+            getNodeEditorSpacePos(id, pos);
+            setNodeGridSpacePos(id, -pos.x + 300, -pos.y + 300);
+        }
+        nodeQPos.clear();
+
         end();
         popStyleColor();
         popStyleColor();
@@ -186,7 +212,6 @@ public class GraphWindow {
                 openPopup("node_menu" + id);
                 getStateStorage().setInt(getID("delete_node_id"), hoveredNode);
             }else{
-                System.out.println("Popup : " + id);
                 if(windowFocused) {
                     openPopup("context_menu" + id);
                 }
@@ -213,7 +238,8 @@ public class GraphWindow {
                         try {
                             graph.addNode(instance.getName(), instance);
                             instance.init();
-                        } catch (Exception e) {
+                            nodeQPos.put(instance.getID(), new ImVec2());
+                            } catch (Exception e) {
                             e.printStackTrace();
                             return;
                         }
