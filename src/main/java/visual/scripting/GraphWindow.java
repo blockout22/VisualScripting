@@ -42,9 +42,9 @@ public class GraphWindow {
     private static final ImInt LINK_B = new ImInt();
 
     private NodeCompiler nodeCompiler = new NodeCompiler();
-    private static TextEditor EDITOR = new TextEditor();
+    private TextEditor EDITOR = new TextEditor();
 
-    public static Map<Integer, ImVec2> nodeQPos = new HashMap<>();
+    public Map<Integer, ImVec2> nodeQPos = new HashMap<>();
 
     public GraphWindow(ImGuiWindow window){
         this.window = window;
@@ -80,11 +80,11 @@ public class GraphWindow {
 
             if(button("Compile")){
                 EDITOR.setText(nodeCompiler.compile(graph));
-                GraphSaver.save(graph);
+//                GraphSaver.save(graph);
             }
 
             if(button("load")){
-                GraphSaver.load(graph);
+//                GraphSaver.load(graph);
             }
 
             if(beginTabBar("TabBar")) {

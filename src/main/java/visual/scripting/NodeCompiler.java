@@ -25,7 +25,6 @@ public class NodeCompiler {
 
     private void handleNode(Graph graph, Node node) {
         node.printSource(output);
-        System.out.println(node.getName() + " : " + output);
 
         for(Pin pin : node.outputPins){
             if(pin.getDataType() == Pin.DataType.Flow){

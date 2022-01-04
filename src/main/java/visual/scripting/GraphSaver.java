@@ -57,7 +57,7 @@ public class GraphSaver {
         }
     }
 
-    public static void load(Graph graph) {
+    public static void load(GraphWindow graphWindow, Graph graph) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
 
@@ -76,7 +76,7 @@ public class GraphSaver {
                 graph.addNode(node);
                 ImVec2 newPos = new ImVec2();
                 newPos.set(save.x, save.y);
-                GraphWindow.nodeQPos.put(node.getID(), newPos);
+                graphWindow.nodeQPos.put(node.getID(), newPos);
             }
 
             br.close();
