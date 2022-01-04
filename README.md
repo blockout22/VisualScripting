@@ -162,3 +162,14 @@ Plugin-Version: 0.0.1
 ## Screenshots
 
 ![img](Images/example.png)
+
+| TODO                                   | Completed          |
+| ---------------------------------------| ------------------ |
+| Nodes update automatically             | :heavy_check_mark: |
+| Convert to source/text                 | :heavy_check_mark: |
+| Save All Node Information              | :x:                |
+| Plugin Support                         | :heavy_check_mark: |
+| hierarchy of current Nodes in graph    | :x:                |
+| Workspace design for File Viewer       | :x:                |
+| Improve UI                             | :x:                |
+| Examples                               | :x:                |
