@@ -7,6 +7,11 @@ public class NodeCompiler {
 
     private StringBuilder output = new StringBuilder();
 
+    /**
+     * converts nodes linked to Start node to text
+     * @param graph
+     * @return
+     */
     public String compile(Graph graph){
         output.setLength(0);
         for(Node node : graph.getNodes().values()){

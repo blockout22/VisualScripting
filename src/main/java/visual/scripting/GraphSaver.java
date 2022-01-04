@@ -6,8 +6,6 @@ import visual.scripting.node.Node;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +22,10 @@ public class GraphSaver {
     private static ArrayList<NodeSave> savedNodes = new ArrayList<>();
     private static StringBuilder sb = new StringBuilder();
 
+    /**
+     * Saves nodes to a file [WIP]
+     * @param graph
+     */
     public static void save(Graph graph){
         sb.setLength(0);
         savedNodes.clear();
@@ -62,6 +64,11 @@ public class GraphSaver {
         }
     }
 
+    /**
+     * Loads Nodes from a file and adds the to the Graph [WIP]
+     * @param graphWindow
+     * @param graph
+     */
     public static void load(GraphWindow graphWindow, Graph graph) {
 
         try {

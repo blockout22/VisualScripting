@@ -3,7 +3,6 @@ package visual.scripting;
 import imgui.ImVec2;
 import imgui.extension.imnodes.ImNodes;
 import imgui.extension.imnodes.ImNodesContext;
-import imgui.extension.imnodes.flag.ImNodesColorStyle;
 import imgui.extension.imnodes.flag.ImNodesPinShape;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.ImGuiCond;
@@ -12,7 +11,6 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.*;
 import visual.scripting.node.Node;
 import visual.scripting.node.NodeEntry;
-import visual.scripting.node.NodeModule;
 import visual.scripting.node.NodeSplitFlow;
 
 import java.lang.reflect.Constructor;
@@ -53,23 +51,23 @@ public class GraphWindow {
         graph = new Graph();
         context = ImNodes.editorContextCreate();
 
+        //add a node to allow more than one flow
         addNodeToList(NodeSplitFlow.class);
-        addNodeToList(NodeModule.class);
-//        addNodeToList(NodeEntry.class);
+        //add a starter node to the graph
         graph.addNode(new NodeEntry(graph));
-//        graph.addNode("", new Node(graph));
 
         for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
             plugin.init(this);
         }
     }
 
+    /**
+     *  Shows the Graphs window
+     */
     public void show(float menuBarHeight){
         setNextWindowSize(GLFWWindow.getWidth(), GLFWWindow.getHeight() - menuBarHeight, ImGuiCond.Once);
         setNextWindowPos(getMainViewport().getPosX(), getMainViewport().getPosY() + menuBarHeight, ImGuiCond.Once);
 
-        pushStyleColor(ImNodesColorStyle.TitleBar, 255, 0, 0, 255);
-        pushStyleColor(ImNodesColorStyle.TitleBarSelected, 255, 0, 0, 255);
         if(begin(id, closable, ImGuiWindowFlags.NoCollapse)){
             //checks is value has been changed from clicking the close button
             if(closable.get() == false){
@@ -78,17 +76,22 @@ public class GraphWindow {
 //                editorContextFree(context);
             }
 
+            //used to call the method used to convert the nodes to the nodes output text
             if(button("Compile")){
                 EDITOR.setText(nodeCompiler.compile(graph));
                 GraphSaver.save(graph);
             }
 
+            //loads the nodes into the graph from a save file
             if(button("load")){
                 GraphSaver.load(this, graph);
             }
 
+            //clears all nodes from the graph and resets the graph
+            //this may cause an ConcurrentModificationException, needs testing
             if(button("Clear Graph")){
-                nodeList.clear();
+                graph.getNodes().clear();
+                graph.addNode(new NodeEntry(graph));
             }
 
             if(beginTabBar("TabBar")) {
@@ -202,15 +205,12 @@ public class GraphWindow {
         for(Integer id : nodeQPos.keySet()){
             ImVec2 pos = nodeQPos.get(id);
             getNodeEditorSpacePos(id, pos);
-//            setNodeGridSpacePos(id, -pos.x + 300, -pos.y + 300);
             setNodeGridSpacePos(id, -pos.x + 300, -pos.y + 300);
 
         }
         nodeQPos.clear();
 
         end();
-        popStyleColor();
-        popStyleColor();
 
         checkPinConnections();
 
@@ -266,6 +266,9 @@ public class GraphWindow {
         nodeList.add(node);
     }
 
+    /**
+     * checks if 2 pins should be connected and checks if the pin should be disconnected
+     */
     private void checkPinConnections(){
         if(isLinkCreated(LINK_A, LINK_B)){
             final Pin sourcePin = graph.findPinById(LINK_A.get());
@@ -339,6 +342,9 @@ public class GraphWindow {
         }
     }
 
+    /**
+     * adds input fields to the Pin Type
+     */
     private void configurePinUI(Pin pin) {
         switch (pin.getDataType()){
             case Flow:

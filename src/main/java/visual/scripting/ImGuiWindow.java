@@ -22,6 +22,11 @@ import java.util.List;
 import static imgui.ImGui.*;
 import static imgui.flag.ImGuiWindowFlags.*;
 
+/**
+ * sets up all the ImGui stuff and sets it up for GLFW and OpenGL
+ *
+ * This class is setup to be ready to add to your OpenGL GLFW window by calling {@link #update()} in your game loop
+ */
 public class ImGuiWindow {
 
     private final ImGuiImplGlfw imGuiGLFW = new ImGuiImplGlfw();
@@ -72,6 +77,8 @@ public class ImGuiWindow {
         imGuiGl3.init("#version 150");
 
         darkStyle = new DarkStyle();
+
+        //Temp code to easily convert the style editor output to java syntax
 //        try {
 //            darkStyle.convertToJava(new File("C:\\Users\\kie\\Downloads\\colors.txt"));
 //        } catch (Exception e) {
@@ -85,6 +92,10 @@ public class ImGuiWindow {
         }
     }
 
+    /**
+     * Looks in the plugins folder for plugins and adds any new nodes they add
+     * @throws Exception
+     */
     private void loadPlugins() throws Exception {
         File file = new File("plugins");
         pluginManager = new DefaultPluginManager();
@@ -102,6 +113,9 @@ public class ImGuiWindow {
         }
     }
 
+    /**
+     * Called each frame to Update the ImGui window
+     */
     public void update(){
 //        Graph.resetLocalVariableID();
         imGuiGLFW.newFrame();
@@ -125,7 +139,9 @@ public class ImGuiWindow {
             //content starts here
             setNextWindowSize(GLFWWindow.getWidth() / 2, GLFWWindow.getHeight() / 2, ImGuiCond.Once);
             setNextWindowPos(getMainViewport().getPosX(), getMainViewport().getPosY() + 20, ImGuiCond.Once);
-            if(begin("FileViewer")){
+            //A windows to show your files in the current directory
+            //this will be used to view your workspace and to load and create new graph files
+            if(begin("FileViewer (current directory [WIP])")){
 
                 for(File file : workingDir.listFiles()) {
                     if(button(file.getName())){
