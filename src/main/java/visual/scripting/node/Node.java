@@ -2,6 +2,7 @@ package visual.scripting.node;
 
 import visual.scripting.Graph;
 import visual.scripting.Pin;
+import visual.scripting.node.style.NodeStyle;
 
 import java.util.ArrayList;
 
@@ -12,10 +13,10 @@ public class Node {
     private String name = "";
     private int linkID = 0;
 
-    private boolean handled = false;
-
     public ArrayList<Pin> outputPins = new ArrayList<>();
     public ArrayList<Pin> inputPins = new ArrayList<>();
+
+    private NodeStyle style = new NodeStyle();
 
     public Node(Graph graph){
         this.graph = graph;
@@ -54,6 +55,14 @@ public class Node {
         this.name = name;
     }
 
+    public NodeStyle getStyle() {
+        return style;
+    }
+
+    public void setStyle(NodeStyle style) {
+        this.style = style;
+    }
+
     public String printSource(StringBuilder sb){
         return "";
     }
@@ -71,13 +80,5 @@ public class Node {
     public Graph getGraph()
     {
         return graph;
-    }
-
-    public boolean getHandled(){
-        return handled;
-    }
-
-    public void setHandled(boolean handled){
-        this.handled = handled;
     }
 }

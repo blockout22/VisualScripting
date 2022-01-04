@@ -15,10 +15,6 @@ public class NodeCompiler {
     public String compile(Graph graph){
         output.setLength(0);
         for(Node node : graph.getNodes().values()){
-            node.setHandled(false);
-        }
-
-        for(Node node : graph.getNodes().values()){
 //            handleNode(graph, node);
             if(node instanceof NodeEntry){
                 handleNode(graph, node);

@@ -3,15 +3,13 @@ package visual.scripting;
 import imgui.ImVec2;
 import imgui.extension.imnodes.ImNodes;
 import imgui.extension.imnodes.ImNodesContext;
+import imgui.extension.imnodes.flag.ImNodesColorStyle;
 import imgui.extension.imnodes.flag.ImNodesPinShape;
 import imgui.extension.texteditor.TextEditor;
-import imgui.flag.ImGuiCond;
-import imgui.flag.ImGuiKey;
-import imgui.flag.ImGuiMouseButton;
-import imgui.flag.ImGuiWindowFlags;
-import imgui.internal.ImGuiDockNode;
+import imgui.flag.*;
 import imgui.type.*;
 import visual.scripting.node.Node;
+import visual.scripting.node.style.NodeColor;
 import visual.scripting.node.NodeEntry;
 import visual.scripting.node.NodeSplitFlow;
 
@@ -61,6 +59,14 @@ public class GraphWindow {
         for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
             plugin.init(this);
         }
+    }
+
+    public int ToNodeColor(NodeColor nodeColor){
+        int Red = (nodeColor.r << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
+        int Green = (nodeColor.g << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
+        int Blue = nodeColor.b & 0x000000FF; //Mask out anything not blue.
+
+        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
     }
 
     /**
@@ -113,16 +119,16 @@ public class GraphWindow {
                     beginNodeEditor();
                     {
                         for (Node node : graph.getNodes().values()) {
+                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBar, ToNodeColor(node.getStyle().TitleBar));
+                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBarSelected, ToNodeColor(node.getStyle().TitleBarSelected));
+                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBarHovered, ToNodeColor(node.getStyle().TitleBarHovered));
+                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackground, ToNodeColor(node.getStyle().NodeBackground));
+                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundSelected, ToNodeColor(node.getStyle().NodeBackgroundSelected));
+                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundHovered, ToNodeColor(node.getStyle().NodeBackgroundHovered));
                             beginNode(node.getID());
                             {
-//                                if(node.getID() == 1){
-//                                    ImVec2 pos = new ImVec2();
-//                                    getNodeEditorSpacePos(node.getID(), pos);
-//                                    System.out.println(pos);
-//                                }
                                 beginNodeTitleBar();
                                 text(node.getName());
-
                                 endNodeTitleBar();
 
 
@@ -145,6 +151,13 @@ public class GraphWindow {
                                 }
                             }
                             endNode();
+
+                            ImNodes.popColorStyle();
+                            ImNodes.popColorStyle();
+                            ImNodes.popColorStyle();
+                            ImNodes.popColorStyle();
+                            ImNodes.popColorStyle();
+                            ImNodes.popColorStyle();
 
                             //calculate connect pins values
                             for (int i = 0; i < node.outputPins.size(); i++) {
@@ -337,7 +350,34 @@ public class GraphWindow {
             case Input:
                 switch (pin.getDataType()){
                     case Flow:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
                         beginInputAttribute(pin.getID(), ImNodesPinShape.Triangle);
+                        ImNodes.popColorStyle();
+                        break;
+                    case Bool:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
+                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+                        ImNodes.popColorStyle();
+                        break;
+                    case Int:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
+                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+                        ImNodes.popColorStyle();
+                        break;
+                    case Float:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
+                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+                        ImNodes.popColorStyle();
+                        break;
+                    case Double:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
+                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+                        ImNodes.popColorStyle();
+                        break;
+                    case String:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
+                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+                        ImNodes.popColorStyle();
                         break;
                     default:
                         beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
@@ -351,7 +391,34 @@ public class GraphWindow {
             case Output:
                 switch (pin.getDataType()){
                     case Flow:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
                         beginOutputAttribute(pin.getID(), ImNodesPinShape.Triangle);
+                        ImNodes.popColorStyle();
+                        break;
+                    case Bool:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
+                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+                        ImNodes.popColorStyle();
+                        break;
+                    case Int:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
+                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+                        ImNodes.popColorStyle();
+                        break;
+                    case Float:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
+                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+                        ImNodes.popColorStyle();
+                        break;
+                    case Double:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
+                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+                        ImNodes.popColorStyle();
+                        break;
+                    case String:
+                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
+                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+                        ImNodes.popColorStyle();
                         break;
                     default:
                         beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
