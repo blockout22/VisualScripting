@@ -80,11 +80,15 @@ public class GraphWindow {
 
             if(button("Compile")){
                 EDITOR.setText(nodeCompiler.compile(graph));
-//                GraphSaver.save(graph);
+                GraphSaver.save(graph);
             }
 
             if(button("load")){
-//                GraphSaver.load(graph);
+                GraphSaver.load(this, graph);
+            }
+
+            if(button("Clear Graph")){
+                nodeList.clear();
             }
 
             if(beginTabBar("TabBar")) {

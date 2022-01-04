@@ -13,6 +13,7 @@ import org.pf4j.PluginManager;
 import org.pf4j.PluginWrapper;
 
 import java.io.*;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -89,6 +90,8 @@ public class ImGuiWindow {
         pluginManager = new DefaultPluginManager();
         pluginManager.loadPlugins();
         pluginManager.startPlugins();
+
+        List<PluginWrapper> plugins = pluginManager.getPlugins();
     }
 
     private byte[] loadFromResources(String name){

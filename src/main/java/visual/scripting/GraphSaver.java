@@ -1,10 +1,15 @@
 package visual.scripting;
 
 import imgui.ImVec2;
+import org.pf4j.PluginWrapper;
 import visual.scripting.node.Node;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.List;
 
 import static imgui.extension.imnodes.ImNodes.*;
 
@@ -58,31 +63,64 @@ public class GraphSaver {
     }
 
     public static void load(GraphWindow graphWindow, Graph graph) {
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             String line;
-            while((line = br.readLine()) != null){
+            while ((line = br.readLine()) != null) {
                 NodeSave save = new NodeSave();
                 save.className = line.split(",")[0].split("=")[1];
                 save.x = Float.valueOf(line.split(",")[1].split("=")[1]);
                 save.y = Float.valueOf(line.split(",")[2].split("=")[1]);
+                Class classNode = null;
 
-                Class classNode = Class.forName(save.className);
+                try {
+                    //try to load the node from the current jar classpath
+                    classNode = Class.forName(save.className, true, null);
+                } catch (Exception e) {
+//                    e.printStackTrace();
+                }
+
+                List<PluginWrapper> listWrapper = ImGuiWindow.pluginManager.getPlugins();
+                for(PluginWrapper f : listWrapper)
+                    {
+                        try {
+                            ClassLoader loader = f.getPluginClassLoader();
+                            classNode = Class.forName(save.className, true, loader);
+                        } catch (Exception e) {
+//                            e.printStackTrace();
+                        }
+                    }
+
+                    if(classNode == null){
+                        System.out.println("Class was null, couldn't load");
+                        return;
+                    }
 
                 Node node = (Node) classNode.getDeclaredConstructor(Graph.class).newInstance(graph);
-
-                System.out.println(node.getName());
                 graph.addNode(node);
+                node.init();
                 ImVec2 newPos = new ImVec2();
                 newPos.set(save.x, save.y);
                 graphWindow.nodeQPos.put(node.getID(), newPos);
             }
 
             br.close();
-        } catch (Exception e) {
+        }catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
+
     }
 
     public static class NodeSave{
