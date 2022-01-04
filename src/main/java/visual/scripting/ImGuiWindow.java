@@ -5,6 +5,7 @@ import imgui.extension.imnodes.ImNodes;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiDockNodeFlags;
+import imgui.flag.ImGuiKey;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.glfw.GLFW;
@@ -117,14 +118,12 @@ public class ImGuiWindow {
      * Called each frame to Update the ImGui window
      */
     public void update(){
-//        Graph.resetLocalVariableID();
         imGuiGLFW.newFrame();
         ImGui.newFrame();
         {
             //do UI stuff here
             createMainMenuBar();
             float menuBarHeight = 20f;
-            //fill screen widget here to enable snapping on viewport it's self
             setNextWindowSize(GLFWWindow.getWidth(), GLFWWindow.getHeight(), ImGuiCond.Always);
             setNextWindowPos(getMainViewport().getPosX(), getMainViewport().getPosY(), ImGuiCond.Always);
             setNextWindowViewport(getMainViewport().getID());
@@ -132,6 +131,7 @@ public class ImGuiWindow {
 
             if(begin("New Window", NoBringToFrontOnFocus | NoBackground | NoTitleBar | NoDocking | NoScrollbar)){
                 setCursorScreenPos(getMainViewport().getPosX(), getMainViewport().getPosY() + menuBarHeight);
+                //fill screen widget here to enable snapping on viewport it's self
                 dockSpace(1, GLFWWindow.getWidth(), GLFWWindow.getHeight() - menuBarHeight, ImGuiDockNodeFlags.NoResize | NoScrollbar);
             }
             end();

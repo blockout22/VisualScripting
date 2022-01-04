@@ -27,6 +27,28 @@ public class Graph {
         queuedForRemoval.add(node);
     }
 
+    public void update(){
+        for(Integer q : queuedForRemoval){
+            Node n = nodes.get(q);
+
+            //Clear any pin existing connections
+            for(Pin pin : n.outputPins){
+                if (pin.connectedTo != -1) {
+                    Pin oldPin = findPinById(pin.connectedTo);
+                    oldPin.connectedTo = -1;
+                }
+            }
+            for(Pin pin : n.inputPins){
+                if (pin.connectedTo != -1) {
+                    Pin oldPin = findPinById(pin.connectedTo);
+                    oldPin.connectedTo = -1;
+                }
+            }
+            nodes.remove(q);
+        }
+        queuedForRemoval.clear();
+    }
+
     public Map<Integer, Node> getNodes()
     {
         return nodes;

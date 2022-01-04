@@ -15,7 +15,7 @@ public class MainEntry {
     }
 
     private void init() {
-        GLFWWindow.createWindow(800, 600, "Visual Scripting");
+        GLFWWindow.createWindow(1920, 1080, "Visual Scripting");
         imGuiWindow = new ImGuiWindow();
     }
 

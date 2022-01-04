@@ -6,8 +6,10 @@ import imgui.extension.imnodes.ImNodesContext;
 import imgui.extension.imnodes.flag.ImNodesPinShape;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.ImGuiCond;
+import imgui.flag.ImGuiKey;
 import imgui.flag.ImGuiMouseButton;
 import imgui.flag.ImGuiWindowFlags;
+import imgui.internal.ImGuiDockNode;
 import imgui.type.*;
 import visual.scripting.node.Node;
 import visual.scripting.node.NodeEntry;
@@ -65,6 +67,7 @@ public class GraphWindow {
      *  Shows the Graphs window
      */
     public void show(float menuBarHeight){
+        graph.update();
         setNextWindowSize(GLFWWindow.getWidth(), GLFWWindow.getHeight() - menuBarHeight, ImGuiCond.Once);
         setNextWindowPos(getMainViewport().getPosX(), getMainViewport().getPosY() + menuBarHeight, ImGuiCond.Once);
 
@@ -84,7 +87,7 @@ public class GraphWindow {
 
             //loads the nodes into the graph from a save file
             if(button("load")){
-                GraphSaver.load(this, graph);
+//                GraphSaver.load(this, graph);
             }
 
             //clears all nodes from the graph and resets the graph
@@ -96,6 +99,15 @@ public class GraphWindow {
 
             if(beginTabBar("TabBar")) {
                 if(beginTabItem("NodeEditor")) {
+                    if(beginChild("SideBar", 100, 250)){
+                        for (Node node : graph.getNodes().values()) {
+                            if(button(node.getName())){
+                            }
+                        }
+                    }
+                    endChild();
+
+                    sameLine();
 
                     editorContextSet(context);
                     beginNodeEditor();
@@ -197,7 +209,6 @@ public class GraphWindow {
                 }
             }
             endTabBar();
-
         }
 
 
@@ -226,6 +237,18 @@ public class GraphWindow {
             }
         }
 
+        if(isPopupOpen("node_menu" + id)){
+            final int targetNode = getStateStorage().getInt(getID("delete_node_id"));
+            if(beginPopup("node_menu" + id)){
+                if(menuItem("Delete " + graph.getNodes().get(targetNode).getName()))
+                {
+                    graph.removeNode(targetNode);
+                    closeCurrentPopup();
+                }
+            }
+            endPopup();
+        }
+
         if(isPopupOpen("context_menu" + id)){
             if(beginPopup("context_menu" + id)){
                 //get all loaded nodes and show them in the right click menu
@@ -247,12 +270,14 @@ public class GraphWindow {
                             graph.addNode(instance);
                             instance.init();
                             nodeQPos.put(instance.getID(), new ImVec2());
+//                            setNodeScreenSpacePos(instance.getID(), getMousePosX(), getMousePosX());
                             } catch (Exception e) {
                             e.printStackTrace();
                             return;
                         }
                         closeCurrentPopup();
                     }
+
                 }
                 endPopup();
             }
