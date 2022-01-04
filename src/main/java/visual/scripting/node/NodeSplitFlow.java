@@ -14,7 +14,6 @@ public class NodeSplitFlow extends Node{
 
     @Override
     public void init() {
-        System.out.println("Init Called");
         input = addInputPin(Pin.DataType.Flow, this);
         output1 = addOutputPin(Pin.DataType.Flow, this);
         output2 = addOutputPin(Pin.DataType.Flow, this);
