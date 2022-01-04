@@ -41,42 +41,109 @@
 * To create an actual Custom node, create a new class that extends `Node` and from that node class you can deside what happens with your node (example below)
 * In your MANIFEST.MF you need to include the following `Plugin-Class: <package>.<PluginClass>` `Plugin-Id: <Anything>` `Plugin-Version: 0.0.1` (full example below)
 
+### Examples 
+
+An example of a node that doesn't require the exec function
 ```java
-import imgui.type.ImInt;
+import imgui.type.ImString;
 import visual.scripting.Graph;
 import visual.scripting.NodeData;
 import visual.scripting.Pin;
 import visual.scripting.node.Node;
 
-public class Node_Print extends Node {
+public class Node_PrintString extends Node {
 
-    //pin reference stored outside so they can be accessed in other methods
-    private Pin in1Pin, in2Pin, output;
+    private Pin flowIn, strIn, flowOut;
 
-    public Node_Print(Graph graph) {
+    public Node_PrintString(Graph graph) {
         super(graph);
-        //sets the name of the node which is the title
-        setName("Node Name");
-
-        in1Pin = addInputPin(Pin.DataType.Int, this);
-        in1Pin.setName("Input 1");
-
-        in2Pin = addInputPin(Pin.DataType.Int, this);
-        in2Pin.setName("Input 2");
-
-        output = addOutputPin(Pin.DataType.Int, this);
+        //set the name of the node
+        setName("Print String");
     }
 
-    //this is what will visually happen in the NodeEditor, for this example is adds the 2 incoming pins and displays the answer on the outgoing pin
     @Override
-    public void execute(){
-        NodeData<ImInt> pin1 = in1Pin.getData();
-        NodeData<ImInt> pin2 = in2Pin.getData();
+    public void init() {
+        flowIn = addInputPin(Pin.DataType.Flow, this);
+        strIn = addInputPin(Pin.DataType.String, this);
 
-        NodeData<ImInt> out = output.getData();
-        out.getValue().set(pin1.value.get() + pin2.value.get());
+        flowOut = addOutputPin(Pin.DataType.Flow, this);
+    }
 
-        output.setName(output.getData().value + "");
+    @Override
+    public String printSource(StringBuilder sb) {
+        NodeData<ImString> data = strIn.getData();
+
+        String strOutput = "\"" + data.value.get() + "\"";
+
+        if(strIn.connectedTo != -1){
+            Pin pin = getGraph().findPinById(strIn.connectedTo);
+            strOutput = pin.getNode().printSource(sb);
+        }
+
+        sb.append("System.out.println(" + strOutput + ");\n");
+        return "";
+    }
+}
+```
+
+An example of a node that makes use of the exec function and use of variables 
+```java
+import imgui.type.ImInt;
+import imgui.type.ImString;
+import visual.scripting.Graph;
+import visual.scripting.NodeData;
+import visual.scripting.Pin;
+import visual.scripting.node.Node;
+
+public class Node_IntToString extends Node {
+
+    private Pin in, out;
+
+    public Node_IntToString(Graph graph) {
+        super(graph);
+        //set the name of the node
+        setName("IntToString");
+    }
+
+    @Override
+    public void init() {
+        in = addInputPin(Pin.DataType.Int, this);
+
+        out = addOutputPin(Pin.DataType.String, this);
+
+        // call getGraph().getNextLocalVariableID(); to avoid having same variable names in the same function
+        String var = "intToString" + getGraph().getNextLocalVariableID();
+        //set variable name to let any nodes connect to this pin know what the variable name will be and can reference it
+        out.setVariable(var);
+    }
+
+    @Override
+    public void execute() {
+        NodeData<ImInt> inData = in.getData();
+        NodeData<ImString> outData = out.getData();
+
+        outData.getValue().set(String.valueOf(inData.value.get()));
+    }
+
+    @Override
+    public String printSource(StringBuilder sb) {
+        NodeData<ImInt> inData = in.getData();
+        NodeData<ImString> outData = out.getData();
+
+        //sets the value to the value of the in pin
+        String input = String.valueOf(inData.value.get());
+
+        //checks if pin is connected to another pin then changed input string to a variable
+        if(in.connectedTo != -1){
+            Pin pin = getGraph().findPinById(in.connectedTo);
+            //gets the variable name from the connected pin
+            input = pin.getNode().printSource(sb);
+        }
+
+        String toPrint = "int " + out.getVariable() + " = " + input;
+        //add to the source
+        sb.append(toPrint + "\n");
+        return out.getVariable();
     }
 }
 ```
