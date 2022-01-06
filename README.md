@@ -164,13 +164,14 @@ Plugin-Version: 0.0.1
 ![img](Images/example.png)
 ![img](Images/example2.png)
 
-| TODO                                   | Completed          |
-| ---------------------------------------| ------------------ |
-| Nodes update automatically             | :heavy_check_mark: |
-| Convert to source/text                 | :heavy_check_mark: |
-| Save All Node Information              | :x:                |
-| Plugin Support                         | :heavy_check_mark: |
-| hierarchy of current Nodes in graph    | :x:                |
-| Workspace design for File Viewer       | :x:                |
-| Improve UI                             | :x:                |
-| Examples                               | :x:                |
+| TODO                                                                                               | Completed          |
+| -------------------------------------------------------------------------------------------------- | ------------------ |
+| Nodes update automatically                                                                         | :heavy_check_mark: |
+| Convert to source/text                                                                             | :heavy_check_mark: |
+| Save All Node Information                                                                          | :x:                |
+| Plugin Support                                                                                     | :heavy_check_mark: |
+| Hierarchy of current Nodes in graph                                                                | :x:                |
+| Workspace design for File Viewer                                                                   | :x:                |
+| Improve UI                                                                                         | :x:                |
+| Examples                                                                                           | :x:                |
+| Convert to the more advanced Node Editor More info here https://tinyurl.com/y75w75re               | :x:                |
