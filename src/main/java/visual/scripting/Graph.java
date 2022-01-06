@@ -14,7 +14,7 @@ public class Graph {
 
     private static int localeVariableID = 0;
     private static int nextNodeID = 1;
-    private static int nextPinID = 1;
+    private static int nextPinID = 1000;
 
     public boolean addNode(Node node){
         node.setID(nextNodeID++);
