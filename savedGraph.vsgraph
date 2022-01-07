@@ -1,0 +1,3 @@
+class=visual.scripting.node.NodeEntry,posX=189.0,posY=116.0
+class=visual.scripting.node.NodeSplitFlow,posX=473.0,posY=151.0
+class=com.nodes.Node_owAddRule,posX=711.0,posY=309.0
