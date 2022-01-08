@@ -157,7 +157,6 @@ public class ImGuiWindow {
             }
             end();
 
-            TestNodeEditor.show();
 //            showStyleEditor();
             for(GraphWindow graphWindow : graphWindows){
                 graphWindow.show(menuBarHeight);

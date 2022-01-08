@@ -9,8 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static imgui.extension.imnodes.ImNodes.*;
-
 public class GraphSaver {
 
     //things to save
@@ -41,7 +39,7 @@ public class GraphSaver {
         for(Node node : graph.getNodes().values()){
             String className = node.getClass().getName();
             ImVec2 pos = new ImVec2();
-            getNodeEditorSpacePos(node.getID(), pos);
+//            getNodeEditorSpacePos(node.getID(), pos);
 
             NodeSave save = new NodeSave();
             save.className = className;

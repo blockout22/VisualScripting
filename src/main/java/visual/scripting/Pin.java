@@ -1,5 +1,6 @@
 package visual.scripting;
 
+import imgui.ImVec2;
 import imgui.type.*;
 import visual.scripting.node.Node;
 
@@ -43,6 +44,8 @@ public class Pin {
     private NodeData data;
 
     private String variable;
+
+//    public ImVec2 spacing;
 
     public Pin(Node node, int ID, DataType dataType, PinType pinType, int linkID){
         this.node = node;

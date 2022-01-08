@@ -1,10 +1,14 @@
 package visual.scripting.node;
 
+import imgui.internal.ImRect;
 import visual.scripting.Graph;
 import visual.scripting.Pin;
 import visual.scripting.node.style.NodeStyle;
 
 import java.util.ArrayList;
+
+import static imgui.ImGui.getItemRectMax;
+import static imgui.ImGui.getItemRectMin;
 
 public class Node {
 

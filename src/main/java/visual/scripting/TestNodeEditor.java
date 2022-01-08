@@ -176,18 +176,18 @@ public class TestNodeEditor {
 
 //                        float sizeLeft = inputsRect.max.x - rectMaxLeft.x;
                         if(outputInputSpacing > 0.0) {
-                            dummy(outputInputSpacing - 1, 0);
+//                            dummy(outputInputSpacing - 1, 0);
                         }
 
                         sameLine();
                         text("Output node is longer than the title");
 
                         if(!calculatedSpacing) {
-                            System.out.println("Calculate");
-                            ImVec2 rectMaxLeft = getItemRectMin();
+//                            System.out.println("Calculate");
+                            ImVec2 rectMaxLeft = getItemRectMax();
                             getWindowDrawList().addRectFilled(rectMaxLeft.x, rectMaxLeft.y, inputsRect.max.x, inputsRect.max.y, rgbToInt(0, 0, 255));
                             outputInputSpacing = inputsRect.max.x - rectMaxLeft.x;
-                            calculatedSpacing = true;
+//                            calculatedSpacing = true;
                         }
                         sameLine();
                         NodeEditor.beginPin(102, NodeEditorPinKind.Output);

@@ -1,12 +1,14 @@
 package visual.scripting;
 
 import imgui.ImVec2;
-import imgui.extension.imnodes.ImNodes;
-import imgui.extension.imnodes.ImNodesContext;
 import imgui.extension.imnodes.flag.ImNodesColorStyle;
 import imgui.extension.imnodes.flag.ImNodesPinShape;
+import imgui.extension.nodeditor.NodeEditor;
+import imgui.extension.nodeditor.NodeEditorContext;
+import imgui.extension.nodeditor.flag.NodeEditorPinKind;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.*;
+import imgui.internal.ImRect;
 import imgui.type.*;
 import visual.scripting.node.Node;
 import visual.scripting.node.style.NodeColor;
@@ -21,7 +23,6 @@ import java.util.Random;
 
 import static imgui.ImGui.*;
 import static imgui.ImGui.getMainViewport;
-import static imgui.extension.imnodes.ImNodes.*;
 
 public class GraphWindow {
 
@@ -30,7 +31,7 @@ public class GraphWindow {
     private ImGuiWindow window;
     private String id;
     private Graph graph;
-    private ImNodesContext context;
+    private NodeEditorContext context;
     private boolean windowFocused;
 
 //    private ArrayList<NodeBuilder> nodesTypes = new ArrayList<>();
@@ -38,6 +39,9 @@ public class GraphWindow {
 
     private static final ImInt LINK_A = new ImInt();
     private static final ImInt LINK_B = new ImInt();
+
+    private final ImLong LINKA = new ImLong();
+    private final ImLong LINKB = new ImLong();
 
     private NodeCompiler nodeCompiler = new NodeCompiler();
     private TextEditor EDITOR = new TextEditor();
@@ -49,7 +53,7 @@ public class GraphWindow {
         //id will be changed to file name
         this.id = "new" + new Random().nextInt(100);
         graph = new Graph();
-        context = ImNodes.editorContextCreate();
+        context = new NodeEditorContext();
 
         //add a node to allow more than one flow
         addNodeToList(NodeSplitFlow.class);
@@ -68,6 +72,11 @@ public class GraphWindow {
 
         return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
     }
+
+//    private ImRect rect = new ImRect();
+//    private float outputInputSpacing = 0.0f;
+
+    private int nodeNavigateTo = -1;
 
     /**
      *  Shows the Graphs window
@@ -106,8 +115,10 @@ public class GraphWindow {
             if(beginTabBar("TabBar")) {
                 if(beginTabItem("NodeEditor")) {
                     if(beginChild("SideBar", 100, 250)){
+                        text("Node List");
                         for (Node node : graph.getNodes().values()) {
                             if(button(node.getName())){
+                                nodeNavigateTo = node.getID();
                             }
                         }
                     }
@@ -115,22 +126,23 @@ public class GraphWindow {
 
                     sameLine();
 
-                    editorContextSet(context);
-                    beginNodeEditor();
+                    NodeEditor.setCurrentEditor(context);
+                    NodeEditor.begin("Editor");
                     {
                         for (Node node : graph.getNodes().values()) {
-                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBar, ToNodeColor(node.getStyle().TitleBar));
-                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBarSelected, ToNodeColor(node.getStyle().TitleBarSelected));
-                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBarHovered, ToNodeColor(node.getStyle().TitleBarHovered));
-                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackground, ToNodeColor(node.getStyle().NodeBackground));
-                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundSelected, ToNodeColor(node.getStyle().NodeBackgroundSelected));
-                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundHovered, ToNodeColor(node.getStyle().NodeBackgroundHovered));
-                            beginNode(node.getID());
+//                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBar, ToNodeColor(node.getStyle().TitleBar));
+//                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBarSelected, ToNodeColor(node.getStyle().TitleBarSelected));
+//                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBarHovered, ToNodeColor(node.getStyle().TitleBarHovered));
+//                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackground, ToNodeColor(node.getStyle().NodeBackground));
+//                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundSelected, ToNodeColor(node.getStyle().NodeBackgroundSelected));
+//                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundHovered, ToNodeColor(node.getStyle().NodeBackgroundHovered));
+                            NodeEditor.beginNode(node.getID());
                             {
-                                beginNodeTitleBar();
                                 text(node.getName());
-                                endNodeTitleBar();
-
+//                                if(node.rect == null) {
+//                                    node.rect = new ImRect(getItemRectMin(), getItemRectMax());
+//                                }
+//                                newLine();
 
                                 //add node pins
                                 int max = Math.max(node.outputPins.size(), node.inputPins.size());
@@ -138,26 +150,43 @@ public class GraphWindow {
 
                                     if (node.inputPins.size() > i) {
                                         Pin inPin = node.inputPins.get(i);
-                                        addPin(inPin);
+//                                        addPin(inPin);
+                                        NodeEditor.beginPin(inPin.getID(), NodeEditorPinKind.Input);
+                                        text(" > ");
+                                        NodeEditor.endPin();
+                                        sameLine();
+                                        configurePinUI(inPin);
                                     }
 
-                                    dummy(150, 0);
+//                                    dummy(outputInputSpacing, 0);
+                                    sameLine();
 
                                     if (node.outputPins.size() > i) {
                                         Pin outPin = node.outputPins.get(i);
-                                        addPin(outPin);
+//                                        if(outPin.spacing == null) {
+//                                            outPin.spacing = getItemRectMax();
+//                                            outputInputSpacing = rect.max.x - outPin.spacing.x;
+//                                        }
+
+//                                        if(outPin.spacing != null) {
+//                                            getWindowDrawList().addRectFilled(outPin.spacing.x, outPin.spacing.y, rect.max.x, rect.max.y, TestNodeEditor.rgbToInt(0, 0, 255));
+//                                        }
+                                        NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
+                                        text(" > ");
+                                        NodeEditor.endPin();
+//                                        addPin(outPin);
                                     }
                                     newLine();
                                 }
                             }
-                            endNode();
+                            NodeEditor.endNode();
 
-                            ImNodes.popColorStyle();
-                            ImNodes.popColorStyle();
-                            ImNodes.popColorStyle();
-                            ImNodes.popColorStyle();
-                            ImNodes.popColorStyle();
-                            ImNodes.popColorStyle();
+//                            ImNodes.popColorStyle();
+//                            ImNodes.popColorStyle();
+//                            ImNodes.popColorStyle();
+//                            ImNodes.popColorStyle();
+//                            ImNodes.popColorStyle();
+//                            ImNodes.popColorStyle();
 
                             //calculate connect pins values
                             for (int i = 0; i < node.outputPins.size(); i++) {
@@ -205,13 +234,90 @@ public class GraphWindow {
                         for (Node node : graph.getNodes().values()) {
                             for (Pin pin : node.outputPins) {
                                 if (pin.connectedTo != -1) {
-                                    link(uniqueLinkId++, pin.getID(), pin.connectedTo);
+                                    NodeEditor.link(uniqueLinkId++, pin.getID(), pin.connectedTo);
                                 }
                             }
                         }
                     }
                     windowFocused = isWindowHovered();
-                    endNodeEditor();
+
+
+                    if(NodeEditor.beginCreate()) {
+                        checkPinConnections();
+                    }
+                    NodeEditor.endCreate();
+
+                    NodeEditor.suspend();
+
+                    if(nodeNavigateTo != -1){
+                        NodeEditor.selectNode(nodeNavigateTo, false);
+                        NodeEditor.navigateToSelection(false, 1.5f);
+                        nodeNavigateTo = -1;
+                    }
+
+                    final long nodeWithContextMenu = NodeEditor.getNodeWithContextMenu();
+                    if(nodeWithContextMenu != -1){
+                        openPopup("node_menu" + id);
+                        getStateStorage().setInt(getID("delete_node_id"), (int)nodeWithContextMenu);
+                    }
+
+                    if(isPopupOpen("node_menu" + id)){
+                        final int targetNode = getStateStorage().getInt(getID("delete_node_id"));
+                        if(beginPopup("node_menu" + id)){
+                            if(menuItem("Delete " + graph.getNodes().get(targetNode).getName()))
+                            {
+                                graph.removeNode(targetNode);
+                                closeCurrentPopup();
+                            }
+                        }
+                        endPopup();
+                    }
+//                    getWindowDrawList().addRectFilled(posX - 0.5f, posY - 0.5f, posX + 0.5f, posY + 0.5f, TestNodeEditor.rgbToInt(255, 255, 0));
+
+                    if(NodeEditor.showBackgroundContextMenu()){
+                        openPopup("context_menu" + id);
+                    }
+
+                    if(isPopupOpen("context_menu" + id)){
+                        if(beginPopup("context_menu" + id)){
+                            //get all loaded nodes and show them in the right click menu
+                            for(Class<? extends Node> node : nodeList){
+                                Constructor<? extends Node> nodeClass = null;
+                                Node instance = null;
+                                try {
+                                    nodeClass = node.getDeclaredConstructor(Graph.class);
+                                    //not very good, this creates a new Object each frame
+                                    //an alternative should be used to get Objects set Variables without creating 100s of instances while context menu is open
+                                    //(Maybe create an array the same size as the nodeList array and store an instance there (destroy instances after menu is closed))
+                                    instance = nodeClass.newInstance(graph);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                if(menuItem(instance.getName()))
+                                {
+                                    try {
+                                        graph.addNode(instance);
+                                        instance.init();
+                                        nodeQPos.put(instance.getID(), new ImVec2());
+//                                        NodeEditor.setNodePosition(instance.getID(), x, 0);
+//                            setNodeScreenSpacePos(instance.getID(), getMousePosX(), getMousePosX());
+//                                        NodeEditor.setNodePosition(instance.getID(), getCursorScreenPosX() - NodeEditor.getScreenSizeX(), 0);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        return;
+                                    }
+                                    closeCurrentPopup();
+                                }
+
+                            }
+                            endPopup();
+                        }
+                    }
+
+
+                    NodeEditor.resume();
+                    NodeEditor.end();
+
                     endTabItem();
                 }
 
@@ -223,78 +329,30 @@ public class GraphWindow {
             }
             endTabBar();
         }
+        end();
 
 
         //set nodes position to the current graphs pos
-        for(Integer id : nodeQPos.keySet()){
-            ImVec2 pos = nodeQPos.get(id);
-            getNodeEditorSpacePos(id, pos);
-            setNodeGridSpacePos(id, -pos.x + 300, -pos.y + 300);
+//        for(Integer id : nodeQPos.keySet()){
+//            ImVec2 pos = nodeQPos.get(id);
+//            getNodeEditorSpacePos(id, pos);
+//            setNodeGridSpacePos(id, -pos.x + 300, -pos.y + 300);
+//
+//        }
+//        nodeQPos.clear();
 
-        }
-        nodeQPos.clear();
 
-        end();
-
-        checkPinConnections();
-
-        if(isMouseClicked(ImGuiMouseButton.Right)){
-            final int hoveredNode = getHoveredNode();
-            if(hoveredNode != -1){
-                openPopup("node_menu" + id);
-                getStateStorage().setInt(getID("delete_node_id"), hoveredNode);
-            }else{
-                if(windowFocused) {
-                    openPopup("context_menu" + id);
-                }
-            }
-        }
-
-        if(isPopupOpen("node_menu" + id)){
-            final int targetNode = getStateStorage().getInt(getID("delete_node_id"));
-            if(beginPopup("node_menu" + id)){
-                if(menuItem("Delete " + graph.getNodes().get(targetNode).getName()))
-                {
-                    graph.removeNode(targetNode);
-                    closeCurrentPopup();
-                }
-            }
-            endPopup();
-        }
-
-        if(isPopupOpen("context_menu" + id)){
-            if(beginPopup("context_menu" + id)){
-                //get all loaded nodes and show them in the right click menu
-                for(Class<? extends Node> node : nodeList){
-                    Constructor<? extends Node> nodeClass = null;
-                    Node instance = null;
-                    try {
-                        nodeClass = node.getDeclaredConstructor(Graph.class);
-                        //not very good, this creates a new Object each frame
-                        //an alternative should be used to get Objects set Variables without creating 100s of instances while context menu is open
-                        //(Maybe create an array the same size as the nodeList array and store an instance there (destroy instances after menu is closed))
-                        instance = nodeClass.newInstance(graph);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if(menuItem(instance.getName()))
-                    {
-                        try {
-                            graph.addNode(instance);
-                            instance.init();
-                            nodeQPos.put(instance.getID(), new ImVec2());
-//                            setNodeScreenSpacePos(instance.getID(), getMousePosX(), getMousePosX());
-                            } catch (Exception e) {
-                            e.printStackTrace();
-                            return;
-                        }
-                        closeCurrentPopup();
-                    }
-
-                }
-                endPopup();
-            }
-        }
+//        if(isMouseClicked(ImGuiMouseButton.Right)){
+//            final int hoveredNode = getHoveredNode();
+//            if(hoveredNode != -1){
+//                openPopup("node_menu" + id);
+//                getStateStorage().setInt(getID("delete_node_id"), hoveredNode);
+//            }else{
+//                if(windowFocused) {
+//                    openPopup("context_menu" + id);
+//                }
+//            }
+//        }
     }
 
     /**
@@ -308,41 +366,45 @@ public class GraphWindow {
      * checks if 2 pins should be connected and checks if the pin should be disconnected
      */
     private void checkPinConnections(){
-        if(isLinkCreated(LINK_A, LINK_B)){
-            final Pin sourcePin = graph.findPinById(LINK_A.get());
-            final Pin targetPin = graph.findPinById(LINK_B.get());
+        if(NodeEditor.queryNewLink(LINKA, LINKB)) {
+            if (NodeEditor.acceptNewItem()) {
+                {
+                    final Pin sourcePin = graph.findPinById((int) LINKA.get());
+                    final Pin targetPin = graph.findPinById((int) LINKB.get());
 
-            if(!(sourcePin.getDataType() == targetPin.getDataType())){
-                System.out.println("Types are not the same");
-            }else{
-                if(sourcePin.connectedTo != -1){
-                    Pin oldPin = graph.findPinById(sourcePin.connectedTo);
-                    oldPin.connectedTo = -1;
-                }
+                    if (!(sourcePin.getDataType() == targetPin.getDataType())) {
+                        System.out.println("Types are not the same");
+                    } else {
+                        if (sourcePin.connectedTo != -1) {
+                            Pin oldPin = graph.findPinById(sourcePin.connectedTo);
+                            oldPin.connectedTo = -1;
+                        }
 
-                if(targetPin.connectedTo != -1){
-                    Pin oldPin = graph.findPinById(targetPin.connectedTo);
-                    oldPin.connectedTo = -1;
-                }
+                        if (targetPin.connectedTo != -1) {
+                            Pin oldPin = graph.findPinById(targetPin.connectedTo);
+                            oldPin.connectedTo = -1;
+                        }
 
-                if(sourcePin != null && targetPin != null){
-                    if (sourcePin.connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || sourcePin.connectedTo == -1)) {
-                        sourcePin.connectedTo = targetPin.getID();
-                        targetPin.connectedTo = sourcePin.getID();
+                        if (sourcePin != null && targetPin != null) {
+                            if (sourcePin.connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || sourcePin.connectedTo == -1)) {
+                                sourcePin.connectedTo = targetPin.getID();
+                                targetPin.connectedTo = sourcePin.getID();
+                            }
+                        }
                     }
                 }
             }
         }
 
-        if(isLinkDropped(LINK_A, false)) {
-
-            Pin pin1 = graph.findPinById(LINK_A.get());
-            if (pin1.connectedTo != -1) {
-                Pin pin2 = graph.findPinById(pin1.connectedTo);
-                pin1.connectedTo = -1;
-                pin2.connectedTo = -1;
-            }
-        }
+//        if(isLinkDropped(LINK_A, false)) {
+//
+//            Pin pin1 = graph.findPinById(LINK_A.get());
+//            if (pin1.connectedTo != -1) {
+//                Pin pin2 = graph.findPinById(pin1.connectedTo);
+//                pin1.connectedTo = -1;
+//                pin2.connectedTo = -1;
+//            }
+//        }
     }
 
     private void addPin(Pin pin){
@@ -350,85 +412,85 @@ public class GraphWindow {
             case Input:
                 switch (pin.getDataType()){
                     case Flow:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
-                        beginInputAttribute(pin.getID(), ImNodesPinShape.Triangle);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
+//                        beginInputAttribute(pin.getID(), ImNodesPinShape.Triangle);
+//                        ImNodes.popColorStyle();
                         break;
                     case Bool:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
-                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
+//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        ImNodes.popColorStyle();
                         break;
                     case Int:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
-                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
+//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        ImNodes.popColorStyle();
                         break;
                     case Float:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
-                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
+//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        ImNodes.popColorStyle();
                         break;
                     case Double:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
-                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
+//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        ImNodes.popColorStyle();
                         break;
                     case String:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
-                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
+//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        ImNodes.popColorStyle();
                         break;
                     default:
-                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
                 }
                 pushItemWidth(250);
                 configurePinUI(pin);
                 popItemWidth();
-                endOutputAttribute();
+//                endOutputAttribute();
                 sameLine();
                 break;
             case Output:
                 switch (pin.getDataType()){
                     case Flow:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
-                        beginOutputAttribute(pin.getID(), ImNodesPinShape.Triangle);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
+//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.Triangle);
+//                        ImNodes.popColorStyle();
                         break;
                     case Bool:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
-                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
+//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        ImNodes.popColorStyle();
                         break;
                     case Int:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
-                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
+//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        ImNodes.popColorStyle();
                         break;
                     case Float:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
-                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
+//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        ImNodes.popColorStyle();
                         break;
                     case Double:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
-                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
+//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        ImNodes.popColorStyle();
                         break;
                     case String:
-                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
-                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                        ImNodes.popColorStyle();
+//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
+//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        ImNodes.popColorStyle();
                         break;
                     default:
-                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
                 }
 //                sameLine(curNodeSize / 2);
                 sameLine();
 //                newLine();
 //                configurePinType(pin);
                 text(pin.getName());
-                endOutputAttribute();
+//                endOutputAttribute();
                 sameLine();
                 break;
         }
@@ -438,6 +500,7 @@ public class GraphWindow {
      * adds input fields to the Pin Type
      */
     private void configurePinUI(Pin pin) {
+        pushItemWidth(150);
         switch (pin.getDataType()){
             case Flow:
                 break;
@@ -467,5 +530,6 @@ public class GraphWindow {
                 }
                 break;
         }
+        popItemWidth();
     }
 }
