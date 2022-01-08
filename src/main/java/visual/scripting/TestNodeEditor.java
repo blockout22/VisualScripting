@@ -2,6 +2,7 @@ package visual.scripting;
 
 import imgui.ImGui;
 import imgui.ImGuiStyle;
+import imgui.ImVec2;
 import imgui.extension.nodeditor.NodeEditor;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
@@ -13,6 +14,7 @@ import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiStyleVar;
+import imgui.internal.ImRect;
 import imgui.type.ImLong;
 
 import static imgui.ImGui.*;
@@ -134,6 +136,8 @@ public class TestNodeEditor {
     }
 
     static int col = 0;
+    private static float outputInputSpacing = 0.0f;
+    private static boolean calculatedSpacing = false;
     public static void show(){
         setNextWindowSize(800, 600, ImGuiCond.Once);
         if(begin("Advanced Node Editor")){
@@ -154,16 +158,40 @@ public class TestNodeEditor {
                 {
                     NodeEditor.beginNode(1);
                     {
+                        ImRect inputsRect;
+                        text(calcItemWidth() + "");
                         text("Hello Node");
 
+                        inputsRect = new ImRect(getItemRectMin(), getItemRectMax());
                         NodeEditor.beginPin(101, NodeEditorPinKind.Input);
-                        text("Input");
+                        text(">");
                         NodeEditor.endPin();
+                        sameLine();
+                        text("In");
 
                         sameLine();
 
+//                        getWindowDrawList().addRectFilled(inputsRect.min.x, inputsRect.min.y, inputsRect.max.x - inputsRect.min.x, inputsRect.max.y, rgbToInt(0, 255, 0));
+
+
+//                        float sizeLeft = inputsRect.max.x - rectMaxLeft.x;
+                        if(outputInputSpacing > 0.0) {
+                            dummy(outputInputSpacing - 1, 0);
+                        }
+
+                        sameLine();
+                        text("Output node is longer than the title");
+
+                        if(!calculatedSpacing) {
+                            System.out.println("Calculate");
+                            ImVec2 rectMaxLeft = getItemRectMin();
+                            getWindowDrawList().addRectFilled(rectMaxLeft.x, rectMaxLeft.y, inputsRect.max.x, inputsRect.max.y, rgbToInt(0, 0, 255));
+                            outputInputSpacing = inputsRect.max.x - rectMaxLeft.x;
+                            calculatedSpacing = true;
+                        }
+                        sameLine();
                         NodeEditor.beginPin(102, NodeEditorPinKind.Output);
-                        text("output");
+                        text(">");
                         NodeEditor.endPin();
                     }
                     NodeEditor.endNode();
@@ -222,6 +250,14 @@ public class TestNodeEditor {
             }
         }
         NodeEditor.endNode();
+    }
+
+    public static int rgbToInt(int r, int g, int b){
+        int Red = (r << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
+        int Green = (g << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
+        int Blue = b & 0x000000FF; //Mask out anything not blue.
+
+        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
     }
 
     private static class NPin{
