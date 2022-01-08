@@ -4,11 +4,11 @@ import imgui.ImVec2;
 import imgui.extension.imnodes.flag.ImNodesColorStyle;
 import imgui.extension.imnodes.flag.ImNodesPinShape;
 import imgui.extension.nodeditor.NodeEditor;
+import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.*;
-import imgui.internal.ImRect;
 import imgui.type.*;
 import visual.scripting.node.Node;
 import visual.scripting.node.style.NodeColor;
@@ -53,6 +53,8 @@ public class GraphWindow {
         //id will be changed to file name
         this.id = "new" + new Random().nextInt(100);
         graph = new Graph();
+        NodeEditorConfig config = new NodeEditorConfig();
+        config.setSettingsFile(null);
         context = new NodeEditorContext();
 
         //add a node to allow more than one flow
@@ -77,6 +79,8 @@ public class GraphWindow {
 //    private float outputInputSpacing = 0.0f;
 
     private int nodeNavigateTo = -1;
+    ImString input1 = new ImString("Hello World");
+    ImString input2 = new ImString("Hello 2");
 
     /**
      *  Shows the Graphs window
@@ -91,7 +95,6 @@ public class GraphWindow {
             if(closable.get() == false){
                 //should init save
                 window.removeGraphWindow(this);
-//                editorContextFree(context);
             }
 
             //used to call the method used to convert the nodes to the nodes output text
@@ -142,7 +145,7 @@ public class GraphWindow {
 //                                if(node.rect == null) {
 //                                    node.rect = new ImRect(getItemRectMin(), getItemRectMax());
 //                                }
-//                                newLine();
+                                newLine();
 
                                 //add node pins
                                 int max = Math.max(node.outputPins.size(), node.inputPins.size());
@@ -159,7 +162,9 @@ public class GraphWindow {
                                     }
 
 //                                    dummy(outputInputSpacing, 0);
-                                    sameLine();
+                                    if(node.width != -1) {
+                                        sameLine(node.width - 10);
+                                    }
 
                                     if (node.outputPins.size() > i) {
                                         Pin outPin = node.outputPins.get(i);
@@ -180,6 +185,9 @@ public class GraphWindow {
                                 }
                             }
                             NodeEditor.endNode();
+                            if(node.width == -1) {
+                                node.width = NodeEditor.getNodeSizeX(node.getID());
+                            }
 
 //                            ImNodes.popColorStyle();
 //                            ImNodes.popColorStyle();
@@ -525,8 +533,7 @@ public class GraphWindow {
                 }
                 break;
             case String:
-                if(inputText(pin.getName(), pin.getString())){
-
+                if(inputText(pin.getID() + "", pin.getString())){
                 }
                 break;
         }

@@ -22,6 +22,8 @@ public class Node {
 
     private NodeStyle style = new NodeStyle();
 
+    public float width = -1;
+
     public Node(Graph graph){
         this.graph = graph;
     }
