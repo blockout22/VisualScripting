@@ -159,13 +159,6 @@ public class ImGuiWindow {
                         text("File");
                     }
                 }
-
-                separator();
-
-                text("Plugins Loaded");
-                for(PluginWrapper plugin : pluginManager.getPlugins()){
-                    text(plugin.getPluginId());
-                }
             }
             end();
 
@@ -202,6 +195,17 @@ public class ImGuiWindow {
             if(beginMenu("File", true)){
                 if(menuItem("New Graph")){
                     graphWindows.add(new GraphWindow(this));
+                }
+                endMenu();
+
+            }
+            if(beginMenu("Plugins")){
+                text("List Of Plugins Loaded");
+                separator();
+                for(PluginWrapper plugin : pluginManager.getPlugins()){
+//                    if(menuItem(plugin.getPluginId())) {
+                        text(plugin.getPluginId());
+//                    }
                 }
                 endMenu();
             }
