@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Random;
 
 import static imgui.ImGui.*;
-import static imgui.ImGui.getMainViewport;
 
 public class GraphWindow {
 
@@ -117,7 +116,7 @@ public class GraphWindow {
 
             if(beginTabBar("TabBar")) {
                 if(beginTabItem("NodeEditor")) {
-                    if(beginChild("SideBar", 100, 250)){
+                    if(beginChild("SideBar", 100, 350)){
                         text("Node List");
                         for (Node node : graph.getNodes().values()) {
                             if(button(node.getName())){
@@ -257,6 +256,8 @@ public class GraphWindow {
 
                     NodeEditor.suspend();
 
+                    ImVec2 nodeSpawnPos = getMousePos();
+
                     if(nodeNavigateTo != -1){
                         NodeEditor.selectNode(nodeNavigateTo, false);
                         NodeEditor.navigateToSelection(false, 1.5f);
@@ -280,7 +281,6 @@ public class GraphWindow {
                         }
                         endPopup();
                     }
-//                    getWindowDrawList().addRectFilled(posX - 0.5f, posY - 0.5f, posX + 0.5f, posY + 0.5f, TestNodeEditor.rgbToInt(255, 255, 0));
 
                     if(NodeEditor.showBackgroundContextMenu()){
                         openPopup("context_menu" + id);
@@ -288,6 +288,7 @@ public class GraphWindow {
 
                     if(isPopupOpen("context_menu" + id)){
                         if(beginPopup("context_menu" + id)){
+                            ImVec2 newNodePosition = nodeSpawnPos;
                             //get all loaded nodes and show them in the right click menu
                             for(Class<? extends Node> node : nodeList){
                                 Constructor<? extends Node> nodeClass = null;
@@ -307,9 +308,7 @@ public class GraphWindow {
                                         graph.addNode(instance);
                                         instance.init();
                                         nodeQPos.put(instance.getID(), new ImVec2());
-//                                        NodeEditor.setNodePosition(instance.getID(), x, 0);
-//                            setNodeScreenSpacePos(instance.getID(), getMousePosX(), getMousePosX());
-//                                        NodeEditor.setNodePosition(instance.getID(), getCursorScreenPosX() - NodeEditor.getScreenSizeX(), 0);
+                                        NodeEditor.setNodePosition(instance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                         return;
@@ -321,7 +320,6 @@ public class GraphWindow {
                             endPopup();
                         }
                     }
-
 
                     NodeEditor.resume();
                     NodeEditor.end();

@@ -31,3 +31,4 @@ hs_err_pid*
 .idea/uiDesigner.xml
 .idea/artifacts/VisualScripting_jar.xml
 target/classes/META-INF/extensions.idx
+NodeEditor.json
