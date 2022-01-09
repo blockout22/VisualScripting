@@ -16,6 +16,7 @@ import org.pf4j.PluginWrapper;
 import java.io.*;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +100,11 @@ public class ImGuiWindow {
      */
     private void loadPlugins() throws Exception {
         File file = new File("plugins");
-        pluginManager = new DefaultPluginManager();
+        if(!file.exists()){
+            file.mkdir();
+        }
+        System.out.println(file.getAbsolutePath());
+        pluginManager = new DefaultPluginManager(file.toPath());
         pluginManager.loadPlugins();
         pluginManager.startPlugins();
 
