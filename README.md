@@ -170,6 +170,8 @@ Plugin-Version: 0.0.1
 ![img](Images/example.png)
 ![img](Images/example2.png)
 
+## TODO LIST
+
 | TODO                                                                                               | Completed          |
 | -------------------------------------------------------------------------------------------------- | ------------------ |
 | Nodes update automatically                                                                         | :heavy_check_mark: |
