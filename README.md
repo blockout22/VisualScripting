@@ -3,6 +3,12 @@ Make code using nodes
 
 This program does the heavy lifting of making nodes work, to make use of this program plugins are required, plugins can be made by deveopers and could make for example:- they could make a plugin to translate the nodes to c++ c# or java or they could even make a plugin to make Overwatch workshop gamemades these features are only limited to the plugin the developers 
 
+## Plugins
+Submit a pull request if you have a plugin to add to this list 
+| List                                                                                                                    |
+| ----------------------------------------------------------------------------------------------------------------------- |
+| [Some basic maths](https://github.com/blockout22/VisualScriptingMaths)                                                  |
+
 ## Custom Nodes
 
 ### Add Nodes using plugins
@@ -40,7 +46,7 @@ This program does the heavy lifting of making nodes work, to make use of this pr
 * Create a new project with the above Requirements
 * Create a new Class that `extends Plugin`   (this can be left as is, it's just required by pf4j)
 * Create a new Class that `extends VisualScriptingPlugin`
-* Inside the `VisualScriptingPlugin` class in the `init` function you can add you custom Nodes by calling `graph.addNodeToList(InsertCustomNodeNameHere.class);`
+* Inside the `VisualScriptingPlugin` class in the `init` function you can add your custom Nodes by calling `graphWindow.addNodeToList(InsertCustomNodeNameHere.class);`
 * To create an actual Custom node, create a new class that extends `Node` and from that node class you can deside what happens with your node (example below)
 * In your MANIFEST.MF you need to include the following `Plugin-Class: <package>.<PluginClass>` `Plugin-Id: <Anything>` `Plugin-Version: 0.0.1` (full example below)
 
