@@ -154,6 +154,13 @@ public class ImGuiWindow {
                         text("File");
                     }
                 }
+
+                separator();
+
+                text("Plugins Loaded");
+                for(PluginWrapper plugin : pluginManager.getPlugins()){
+                    text(plugin.getPluginId());
+                }
             }
             end();
 

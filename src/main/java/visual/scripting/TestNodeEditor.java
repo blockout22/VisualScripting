@@ -41,7 +41,7 @@ public class TestNodeEditor {
         pin.y = 100;
     }
 
-    private static void nodeStyleEditor(){
+    public static void nodeStyleEditor(){
         setNextWindowSize(800, 600, ImGuiCond.Once);
         if(begin("Node Editor Style")) {
             float paneWidth = getContentRegionAvail().x;

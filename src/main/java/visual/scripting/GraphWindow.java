@@ -1,8 +1,6 @@
 package visual.scripting;
 
 import imgui.ImVec2;
-import imgui.extension.imnodes.flag.ImNodesColorStyle;
-import imgui.extension.imnodes.flag.ImNodesPinShape;
 import imgui.extension.nodeditor.NodeEditor;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
@@ -43,6 +41,8 @@ public class GraphWindow {
     private TextEditor EDITOR = new TextEditor();
 
     public Map<Integer, ImVec2> nodeQPos = new HashMap<>();
+    private int nodeNavigateTo = -1;
+    private boolean firstFrame = true;
 
     public GraphWindow(ImGuiWindow window){
         this.window = window;
@@ -74,13 +74,10 @@ public class GraphWindow {
 //    private ImRect rect = new ImRect();
 //    private float outputInputSpacing = 0.0f;
 
-    private int nodeNavigateTo = -1;
-    ImString input1 = new ImString("Hello World");
-    ImString input2 = new ImString("Hello 2");
-
     /**
      *  Shows the Graphs window
      */
+    int colID = 0;
     public void show(float menuBarHeight){
         graph.update();
         setNextWindowSize(GLFWWindow.getWidth(), GLFWWindow.getHeight() - menuBarHeight, ImGuiCond.Once);
@@ -126,6 +123,7 @@ public class GraphWindow {
                     sameLine();
 
                     NodeEditor.setCurrentEditor(context);
+//                    TestNodeEditor.nodeStyleEditor();
                     NodeEditor.begin("Editor");
                     {
                         for (Node node : graph.getNodes().values()) {
@@ -137,7 +135,19 @@ public class GraphWindow {
 //                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundHovered, ToNodeColor(node.getStyle().NodeBackgroundHovered));
                             NodeEditor.beginNode(node.getID());
                             {
-                                text(node.getName());
+//                                if(button("NextId")){
+//                                    colID++;
+//                                    System.out.println(colID);
+//                                }
+
+//                                pushStyleVar(ImGuiStyleVar., 0, 0);
+//                                pushStyleColor(ImGuiCol.FrameBg, TestNodeEditor.rgbToInt(255, 0, 0));
+//                                if(beginChild(293482, 500, 50, true, ImGuiWindowFlags.None)) {
+                                    text(node.getName());
+//                                }
+//                                endChild();
+//                                popStyleColor();
+//                                popStyleVar();
 //                                if(node.rect == null) {
 //                                    node.rect = new ImRect(getItemRectMin(), getItemRectMax());
 //                                }
@@ -173,14 +183,33 @@ public class GraphWindow {
 //                                            getWindowDrawList().addRectFilled(outPin.spacing.x, outPin.spacing.y, rect.max.x, rect.max.y, TestNodeEditor.rgbToInt(0, 0, 255));
 //                                        }
                                         NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
-                                        text(" > ");
+//                                        NodeEditor.pinPivotAlignment(0, 0.5f);
+                                        NodeEditor.enableShortcuts(true);
+//                                        text(" > ");
+                                        textUnformatted(" > ");
+                                        sameLine();
+                                        ImVec2 pos = getCursorPos();
                                         NodeEditor.endPin();
+
 //                                        addPin(outPin);
                                     }
                                     newLine();
                                 }
+
+
+//                                NodeEditor.group(50, 50);
                             }
                             NodeEditor.endNode();
+
+//                            if(NodeEditor.beginGroupHint(node.getID())){
+////                                beginGroup();
+//                                textUnformatted(node.getName());
+////                                endGroup();
+//                            }
+//                            NodeEditor.endGroupHint();
+
+//                            ImRect rect = new ImRect(getItemRectMin(), getItemRectMax());
+//                            getWindowDrawList().addRectFilled(rect.min.x, rect.min.y, rect.max.x, rect.max.y, TestNodeEditor.rgbToInt(0, 0, 255));
                             if(node.width == -1) {
                                 node.width = NodeEditor.getNodeSizeX(node.getID());
                             }
@@ -191,6 +220,7 @@ public class GraphWindow {
 //                            ImNodes.popColorStyle();
 //                            ImNodes.popColorStyle();
 //                            ImNodes.popColorStyle();
+
 
                             //calculate connect pins values
                             for (int i = 0; i < node.outputPins.size(); i++) {
@@ -368,6 +398,15 @@ public class GraphWindow {
         }
         end();
 
+        //Navigate to default node when opening the Graph Window
+        if(firstFrame){
+                if(graph.getNodes().values().size() > 0){
+                    nodeNavigateTo = 0;
+//                    System.out.println("Navitate");
+                }
+            firstFrame = false;
+        }
+
 
         //set nodes position to the current graphs pos
 //        for(Integer id : nodeQPos.keySet()){
@@ -408,6 +447,11 @@ public class GraphWindow {
                 {
                     final Pin sourcePin = graph.findPinById((int) LINKA.get());
                     final Pin targetPin = graph.findPinById((int) LINKB.get());
+
+                    //ignore connection attempts to self
+                    if(sourcePin.getNode() == targetPin.getNode()){
+                        return;
+                    }
 
                     if (!(sourcePin.getDataType() == targetPin.getDataType())) {
                         System.out.println("Types are not the same");
@@ -542,22 +586,22 @@ public class GraphWindow {
             case Flow:
                 break;
             case Bool:
-                if(checkbox(pin.getName(), pin.getBoolean())){
+                if(checkbox(pin.getID() + "", pin.getBoolean())){
 
                 }
                 break;
             case Int:
-                if(inputInt(pin.getName(), pin.getInt())){
+                if(inputInt(pin.getID() + "", pin.getInt())){
 
                 }
                 break;
             case Float:
-                if(inputFloat(pin.getName(), pin.getFloat())){
+                if(inputFloat(pin.getID() + "", pin.getFloat())){
 
                 }
                 break;
             case Double:
-                if(inputDouble(pin.getName(), pin.getDouble())){
+                if(inputDouble(pin.getID() + "", pin.getDouble())){
 
                 }
                 break;
