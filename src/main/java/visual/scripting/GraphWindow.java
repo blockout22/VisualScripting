@@ -36,9 +36,6 @@ public class GraphWindow {
 //    private ArrayList<NodeBuilder> nodesTypes = new ArrayList<>();
     private ArrayList<Class<? extends Node>> nodeList = new ArrayList<>();
 
-    private static final ImInt LINK_A = new ImInt();
-    private static final ImInt LINK_B = new ImInt();
-
     private final ImLong LINKA = new ImLong();
     private final ImLong LINKB = new ImLong();
 
@@ -248,11 +245,25 @@ public class GraphWindow {
                     }
                     windowFocused = isWindowHovered();
 
-
                     if(NodeEditor.beginCreate()) {
                         checkPinConnections();
                     }
                     NodeEditor.endCreate();
+
+                    if(NodeEditor.beginDelete()){
+                        ImLong link1 = new ImLong();
+                        ImLong link2 = new ImLong();
+                        ImLong link3 = new ImLong();
+                        if(NodeEditor.queryDeletedLink(link1, link2, link3)){
+                            Pin pin1 = graph.findPinById((int) link2.get());
+                            Pin pin2 = graph.findPinById((int) link3.get());
+
+                            pin1.connectedTo = -1;
+                            pin2.connectedTo = -1;
+                        }
+                    }
+                    NodeEditor.endDelete();
+
 
                     NodeEditor.suspend();
 
@@ -276,6 +287,26 @@ public class GraphWindow {
                             if(menuItem("Delete " + graph.getNodes().get(targetNode).getName()))
                             {
                                 graph.removeNode(targetNode);
+                                closeCurrentPopup();
+                            }
+                        }
+                        endPopup();
+                    }
+
+                    final long linkWithContextMenu = NodeEditor.getLinkWithContextMenu();
+                    if(linkWithContextMenu != -1){
+                        openPopup("link_menu" + id);
+                        getStateStorage().setInt(getID("delete_link_id"), (int)linkWithContextMenu);
+                    }
+
+                    if(isPopupOpen("link_menu" + id)){
+                        final int targetLink = getStateStorage().getInt(getID("delete_link_id"));
+                        if(beginPopup("link_menu" + id)){
+                            if(menuItem("Delete Link")){
+                                System.out.println(targetLink);
+                                if(NodeEditor.deleteLink(targetLink)){
+                                    System.out.println("Deleted link");
+                                };
                                 closeCurrentPopup();
                             }
                         }
