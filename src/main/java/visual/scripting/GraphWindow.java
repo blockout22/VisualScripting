@@ -5,6 +5,7 @@ import imgui.extension.nodeditor.NodeEditor;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
+import imgui.extension.nodeditor.flag.NodeEditorStyleColor;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.*;
 import imgui.type.*;
@@ -51,7 +52,7 @@ public class GraphWindow {
         graph = new Graph();
         NodeEditorConfig config = new NodeEditorConfig();
         config.setSettingsFile(null);
-        context = new NodeEditorContext();
+        context = new NodeEditorContext(config);
 
         //add a node to allow more than one flow
         addNodeToList(NodeSplitFlow.class);
@@ -98,7 +99,7 @@ public class GraphWindow {
 
             //loads the nodes into the graph from a save file
             if(button("load")){
-//                GraphSaver.load(this, graph);
+                GraphSaver.load(this, graph);
             }
 
             //clears all nodes from the graph and resets the graph
@@ -124,6 +125,7 @@ public class GraphWindow {
 
                     NodeEditor.setCurrentEditor(context);
 //                    TestNodeEditor.nodeStyleEditor();
+
                     NodeEditor.begin("Editor");
                     {
                         for (Node node : graph.getNodes().values()) {
@@ -133,6 +135,8 @@ public class GraphWindow {
 //                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackground, ToNodeColor(node.getStyle().NodeBackground));
 //                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundSelected, ToNodeColor(node.getStyle().NodeBackgroundSelected));
 //                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundHovered, ToNodeColor(node.getStyle().NodeBackgroundHovered));
+//                            NodeEditor.pushStyleColor(NodeEditorStyleColor., 0, 0, 0, 0);
+//                                if(beginChildFrame(293482, 500, 50)) {
                             NodeEditor.beginNode(node.getID());
                             {
 //                                if(button("NextId")){
@@ -142,10 +146,9 @@ public class GraphWindow {
 
 //                                pushStyleVar(ImGuiStyleVar., 0, 0);
 //                                pushStyleColor(ImGuiCol.FrameBg, TestNodeEditor.rgbToInt(255, 0, 0));
-//                                if(beginChild(293482, 500, 50, true, ImGuiWindowFlags.None)) {
+//                                pushStyleColor(ImGuiCol.WindowBg, TestNodeEditor.rgbToInt(255, 0, 0));
                                     text(node.getName());
-//                                }
-//                                endChild();
+//                                popStyleColor();
 //                                popStyleColor();
 //                                popStyleVar();
 //                                if(node.rect == null) {
@@ -161,13 +164,13 @@ public class GraphWindow {
                                         Pin inPin = node.inputPins.get(i);
 //                                        addPin(inPin);
                                         NodeEditor.beginPin(inPin.getID(), NodeEditorPinKind.Input);
-                                        text(" > ");
+                                        text("> ");
+                                        NodeEditor.pinPivotAlignment(0f, .5f);
                                         NodeEditor.endPin();
                                         sameLine();
                                         configurePinUI(inPin);
                                     }
 
-//                                    dummy(outputInputSpacing, 0);
                                     if(node.width != -1) {
                                         sameLine(node.width - 10);
                                     }
@@ -183,10 +186,8 @@ public class GraphWindow {
 //                                            getWindowDrawList().addRectFilled(outPin.spacing.x, outPin.spacing.y, rect.max.x, rect.max.y, TestNodeEditor.rgbToInt(0, 0, 255));
 //                                        }
                                         NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
-//                                        NodeEditor.pinPivotAlignment(0, 0.5f);
-                                        NodeEditor.enableShortcuts(true);
-//                                        text(" > ");
-                                        textUnformatted(" > ");
+                                        textUnformatted(" >");
+                                        NodeEditor.pinPivotAlignment(1f, .5f);
                                         sameLine();
                                         ImVec2 pos = getCursorPos();
                                         NodeEditor.endPin();
@@ -200,7 +201,9 @@ public class GraphWindow {
 //                                NodeEditor.group(50, 50);
                             }
                             NodeEditor.endNode();
-
+//                                }
+//                                endChildFrame();
+//                            NodeEditor.popStyleColor(1);
 //                            if(NodeEditor.beginGroupHint(node.getID())){
 ////                                beginGroup();
 //                                textUnformatted(node.getName());
@@ -586,27 +589,27 @@ public class GraphWindow {
             case Flow:
                 break;
             case Bool:
-                if(checkbox(pin.getID() + "", pin.getBoolean())){
+                if(checkbox("##" + pin.getID(), pin.getBoolean())){
 
                 }
                 break;
             case Int:
-                if(inputInt(pin.getID() + "", pin.getInt())){
+                if(inputInt("##" + pin.getID(), pin.getInt())){
 
                 }
                 break;
             case Float:
-                if(inputFloat(pin.getID() + "", pin.getFloat())){
+                if(inputFloat("##" + pin.getID(), pin.getFloat())){
 
                 }
                 break;
             case Double:
-                if(inputDouble(pin.getID() + "", pin.getDouble())){
+                if(inputDouble("##" + pin.getID(), pin.getDouble())){
 
                 }
                 break;
             case String:
-                if(inputText(pin.getID() + "", pin.getString())){
+                if(inputText("##" + pin.getID(), pin.getString())){
                 }
                 break;
         }
