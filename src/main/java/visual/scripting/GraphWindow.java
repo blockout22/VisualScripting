@@ -44,6 +44,8 @@ public class GraphWindow {
     public Map<Integer, ImVec2> nodeQPos = new HashMap<>();
     private int nodeNavigateTo = -1;
     private boolean firstFrame = true;
+    private long holdingPinID = -1;
+    private ImVec2 cursorPos;
 
     public GraphWindow(ImGuiWindow window){
         this.window = window;
@@ -80,6 +82,7 @@ public class GraphWindow {
      */
     int colID = 0;
     public void show(float menuBarHeight){
+        cursorPos = getMousePos();
         graph.update();
         setNextWindowSize(GLFWWindow.getWidth(), GLFWWindow.getHeight() - menuBarHeight, ImGuiCond.Once);
         setNextWindowPos(getMainViewport().getPosX(), getMainViewport().getPosY() + menuBarHeight, ImGuiCond.Once);
@@ -279,7 +282,16 @@ public class GraphWindow {
                     windowFocused = isWindowHovered();
 
                     if(NodeEditor.beginCreate()) {
+                        holdingPinID = 1;
                         checkPinConnections();
+                    }else{
+                        if(holdingPinID != -1 && !(LINKA.get() != 0 || LINKB.get() != 0)){
+                            setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Always);
+                            openPopup("context_menu" + id);
+                        }
+                        holdingPinID = -1;
+                        LINKA.set(0);
+                        LINKB.set(0);
                     }
                     NodeEditor.endCreate();
 
