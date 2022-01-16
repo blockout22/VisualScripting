@@ -64,6 +64,8 @@ public class GraphWindow {
         for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
             plugin.init(this);
         }
+
+        LINKA.get();
     }
 
     public int ToNodeColor(NodeColor nodeColor){
@@ -167,7 +169,16 @@ public class GraphWindow {
                                         Pin inPin = node.inputPins.get(i);
 //                                        addPin(inPin);
                                         NodeEditor.beginPin(inPin.getID(), NodeEditorPinKind.Input);
-                                        text("> ");
+                                        float size = 10f;
+//                                        float padding = 5;
+//                                        long nodeSizeX = 0;
+                                        float posX = getCursorPosX();
+                                        float posY = getCursorPosY();
+//
+                                        //TODO draw icon based on pin type
+                                        getWindowDrawList().addTriangle(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), TestNodeEditor.rgbToInt(255, 255, 255));
+                                        dummy(10, 10);
+
                                         NodeEditor.pinPivotAlignment(0f, .5f);
                                         NodeEditor.endPin();
                                         sameLine();
@@ -189,7 +200,23 @@ public class GraphWindow {
 //                                            getWindowDrawList().addRectFilled(outPin.spacing.x, outPin.spacing.y, rect.max.x, rect.max.y, TestNodeEditor.rgbToInt(0, 0, 255));
 //                                        }
                                         NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
-                                        textUnformatted(" >");
+                                        ImVec2 nodePos = new ImVec2();
+                                        ImVec2 nodeSize = new ImVec2();
+                                        NodeEditor.getNodePosition(node.getID(), nodePos);
+//                                        float posX = nodePos.x + NodeEditor.getNodeSizeX(node.getID()) - padding;
+//                                        float posY = nodePos.y + NodeEditor.getNodeSizeY(node.getID()) - padding;
+                                        float size = 10f;
+                                        float padding = 5;
+                                        long nodeSizeX = 0;
+                                        float posX = getCursorPosX();
+                                        float posY = getCursorPosY();
+
+//                                        getWindowDrawList().addRectFilled(posX, posY, posX + size, posY + size, TestNodeEditor.rgbToInt(255, 0, 0));
+                                        //TODO draw icon based on pin type
+                                        getWindowDrawList().addTriangle(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), TestNodeEditor.rgbToInt(255, 255, 255));
+                                        dummy(10, 10);
+//                                        NodeEditor.pinRect(posX - size, posY - size, posX + size, posY + size);
+//                                        textUnformatted(" >");
                                         NodeEditor.pinPivotAlignment(1f, .5f);
                                         sameLine();
                                         ImVec2 pos = getCursorPos();
@@ -286,6 +313,7 @@ public class GraphWindow {
                         checkPinConnections();
                     }else{
                         if(holdingPinID != -1 && !(LINKA.get() != 0 || LINKB.get() != 0)){
+//                            System.out.println(LINKA.get() + " : " + LINKB.get());
                             setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Always);
                             openPopup("context_menu" + id);
                         }
