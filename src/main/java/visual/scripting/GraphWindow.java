@@ -168,15 +168,8 @@ public class GraphWindow {
                                     if (node.inputPins.size() > i) {
                                         Pin inPin = node.inputPins.get(i);
 //                                        addPin(inPin);
-                                        NodeEditor.beginPin(inPin.getID(), NodeEditorPinKind.Input);
-                                        float size = 10f;
-//                                        float padding = 5;
-//                                        long nodeSizeX = 0;
-                                        float posX = getCursorPosX();
-                                        float posY = getCursorPosY();
-//
-                                        //TODO draw icon based on pin type
-                                        getWindowDrawList().addTriangle(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), TestNodeEditor.rgbToInt(255, 255, 255));
+                                        NodeEditor.beginPin(inPin.getID(), NodeEditorPinKind.Input);//
+                                        drawPinShapeAndColor(inPin);
                                         dummy(10, 10);
 
                                         NodeEditor.pinPivotAlignment(0f, .5f);
@@ -191,31 +184,11 @@ public class GraphWindow {
 
                                     if (node.outputPins.size() > i) {
                                         Pin outPin = node.outputPins.get(i);
-//                                        if(outPin.spacing == null) {
-//                                            outPin.spacing = getItemRectMax();
-//                                            outputInputSpacing = rect.max.x - outPin.spacing.x;
-//                                        }
 
-//                                        if(outPin.spacing != null) {
-//                                            getWindowDrawList().addRectFilled(outPin.spacing.x, outPin.spacing.y, rect.max.x, rect.max.y, TestNodeEditor.rgbToInt(0, 0, 255));
-//                                        }
                                         NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
-                                        ImVec2 nodePos = new ImVec2();
-                                        ImVec2 nodeSize = new ImVec2();
-                                        NodeEditor.getNodePosition(node.getID(), nodePos);
-//                                        float posX = nodePos.x + NodeEditor.getNodeSizeX(node.getID()) - padding;
-//                                        float posY = nodePos.y + NodeEditor.getNodeSizeY(node.getID()) - padding;
-                                        float size = 10f;
-                                        float padding = 5;
-                                        long nodeSizeX = 0;
-                                        float posX = getCursorPosX();
-                                        float posY = getCursorPosY();
 
-//                                        getWindowDrawList().addRectFilled(posX, posY, posX + size, posY + size, TestNodeEditor.rgbToInt(255, 0, 0));
-                                        //TODO draw icon based on pin type
-                                        getWindowDrawList().addTriangle(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), TestNodeEditor.rgbToInt(255, 255, 255));
+                                        drawPinShapeAndColor(outPin);
                                         dummy(10, 10);
-//                                        NodeEditor.pinRect(posX - size, posY - size, posX + size, posY + size);
 //                                        textUnformatted(" >");
                                         NodeEditor.pinPivotAlignment(1f, .5f);
                                         sameLine();
@@ -479,6 +452,28 @@ public class GraphWindow {
      */
     public void addNodeToList(Class<? extends Node> node){
         nodeList.add(node);
+    }
+
+    private void drawPinShapeAndColor(Pin pin){
+        float size = 10f;
+        float posX = getCursorPosX();
+        float posY = getCursorPosY();
+        switch (pin.getDataType()){
+            case Flow:
+                if(pin.connectedTo != -1) {
+                    getWindowDrawList().addTriangleFilled(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), TestNodeEditor.rgbToInt(255, 255, 255));
+                }else {
+                    getWindowDrawList().addTriangle(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), TestNodeEditor.rgbToInt(255, 255, 255));
+                }
+                break;
+            default:
+                if(pin.connectedTo != -1) {
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, TestNodeEditor.rgbToInt(50, 255, 50));
+                }else{
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, TestNodeEditor.rgbToInt(50, 255, 50));
+                }
+                break;
+        }
     }
 
     /**
