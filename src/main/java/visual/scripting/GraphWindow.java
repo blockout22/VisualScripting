@@ -5,11 +5,11 @@ import imgui.extension.nodeditor.NodeEditor;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
-import imgui.extension.nodeditor.flag.NodeEditorStyleColor;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.*;
 import imgui.type.*;
 import visual.scripting.node.Node;
+import visual.scripting.node.NodeVisualTest;
 import visual.scripting.node.style.NodeColor;
 import visual.scripting.node.NodeEntry;
 import visual.scripting.node.NodeSplitFlow;
@@ -58,6 +58,7 @@ public class GraphWindow {
 
         //add a node to allow more than one flow
         addNodeToList(NodeSplitFlow.class);
+        addNodeToList(NodeVisualTest.class);
         //add a starter node to the graph
         graph.addNode(new NodeEntry(graph));
 
@@ -466,11 +467,46 @@ public class GraphWindow {
                     getWindowDrawList().addTriangle(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), TestNodeEditor.rgbToInt(255, 255, 255));
                 }
                 break;
+            case Bool:
+                if(pin.connectedTo != -1) {
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(255, 255, 50));
+                }else{
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(255, 255, 50));
+                }
+                break;
+            case Int:
+                if(pin.connectedTo != -1) {
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(180, 76, 67));
+                }else{
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(180, 76, 67));
+                }
+                break;
+            case Float:
+                if(pin.connectedTo != -1) {
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(166, 94, 46));
+                }else{
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(166, 94, 46));
+                }
+                break;
+            case Double:
+                if(pin.connectedTo != -1) {
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(49, 102, 80));
+                }else{
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(49, 102, 80));
+                }
+                break;
+            case String:
+                if(pin.connectedTo != -1) {
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(245, 64, 33));
+                }else{
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(245, 64, 33));
+                }
+                break;
             default:
                 if(pin.connectedTo != -1) {
-                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, TestNodeEditor.rgbToInt(50, 255, 50));
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(50, 255, 50));
                 }else{
-                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, TestNodeEditor.rgbToInt(50, 255, 50));
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(50, 255, 50));
                 }
                 break;
         }
@@ -649,5 +685,13 @@ public class GraphWindow {
                 break;
         }
         popItemWidth();
+    }
+
+    private int rgbToInt(int r, int g, int b){
+        int Red = (r << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
+        int Green = (g << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
+        int Blue = b & 0x000000FF; //Mask out anything not blue.
+
+        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
     }
 }
