@@ -1,3 +1,5 @@
+![Maven Build Action](https://github.com/blockout22/VisualScripting/actions/workflows/maven.yml/badge.svg)
+
 # VisualScripting
 Make code using nodes 
 
