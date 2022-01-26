@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class Node {
 
+    private String CATEGORY = null;
+
     private final Graph graph;
     private int ID;
     private String name = "";
@@ -82,5 +84,13 @@ public class Node {
     public Graph getGraph()
     {
         return graph;
+    }
+
+    public void setCategory(String category){
+        this.CATEGORY = category;
+    }
+
+    public String getCategory(){
+        return CATEGORY;
     }
 }

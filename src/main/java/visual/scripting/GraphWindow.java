@@ -380,20 +380,21 @@ public class GraphWindow {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                                if(menuItem(instance.getName()))
-                                {
-                                    try {
-                                        graph.addNode(instance);
-                                        instance.init();
-                                        nodeQPos.put(instance.getID(), new ImVec2());
-                                        NodeEditor.setNodePosition(instance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        return;
-                                    }
-                                    closeCurrentPopup();
-                                }
 
+                                    createContextMenuItem(instance, 0);
+
+//                                    if (menuItem(instance.getName())) {
+//                                        try {
+//                                            graph.addNode(instance);
+//                                            instance.init();
+//                                            nodeQPos.put(instance.getID(), new ImVec2());
+//                                            NodeEditor.setNodePosition(instance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+//                                        } catch (Exception e) {
+//                                            e.printStackTrace();
+//                                            return;
+//                                        }
+//                                        closeCurrentPopup();
+//                                    }
                             }
                             endPopup();
                         }
@@ -446,6 +447,47 @@ public class GraphWindow {
 //                }
 //            }
 //        }
+    }
+
+    private void createContextMenuItem(Node instance, int depth) {
+        if(instance.getCategory() != null) {
+            String[] cats = instance.getCategory().split("\\.");
+//            for (int i = 0; i < cats.length; i++) {
+//                System.out.println(cats[i]);
+                if (beginMenu(cats[depth])) {
+                    if(depth + 1 < cats.length) {
+                        createContextMenuItem(instance, depth + 1);
+                    }else{
+                        if (menuItem(instance.getName())) {
+                            try {
+                                graph.addNode(instance);
+                                instance.init();
+                                nodeQPos.put(instance.getID(), new ImVec2());
+                                NodeEditor.setNodePosition(instance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                return;
+                            }
+                            closeCurrentPopup();
+                        }
+                    }
+                    endMenu();
+                }
+//            }
+        }else {
+            if (menuItem(instance.getName())) {
+                try {
+                    graph.addNode(instance);
+                    instance.init();
+                    nodeQPos.put(instance.getID(), new ImVec2());
+                    NodeEditor.setNodePosition(instance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
+                closeCurrentPopup();
+            }
+        }
     }
 
     /**

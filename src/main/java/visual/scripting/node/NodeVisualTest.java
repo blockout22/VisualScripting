@@ -7,6 +7,7 @@ public class NodeVisualTest extends Node {
     public NodeVisualTest(Graph graph) {
         super(graph);
         setName("Visual Test Node");
+        setCategory("Test.category");
     }
 
     @Override
@@ -25,5 +26,6 @@ public class NodeVisualTest extends Node {
         addOutputPin(Pin.DataType.Double, this);
         addOutputPin(Pin.DataType.String, this);
 
+        System.out.println(getCategory());
     }
 }
