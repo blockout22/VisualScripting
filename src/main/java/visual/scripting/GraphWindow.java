@@ -34,6 +34,7 @@ public class GraphWindow {
 
 //    private ArrayList<NodeBuilder> nodesTypes = new ArrayList<>();
     private ArrayList<Class<? extends Node>> nodeList = new ArrayList<>();
+    private ArrayList<Node> nodeInstanceCache = new ArrayList<>();
 
     private final ImLong LINKA = new ImLong();
     private final ImLong LINKB = new ImLong();
@@ -365,36 +366,29 @@ public class GraphWindow {
                     }
 
                     if(isPopupOpen("context_menu" + id)){
-                        if(beginPopup("context_menu" + id)){
+                        if(beginPopup("context_menu" + id)) {
                             ImVec2 newNodePosition = nodeSpawnPos;
                             //get all loaded nodes and show them in the right click menu
-                            for(Class<? extends Node> node : nodeList){
-                                Constructor<? extends Node> nodeClass = null;
-                                Node instance = null;
-                                try {
-                                    nodeClass = node.getDeclaredConstructor(Graph.class);
-                                    //not very good, this creates a new Object each frame
-                                    //an alternative should be used to get Objects set Variables without creating 100s of instances while context menu is open
-                                    //(Maybe create an array the same size as the nodeList array and store an instance there (destroy instances after menu is closed))
-                                    instance = nodeClass.newInstance(graph);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                            if (nodeInstanceCache.isEmpty()){
+                                //Create new instances from nodeList and store for later use
+                                //this stops the constant spawning of new instances
+                                for (Class<? extends Node> node : nodeList) {
+                                    Constructor<? extends Node> nodeClass = null;
+                                    Node instance = null;
+                                    try {
+                                        nodeClass = node.getDeclaredConstructor(Graph.class);
+                                        instance = nodeClass.newInstance(graph);
+                                        nodeInstanceCache.add(instance);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
 
                                     createContextMenuItem(instance, 0);
-
-//                                    if (menuItem(instance.getName())) {
-//                                        try {
-//                                            graph.addNode(instance);
-//                                            instance.init();
-//                                            nodeQPos.put(instance.getID(), new ImVec2());
-//                                            NodeEditor.setNodePosition(instance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
-//                                        } catch (Exception e) {
-//                                            e.printStackTrace();
-//                                            return;
-//                                        }
-//                                        closeCurrentPopup();
-//                                    }
+                                }
+                            }else{
+                                for(Node instance : nodeInstanceCache){
+                                    createContextMenuItem(instance, 0);
+                                }
                             }
                             endPopup();
                         }
