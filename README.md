@@ -16,7 +16,7 @@ Submit a pull request if you have a plugin to add to this list
 ### Add Nodes using plugins
 
 **Requirements**
-* VisualScripting.jar or this repo
+* VisualScripting.jar or this repo (repo should be more updated)
 * ImGui 
 ```html
 <dependency>
@@ -169,8 +169,6 @@ Plugin-Version: 0.0.1
  
 ## Screenshots
 
-![img](Images/example.png)
-![img](Images/example2.png)
 ![img](Images/example3.png)
 
 ## TODO LIST
@@ -179,7 +177,7 @@ Plugin-Version: 0.0.1
 | -------------------------------------------------------------------------------------------------- | ------------------ |
 | Nodes update automatically                                                                         | :heavy_check_mark: |
 | Convert to source/text                                                                             | :heavy_check_mark: |
-| Save All Node Information                                                                          | :x:                |
+| Save/Load nodes from file                                                                          | :heavy_check_mark: |
 | Plugin Support                                                                                     | :heavy_check_mark: |
 | Hierarchy of current Nodes in graph                                                                | :heavy_check_mark: |
 | Workspace design for File Viewer                                                                   | :x:                |
