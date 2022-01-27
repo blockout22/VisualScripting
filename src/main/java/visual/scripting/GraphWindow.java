@@ -452,12 +452,13 @@ public class GraphWindow {
                     if(depth + 1 < cats.length) {
                         createContextMenuItem(instance, depth + 1);
                     }else{
-                        if (menuItem(instance.getName())) {
+                        if (menuItem(instance.getName() + " RAndoms")) {
                             try {
-                                graph.addNode(instance);
-                                instance.init();
-                                nodeQPos.put(instance.getID(), new ImVec2());
-                                NodeEditor.setNodePosition(instance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+                                Node newInstance = instance.getClass().getDeclaredConstructor(Graph.class).newInstance(graph);
+                                graph.addNode(newInstance);
+                                newInstance.init();
+                                nodeQPos.put(newInstance.getID(), new ImVec2());
+                                NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 return;
@@ -471,10 +472,11 @@ public class GraphWindow {
         }else {
             if (menuItem(instance.getName())) {
                 try {
-                    graph.addNode(instance);
-                    instance.init();
-                    nodeQPos.put(instance.getID(), new ImVec2());
-                    NodeEditor.setNodePosition(instance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+                    Node newInstance = instance.getClass().getDeclaredConstructor(Graph.class).newInstance(graph);
+                    graph.addNode(newInstance);
+                    newInstance.init();
+                    nodeQPos.put(newInstance.getID(), new ImVec2());
+                    NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     return;
