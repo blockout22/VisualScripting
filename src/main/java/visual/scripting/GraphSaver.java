@@ -78,7 +78,7 @@ public class GraphSaver {
             Gson json = new GsonBuilder().setPrettyPrinting().create();
             String output = json.toJson(savedNodes);
 
-            System.out.println(output);
+//            System.out.println(output);
 
             PrintWriter pw = new PrintWriter(file);
 //            pw.write(sb.toString());
@@ -139,12 +139,21 @@ public class GraphSaver {
                 }
 
                 List<PluginWrapper> listWrapper = ImGuiWindow.pluginManager.getPlugins();
-                for (PluginWrapper f : listWrapper) {
-                    try {
-                        ClassLoader loader = f.getPluginClassLoader();
+                if(listWrapper.size() > 0) {
+                    for (PluginWrapper f : listWrapper) {
+                        try {
+                            ClassLoader loader = f.getPluginClassLoader();
+                            classNode = Class.forName(save.className, true, loader);
+                        } catch (ClassNotFoundException e) {
+                            //e.printStackTrace();
+                        }
+                    }
+                }else{
+                    try{
+                        ClassLoader loader = GraphSaver.class.getClassLoader();
                         classNode = Class.forName(save.className, true, loader);
-                    } catch (Exception e) {
-//                            e.printStackTrace();
+                    }catch (ClassNotFoundException e){
+
                     }
                 }
 
@@ -168,7 +177,7 @@ public class GraphSaver {
                 Node node = loadedNode[i];
                 if(node != null){
                     NodeSave save = saveList.get(i);
-                    System.out.println(save.className);
+//                    System.out.println(save.className);
 
                     int index = 0;
                     Pin[] pins = new Pin[node.inputPins.size() + node.outputPins.size()];
@@ -187,7 +196,7 @@ public class GraphSaver {
                     for (int j = 0; j < save.connectedToList.size(); j++) {
                         if(save.connectedToList.get(j) != -1){
                             pins[j].connectedTo = save.connectedToList.get(j);
-                            System.out.println(save.connectedToList.get(j));
+//                            System.out.println(save.connectedToList.get(j));
                         }
                     }
                 }
