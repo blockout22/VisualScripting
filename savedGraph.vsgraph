@@ -1,2 +1,91 @@
-class=visual.scripting.node.NodeEntry:posX=0.0:posY=0.0:connections[connectedTo=1001]
-class=visual.scripting.node.NodeSplitFlow:posX=361.0:posY=204.0:connections[connectedTo=1000,connectedTo=-1,connectedTo=-1]
+[
+  {
+    "className": "visual.scripting.node.NodeEntry",
+    "x": 389.0,
+    "y": 130.0,
+    "pinIDs": [
+      1000
+    ],
+    "connectedToList": [
+      1001
+    ]
+  },
+  {
+    "className": "visual.scripting.node.NodeVisualTest",
+    "x": 1120.0,
+    "y": 122.0,
+    "pinIDs": [
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008,
+      1009,
+      1010,
+      1011,
+      1012
+    ],
+    "connectedToList": [
+      1000,
+      -1,
+      -1,
+      1016,
+      -1,
+      -1,
+      1017,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ]
+  },
+  {
+    "className": "nodes.AddFloat",
+    "x": 328.0,
+    "y": 361.0,
+    "pinIDs": [
+      1014,
+      1015,
+      1016
+    ],
+    "connectedToList": [
+      -1,
+      -1,
+      1004
+    ]
+  },
+  {
+    "className": "visual.scripting.node.NodeSplitFlow",
+    "x": 754.0,
+    "y": 435.0,
+    "pinIDs": [
+      1017,
+      1018,
+      1019
+    ],
+    "connectedToList": [
+      1007,
+      -1,
+      1020
+    ]
+  },
+  {
+    "className": "nodes.PrintString",
+    "x": 904.0,
+    "y": 450.0,
+    "pinIDs": [
+      1020,
+      1022,
+      1021
+    ],
+    "connectedToList": [
+      1019,
+      -1,
+      -1
+    ]
+  }
+]

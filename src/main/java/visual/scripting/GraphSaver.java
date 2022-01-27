@@ -1,5 +1,8 @@
 package visual.scripting;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import imgui.ImVec2;
 import imgui.extension.nodeditor.NodeEditor;
 import org.pf4j.PluginWrapper;
@@ -48,11 +51,13 @@ public class GraphSaver {
             save.x = pos.x;
             save.y = pos.y;
             for(Pin inputs : node.inputPins){
+                save.pinIDs.add(inputs.getID());
                 save.connectedToList.add(inputs.connectedTo);
             }
 
-            for(Pin inputs : node.outputPins){
-                save.connectedToList.add(inputs.connectedTo);
+            for(Pin outputs : node.outputPins){
+                save.pinIDs.add(outputs.getID());
+                save.connectedToList.add(outputs.connectedTo);
             }
             savedNodes.add(save);
         }
@@ -70,13 +75,21 @@ public class GraphSaver {
         }
 
         try {
+            Gson json = new GsonBuilder().setPrettyPrinting().create();
+            String output = json.toJson(savedNodes);
+
+            System.out.println(output);
+
             PrintWriter pw = new PrintWriter(file);
-            pw.write(sb.toString());
+//            pw.write(sb.toString());
+            pw.write(output);
             pw.flush();
             pw.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+
     }
 
     /**
@@ -88,25 +101,27 @@ public class GraphSaver {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
 
-            ArrayList<NodeSave> saveList = new ArrayList<>();
+            Gson json = new GsonBuilder().setPrettyPrinting().create();
+//            ArrayList<NodeSave> saveList = new ArrayList<>();
+//            TypeToken<ArrayList<NodeSave>> list = new TypeToken<ArrayList<NodeSave>>(){};
+            ArrayList<NodeSave> saveList = json.fromJson(br, new TypeToken<ArrayList<NodeSave>>(){}.getType());
 
-            String line;
-            while ((line = br.readLine()) != null) {
-                NodeSave save = new NodeSave();
-                save.className = line.split(":")[0].split("=")[1];
-                save.x = Float.valueOf(line.split(":")[1].split("=")[1]);
-                save.y = Float.valueOf(line.split(":")[2].split("=")[1]);
-                //connections
-                String connectionList = line.split(":")[3].split("\\[")[1];
-                connectionList = connectionList.substring(0, connectionList.length() - 1);
-                System.out.println(connectionList);
-
-                for (String val : connectionList.split(",")) {
-                    save.connectedToList.add(Integer.valueOf(val.split("=")[1]));
-                }
-
-                saveList.add(save);
-            }
+//            String line;
+//            while ((line = br.readLine()) != null) {
+//                NodeSave save = new NodeSave();
+//                save.className = line.split(":")[0].split("=")[1];
+//                save.x = Float.valueOf(line.split(":")[1].split("=")[1]);
+//                save.y = Float.valueOf(line.split(":")[2].split("=")[1]);
+//                //connections
+//                String connectionList = line.split(":")[3].split("\\[")[1];
+//                connectionList = connectionList.substring(0, connectionList.length() - 1);
+//
+//                for (String val : connectionList.split(",")) {
+//                    save.connectedToList.add(Integer.valueOf(val.split("=")[1]));
+//                }
+//
+//                saveList.add(save);
+//            }
             br.close();
 
             Node[] loadedNode = new Node[saveList.size()];
@@ -164,11 +179,16 @@ public class GraphSaver {
                     for(Pin pin : node.outputPins){
                         pins[index++] = pin;
                     }
+
+                    for (int j = 0; j < save.pinIDs.size(); j++) {
+                        pins[j].setID(save.pinIDs.get(j));
+                    }
+
                     for (int j = 0; j < save.connectedToList.size(); j++) {
-                        if(save.connectedToList.get(i) != -1){
-                            pins[i].connectedTo = save.connectedToList.get(i);
+                        if(save.connectedToList.get(j) != -1){
+                            pins[j].connectedTo = save.connectedToList.get(j);
+                            System.out.println(save.connectedToList.get(j));
                         }
-                        System.out.println(save.connectedToList.get(i));
                     }
                 }
             }
@@ -187,7 +207,6 @@ public class GraphSaver {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -195,6 +214,7 @@ public class GraphSaver {
         private String className;
         private float x;
         private float y;
+        private ArrayList<Integer> pinIDs = new ArrayList<>();
         private ArrayList<Integer> connectedToList = new ArrayList<>();
 
     }

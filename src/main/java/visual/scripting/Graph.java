@@ -65,6 +65,11 @@ public class Graph {
     public static int getNextAvailablePinID(){
         return nextPinID++;
     }
+    public void setHighestPinID(int id){
+        if (id > nextPinID){
+            nextPinID = id;
+        }
+    }
 
     public Pin findPinById(final int ID) {
         for(Node node : nodes.values()){

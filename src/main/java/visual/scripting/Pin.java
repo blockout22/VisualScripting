@@ -27,7 +27,7 @@ public class Pin {
     }
 
     private Node node;
-    private final int ID;
+    private int ID;
     private final PinType pinType;
     private final DataType dataType;
     private String name = "";
@@ -89,6 +89,11 @@ public class Pin {
 
     public String getVariable(){
         return variable;
+    }
+
+    public void setID(int id){
+        this.ID = id;
+        getNode().getGraph().setHighestPinID(id);
     }
 
     public int getID(){
