@@ -16,7 +16,7 @@ Submit a pull request if you have a plugin to add to this list
 ### Add Nodes using plugins
 
 **Requirements**
-* VisualScripting.jar or this repo
+* VisualScripting.jar or this repo (repo should be more updated)
 * ImGui 
 ```html
 <dependency>
