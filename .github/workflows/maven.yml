@@ -3,6 +3,8 @@ name: Maven Build
 on:
   push:
   pull_request:
+    paths-ignore:
+      - '**/README.md'
 
 jobs:
   build:
