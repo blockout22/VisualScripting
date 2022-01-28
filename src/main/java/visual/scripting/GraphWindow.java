@@ -5,6 +5,7 @@ import imgui.extension.nodeditor.NodeEditor;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
+import imgui.extension.nodeditor.flag.NodeEditorStyleColor;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.*;
 import imgui.type.*;
@@ -46,7 +47,10 @@ public class GraphWindow {
     private int nodeNavigateTo = -1;
     private boolean firstFrame = true;
     private long holdingPinID = -1;
+    private long lastActivePin = -1;
     private ImVec2 cursorPos;
+
+    private Pin.DataType curSelectedPinDataType = null;
 
     public GraphWindow(ImGuiWindow window){
         this.window = window;
@@ -131,6 +135,7 @@ public class GraphWindow {
                     sameLine();
 
                     NodeEditor.setCurrentEditor(context);
+//                    NodeEditor.pushStyleColor(NodeEditorStyleColor.LinkSelRect, 255, 0, 0, 255);
 //                    TestNodeEditor.nodeStyleEditor();
 
                     NodeEditor.begin("Editor");
@@ -148,7 +153,6 @@ public class GraphWindow {
                             {
 //                                if(button("NextId")){
 //                                    colID++;
-//                                    System.out.println(colID);
 //                                }
 
 //                                pushStyleVar(ImGuiStyleVar., 0, 0);
@@ -176,8 +180,12 @@ public class GraphWindow {
 
                                         NodeEditor.pinPivotAlignment(0f, .5f);
                                         NodeEditor.endPin();
+                                        if(isItemClicked()){
+                                            lastActivePin = inPin.getID();
+                                        }
                                         sameLine();
                                         configurePinUI(inPin);
+
                                     }
 
                                     if(node.width != -1) {
@@ -196,6 +204,9 @@ public class GraphWindow {
                                         sameLine();
                                         ImVec2 pos = getCursorPos();
                                         NodeEditor.endPin();
+                                        if(isItemClicked()){
+                                            lastActivePin = outPin.getID();
+                                        }
 
 //                                        addPin(outPin);
                                     }
@@ -230,12 +241,12 @@ public class GraphWindow {
 //                            ImNodes.popColorStyle();
 
 
-                            //calculate connect pins values
+                            //calculate connected pins values
                             for (int i = 0; i < node.outputPins.size(); i++) {
                                 Pin pin = node.outputPins.get(i);
 
                                 if (pin.connectedTo != -1) {
-                                    //find the input pin that is connect to this output pin
+                                    //find the input pin that is connected to this output pin
                                     Pin otherPin = graph.findPinById(pin.connectedTo);
 
                                     switch (pin.getDataType()) {
@@ -284,15 +295,18 @@ public class GraphWindow {
                     windowFocused = isWindowHovered();
 
                     if(NodeEditor.beginCreate()) {
-                        holdingPinID = 1;
+                        holdingPinID = lastActivePin;
+                        curSelectedPinDataType = graph.findPinById((int) lastActivePin).getDataType();
                         checkPinConnections();
                     }else{
+                        //Open context menu if pin link dropped without connecting to another pin
                         if(holdingPinID != -1 && !(LINKA.get() != 0 || LINKB.get() != 0)){
+                            holdingPinID = -1;
+                            curSelectedPinDataType = null;
 //                            System.out.println(LINKA.get() + " : " + LINKB.get());
                             setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Always);
                             openPopup("context_menu" + id);
                         }
-                        holdingPinID = -1;
                         LINKA.set(0);
                         LINKB.set(0);
                     }
@@ -414,7 +428,6 @@ public class GraphWindow {
         if(firstFrame){
                 if(graph.getNodes().values().size() > 0){
                     nodeNavigateTo = 0;
-//                    System.out.println("Navitate");
                 }
             firstFrame = false;
         }
@@ -430,7 +443,7 @@ public class GraphWindow {
 //        nodeQPos.clear();
 
 
-//        if(isMouseClicked(ImGuiMouseButton.Right)){
+//        if(isMouseDown(ImGuiMouseButton.Left)){
 //            final int hoveredNode = getHoveredNode();
 //            if(hoveredNode != -1){
 //                openPopup("node_menu" + id);
@@ -452,7 +465,7 @@ public class GraphWindow {
                     if(depth + 1 < cats.length) {
                         createContextMenuItem(instance, depth + 1);
                     }else{
-                        if (menuItem(instance.getName() + " RAndoms")) {
+                        if (menuItem(instance.getName())) {
                             try {
                                 Node newInstance = instance.getClass().getDeclaredConstructor(Graph.class).newInstance(graph);
                                 graph.addNode(newInstance);
@@ -493,58 +506,68 @@ public class GraphWindow {
         nodeList.add(node);
     }
 
+    /**
+     * sets the shape of the pin type and the color
+     */
     private void drawPinShapeAndColor(Pin pin){
         float size = 10f;
         float posX = getCursorPosX();
         float posY = getCursorPosY();
         switch (pin.getDataType()){
             case Flow:
+                int flowGrey = (curSelectedPinDataType != Pin.DataType.Flow && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(255, 255, 255);
                 if(pin.connectedTo != -1) {
-                    getWindowDrawList().addTriangleFilled(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), TestNodeEditor.rgbToInt(255, 255, 255));
+                    getWindowDrawList().addTriangleFilled(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), flowGrey);
                 }else {
-                    getWindowDrawList().addTriangle(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), TestNodeEditor.rgbToInt(255, 255, 255));
+                    getWindowDrawList().addTriangle(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), flowGrey);
                 }
                 break;
             case Bool:
+                int boolGrey = (curSelectedPinDataType != Pin.DataType.Bool && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(255, 255, 50);
                 if(pin.connectedTo != -1) {
-                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(255, 255, 50));
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, boolGrey);
                 }else{
-                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(255, 255, 50));
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, boolGrey);
                 }
                 break;
             case Int:
+                int intGrey = (curSelectedPinDataType != Pin.DataType.Int && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(180, 76, 67);
                 if(pin.connectedTo != -1) {
-                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(180, 76, 67));
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, intGrey);
                 }else{
-                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(180, 76, 67));
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, intGrey);
                 }
                 break;
             case Float:
+                int floatGrey = (curSelectedPinDataType != Pin.DataType.Float && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(166, 94, 46);;
                 if(pin.connectedTo != -1) {
-                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(166, 94, 46));
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, floatGrey);
                 }else{
-                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(166, 94, 46));
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, floatGrey);
                 }
                 break;
             case Double:
+                int doubleGrey = (curSelectedPinDataType != Pin.DataType.Double && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(49, 102, 80);
                 if(pin.connectedTo != -1) {
-                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(49, 102, 80));
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, doubleGrey);
                 }else{
-                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(49, 102, 80));
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, doubleGrey);
                 }
                 break;
             case String:
+                int stringGrey = (curSelectedPinDataType != Pin.DataType.String && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(245, 64, 33);
                 if(pin.connectedTo != -1) {
-                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(245, 64, 33));
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, stringGrey);
                 }else{
-                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(245, 64, 33));
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, stringGrey);
                 }
                 break;
             default:
+                int defaultGrey = (curSelectedPinDataType != Pin.DataType.Flow && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(50, 255, 50);
                 if(pin.connectedTo != -1) {
-                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(50, 255, 50));
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, defaultGrey);
                 }else{
-                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, rgbToInt(50, 255, 50));
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, defaultGrey);
                 }
                 break;
         }
@@ -555,34 +578,37 @@ public class GraphWindow {
      */
     private void checkPinConnections(){
         if(NodeEditor.queryNewLink(LINKA, LINKB)) {
-            if (NodeEditor.acceptNewItem()) {
-                {
-                    final Pin sourcePin = graph.findPinById((int) LINKA.get());
-                    final Pin targetPin = graph.findPinById((int) LINKB.get());
+            final Pin sourcePin = graph.findPinById((int) LINKA.get());
+            final Pin targetPin = graph.findPinById((int) LINKB.get());
+            //ignore connection attempts to self
+            if(sourcePin.getNode() == targetPin.getNode()){
+                return;
+            }
 
-                    //ignore connection attempts to self
-                    if(sourcePin.getNode() == targetPin.getNode()){
-                        return;
+//            if (!(sourcePin.getDataType() == targetPin.getDataType())) {
+//                System.out.println("Types are not the same");
+////                NodeEditor.pushStyleColor(NodeEditorStyleColor.Flow, 1, 0, 0, 1);
+//            } else {
+////                NodeEditor.pushStyleColor(NodeEditorStyleColor.Flow, 1, 1, 0, 1);
+//            }
+            if (NodeEditor.acceptNewItem()) {
+                if (!(sourcePin.getDataType() == targetPin.getDataType())) {
+                    System.out.println("Types are not the same");
+                } else {
+                    if (sourcePin.connectedTo != -1) {
+                        Pin oldPin = graph.findPinById(sourcePin.connectedTo);
+                        oldPin.connectedTo = -1;
                     }
 
-                    if (!(sourcePin.getDataType() == targetPin.getDataType())) {
-                        System.out.println("Types are not the same");
-                    } else {
-                        if (sourcePin.connectedTo != -1) {
-                            Pin oldPin = graph.findPinById(sourcePin.connectedTo);
-                            oldPin.connectedTo = -1;
-                        }
+                    if (targetPin.connectedTo != -1) {
+                        Pin oldPin = graph.findPinById(targetPin.connectedTo);
+                        oldPin.connectedTo = -1;
+                    }
 
-                        if (targetPin.connectedTo != -1) {
-                            Pin oldPin = graph.findPinById(targetPin.connectedTo);
-                            oldPin.connectedTo = -1;
-                        }
-
-                        if (sourcePin != null && targetPin != null) {
-                            if (sourcePin.connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || sourcePin.connectedTo == -1)) {
-                                sourcePin.connectedTo = targetPin.getID();
-                                targetPin.connectedTo = sourcePin.getID();
-                            }
+                    if (sourcePin != null && targetPin != null) {
+                        if (sourcePin.connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || sourcePin.connectedTo == -1)) {
+                            sourcePin.connectedTo = targetPin.getID();
+                            targetPin.connectedTo = sourcePin.getID();
                         }
                     }
                 }

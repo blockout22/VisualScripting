@@ -281,7 +281,6 @@ public class AdvancedGraphWindow {
                                 Pin pin = node.outputPins.get(i);
 
                                 if (pin.connectedTo != -1) {
-                                    System.out.println(pin.connectedTo);
                                     //find the input pin that is connect to this output pin
                                     Pin otherPin = graph.findPinById(pin.connectedTo);
 

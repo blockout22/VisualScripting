@@ -25,7 +25,5 @@ public class NodeVisualTest extends Node {
         addOutputPin(Pin.DataType.Float, this);
         addOutputPin(Pin.DataType.Double, this);
         addOutputPin(Pin.DataType.String, this);
-
-        System.out.println(getCategory());
     }
 }

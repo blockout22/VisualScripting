@@ -171,7 +171,7 @@ public class ImGuiWindow {
                 graphWindows.remove(queueRemoveGraphWindow.get(i));
             }
 
-            showDemoWindow();
+//            showDemoWindow();
         }
 
 
