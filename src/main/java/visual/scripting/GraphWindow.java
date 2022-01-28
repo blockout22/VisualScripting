@@ -6,6 +6,7 @@ import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
 import imgui.extension.nodeditor.flag.NodeEditorStyleColor;
+import imgui.extension.nodeditor.flag.NodeEditorStyleVar;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.*;
 import imgui.type.*;
@@ -152,13 +153,14 @@ public class GraphWindow {
                             NodeEditor.beginNode(node.getID());
                             {
 //                                if(button("NextId")){
-//                                    colID++;
+////                                    colID++;
 //                                }
 
 //                                pushStyleVar(ImGuiStyleVar., 0, 0);
-//                                pushStyleColor(ImGuiCol.FrameBg, TestNodeEditor.rgbToInt(255, 0, 0));
-//                                pushStyleColor(ImGuiCol.WindowBg, TestNodeEditor.rgbToInt(255, 0, 0));
-                                    text(node.getName());
+
+//                                pushStyleColor(colID, rgbToInt(0, 0, 255));
+//                                pushStyleColor(ImGuiCol.WindowBg, rgbToInt(255, 0, 0));
+                                text(node.getName());
 //                                popStyleColor();
 //                                popStyleColor();
 //                                popStyleVar();
@@ -180,7 +182,8 @@ public class GraphWindow {
 
                                         NodeEditor.pinPivotAlignment(0f, .5f);
                                         NodeEditor.endPin();
-                                        if(isItemClicked()){
+
+                                        if(isItemClicked() && holdingPinID == -1){
                                             lastActivePin = inPin.getID();
                                         }
 
@@ -203,6 +206,7 @@ public class GraphWindow {
                                     if (node.outputPins.size() > i) {
                                         Pin outPin = node.outputPins.get(i);
 
+//                                        NodeEditor.pushStyleVar(NodeEditorStyleVar.PinCorners, 12);
                                         NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
 
                                         drawPinShapeAndColor(outPin);
@@ -213,7 +217,7 @@ public class GraphWindow {
                                         ImVec2 pos = getCursorPos();
                                         NodeEditor.endPin();
 
-                                        if(isItemClicked()){
+                                        if(isItemClicked() && holdingPinID == -1){
                                             lastActivePin = outPin.getID();
                                         }
 
@@ -602,16 +606,23 @@ public class GraphWindow {
                 return;
             }
 
+            if (!(sourcePin.getDataType() == targetPin.getDataType())) {
+                NodeEditor.rejectNewItem(1, 0, 0, 1, 1);
+                holdingPinID = -1;
+                curSelectedPinDataType = null;
+                return;
+            }
+
 //            if (!(sourcePin.getDataType() == targetPin.getDataType())) {
 //                System.out.println("Types are not the same");
 ////                NodeEditor.pushStyleColor(NodeEditorStyleColor.Flow, 1, 0, 0, 1);
 //            } else {
 ////                NodeEditor.pushStyleColor(NodeEditorStyleColor.Flow, 1, 1, 0, 1);
 //            }
-            if (NodeEditor.acceptNewItem()) {
-                if (!(sourcePin.getDataType() == targetPin.getDataType())) {
-                    System.out.println("Types are not the same");
-                } else {
+            if (NodeEditor.acceptNewItem(0, 1, 0, 1, 1)) {
+//                if (!(sourcePin.getDataType() == targetPin.getDataType())) {
+//                    System.out.println("Types are not the same");
+//                } else {
                     if (sourcePin.connectedTo != -1) {
                         Pin oldPin = graph.findPinById(sourcePin.connectedTo);
                         oldPin.connectedTo = -1;
@@ -630,7 +641,7 @@ public class GraphWindow {
                             curSelectedPinDataType = null;
                         }
                     }
-                }
+//                }
             }
         }
 
