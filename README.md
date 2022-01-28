@@ -17,6 +17,7 @@ Submit a pull request if you have a plugin to add to this list
 
 **Requirements**
 * VisualScripting.jar or this repo (repo should be more updated)
+* LWJGL which contains GLFW module
 * ImGui 
 ```html
 <dependency>
@@ -42,6 +43,15 @@ Submit a pull request if you have a plugin to add to this list
      <artifactId>pf4j</artifactId>
      <version>${pf4j.version}</version>
  </dependency> 
+ ```
+ 
+ * Gson
+ ```html
+ <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.8.9</version>
+    </dependency>
  ```
  
  ### Making the plugin
