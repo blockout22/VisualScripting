@@ -183,6 +183,14 @@ public class GraphWindow {
                                         if(isItemClicked()){
                                             lastActivePin = inPin.getID();
                                         }
+
+                                        if(isItemHovered()){
+                                            setNextWindowPos(NodeEditor.toScreenX(getMousePosX()), NodeEditor.toScreenY(getMousePosY() + 10), ImGuiCond.Always);
+                                            beginTooltip();
+                                            textUnformatted("Type: " + inPin.getDataType());
+                                            textUnformatted("Value: " + inPin.getData().value);
+                                            endTooltip();
+                                        }
                                         sameLine();
                                         configurePinUI(inPin);
 
@@ -204,8 +212,17 @@ public class GraphWindow {
                                         sameLine();
                                         ImVec2 pos = getCursorPos();
                                         NodeEditor.endPin();
+
                                         if(isItemClicked()){
                                             lastActivePin = outPin.getID();
+                                        }
+
+                                        if(isItemHovered()){
+                                            setNextWindowPos(NodeEditor.toScreenX(getMousePosX()), NodeEditor.toScreenY(getMousePosY() + 10), ImGuiCond.Always);
+                                            beginTooltip();
+                                            textUnformatted("Type: " + outPin.getDataType());
+                                            textUnformatted("Value: " + outPin.getData().value);
+                                            endTooltip();
                                         }
 
 //                                        addPin(outPin);
@@ -609,6 +626,8 @@ public class GraphWindow {
                         if (sourcePin.connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || sourcePin.connectedTo == -1)) {
                             sourcePin.connectedTo = targetPin.getID();
                             targetPin.connectedTo = sourcePin.getID();
+                            holdingPinID = -1;
+                            curSelectedPinDataType = null;
                         }
                     }
                 }
