@@ -10,7 +10,7 @@ public class NodeEntry extends Node{
     public NodeEntry(Graph graph) {
         super(graph);
         setName("Start");
-        setColor(255, 255, 255);
+        setColor(255, 255, 255, 255);
 
         output = addOutputPin(Pin.DataType.Flow, this);
     }

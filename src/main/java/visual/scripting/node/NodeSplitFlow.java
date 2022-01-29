@@ -10,6 +10,7 @@ public class NodeSplitFlow extends Node{
     public NodeSplitFlow(Graph graph) {
         super(graph);
         setName("Split Flow");
+        setColor(255, 0, 0, 255);
     }
 
     @Override

@@ -147,12 +147,14 @@ public class GraphWindow {
                     sameLine();
 
                     NodeEditor.setCurrentEditor(context);
+                    NodeEditor.getStyle().setNodeRounding(2.0f);
 //                    NodeEditor.pushStyleColor(NodeEditorStyleColor.LinkSelRect, 255, 0, 0, 255);
-//                    TestNodeEditor.nodeStyleEditor();
+                    TestNodeEditor.nodeStyleEditor();
 
                     ImVec2 headerMin = new ImVec2();
                     ImVec2 headerMax = new ImVec2();
 
+                    float headerMaxY = 0;
                     NodeEditor.begin("Editor");
                     {
                         for (Node node : graph.getNodes().values()) {
@@ -165,7 +167,8 @@ public class GraphWindow {
 //                                }
                                 text(node.getName());
                                 headerMin = getItemRectMin();
-                                float headerMaxY = getItemRectMax().y;
+//                                dummy(getItemRectMax().x, 2);
+                                headerMaxY = getItemRectMax().y;
                                 newLine();
                                 //add node pins
                                 int max = Math.max(node.outputPins.size(), node.inputPins.size());
@@ -239,10 +242,10 @@ public class GraphWindow {
                             NodeEditor.endNode();
 
                             if(isItemVisible()){
-                                float alpha = getStyle().getAlpha();
+                                int alpha = (int) (getStyle().getAlpha() * 255);
 
                                 ImDrawList drawList = NodeEditor.getNodeBackgroundDrawList(node.getID());
-                                float halfBorderWidth = NodeEditor.getStyle().getNodeBorderWidth();
+                                float halfBorderWidth = NodeEditor.getStyle().getNodeBorderWidth() * 0.5f;
 
                                 //headerColor = 0;
 
@@ -251,7 +254,7 @@ public class GraphWindow {
 
                                 if ((headerMax.x > headerMin.x) && (headerMax.y > headerMin.y))
                                 {
-                                    drawList.addImageRounded(texture.ID, headerMin.x - (8 - halfBorderWidth), headerMin.y - (4 - halfBorderWidth), headerMax.x + (8 - halfBorderWidth), headerMax.y + (0), 0, 0, uvX, uvY, rgbToInt(node.getRed(), node.getGreen(), node.getBlue()), NodeEditor.getStyle().getNodeRounding() , ImDrawFlags.None);
+                                    drawList.addImageRounded(texture.ID, headerMin.x - (8 - halfBorderWidth), headerMin.y - (4 - halfBorderWidth), headerMax.x + (8 - halfBorderWidth), headerMax.y + (0), 0, 0, uvX, uvY, rgbToInt(node.getRed(), node.getGreen(), node.getBlue(), node.getAlpha()), NodeEditor.getStyle().getNodeRounding() , ImDrawFlags.RoundCornersTop);
                                 }
 
                                 ImVec2 headerSeparatorMin = new ImVec2(headerMin.x, headerMin.y);
@@ -259,8 +262,7 @@ public class GraphWindow {
 
                                 if ((headerSeparatorMax.x > headerSeparatorMin.x) && (headerSeparatorMax.y > headerSeparatorMin.y))
                                 {
-//                                    drawList.addLine(headerMin.x, headerMax.y, headerMax.x, headerMax.y, rgbToInt(0, 255, 0), 1.0f);
-//                                    drawList.addLine(headerSeparatorMin.x + (-(8 - halfBorderWidth)), headerSeparatorMin.y + (-0.5f), headerSeparatorMax.x + (-(8 - halfBorderWidth)), headerSeparatorMax.y + (-0.5f), rgbToInt(255, 0, 0), 1.0f);
+                                    drawList.addLine(headerMin.x - 8 - halfBorderWidth, headerMax.y, headerMax.x + (8 - halfBorderWidth), headerMax.y, rgbToInt(node.getRed(), node.getGreen(), node.getBlue(), 96 * alpha / (3 * 255)), 1);
                                 }
 
                             }
@@ -544,15 +546,15 @@ public class GraphWindow {
         float posY = getCursorPosY();
         switch (pin.getDataType()){
             case Flow:
-                int flowGrey = (curSelectedPinDataType != Pin.DataType.Flow && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(255, 255, 255);
+                int flowGrey = (curSelectedPinDataType != Pin.DataType.Flow && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(255, 255, 255, 255);
                 if(pin.connectedTo != -1) {
-                    getWindowDrawList().addTriangleFilled(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), flowGrey);
+                    getWindowDrawList().addTriangleFilled(posX + 2.5f, posY, posX + 2.5f, posY + size, posX + (size / 2) + 2.5f, posY + (size / 2), flowGrey);
                 }else {
-                    getWindowDrawList().addTriangle(posX, posY, posX, posY + size, posX + (size / 2), posY + (size / 2), flowGrey);
+                    getWindowDrawList().addTriangle(posX + 2.5f, posY, posX + 2.5f, posY + size, posX + (size / 2) + 2.5f, posY + (size / 2), flowGrey);
                 }
                 break;
             case Bool:
-                int boolGrey = (curSelectedPinDataType != Pin.DataType.Bool && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(255, 255, 50);
+                int boolGrey = (curSelectedPinDataType != Pin.DataType.Bool && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(255, 255, 50, 255);
                 if(pin.connectedTo != -1) {
                     getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, boolGrey);
                 }else{
@@ -560,7 +562,7 @@ public class GraphWindow {
                 }
                 break;
             case Int:
-                int intGrey = (curSelectedPinDataType != Pin.DataType.Int && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(180, 76, 67);
+                int intGrey = (curSelectedPinDataType != Pin.DataType.Int && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(180, 76, 67, 255);
                 if(pin.connectedTo != -1) {
                     getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, intGrey);
                 }else{
@@ -568,7 +570,7 @@ public class GraphWindow {
                 }
                 break;
             case Float:
-                int floatGrey = (curSelectedPinDataType != Pin.DataType.Float && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(166, 94, 46);;
+                int floatGrey = (curSelectedPinDataType != Pin.DataType.Float && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(166, 94, 46, 255);;
                 if(pin.connectedTo != -1) {
                     getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, floatGrey);
                 }else{
@@ -576,7 +578,7 @@ public class GraphWindow {
                 }
                 break;
             case Double:
-                int doubleGrey = (curSelectedPinDataType != Pin.DataType.Double && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(49, 102, 80);
+                int doubleGrey = (curSelectedPinDataType != Pin.DataType.Double && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(49, 102, 80, 255);
                 if(pin.connectedTo != -1) {
                     getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, doubleGrey);
                 }else{
@@ -584,7 +586,7 @@ public class GraphWindow {
                 }
                 break;
             case String:
-                int stringGrey = (curSelectedPinDataType != Pin.DataType.String && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(245, 64, 33);
+                int stringGrey = (curSelectedPinDataType != Pin.DataType.String && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(245, 64, 33, 255);
                 if(pin.connectedTo != -1) {
                     getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, stringGrey);
                 }else{
@@ -592,7 +594,7 @@ public class GraphWindow {
                 }
                 break;
             default:
-                int defaultGrey = (curSelectedPinDataType != Pin.DataType.Flow && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50) : rgbToInt(50, 255, 50);
+                int defaultGrey = (curSelectedPinDataType != Pin.DataType.Flow && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(50, 255, 50, 255);
                 if(pin.connectedTo != -1) {
                     getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, defaultGrey);
                 }else{
@@ -614,7 +616,7 @@ public class GraphWindow {
                 return;
             }
 
-            if (!(sourcePin.getDataType() == targetPin.getDataType())) {
+            if (!(sourcePin.getDataType() == targetPin.getDataType()) || !(sourcePin.getPinType() != targetPin.getPinType())) {
                 NodeEditor.rejectNewItem(1, 0, 0, 1, 1);
                 holdingPinID = -1;
                 curSelectedPinDataType = null;
@@ -789,11 +791,11 @@ public class GraphWindow {
         popItemWidth();
     }
 
-    private int rgbToInt(int r, int g, int b){
-        int Red = (r << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
-        int Green = (g << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
-        int Blue = b & 0x000000FF; //Mask out anything not blue.
+    private int rgbToInt(int r, int g, int b, int a){
+//        int Red = (r << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
+//        int Green = (g << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
+//        int Blue = b & 0x000000FF; //Mask out anything not blue.
 
-        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
+        return ImColor.intToColor(r, g, b, a); // 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
     }
 }

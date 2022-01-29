@@ -19,9 +19,10 @@ public class Node {
     public ArrayList<Pin> inputPins = new ArrayList<>();
 
     private NodeStyle style = new NodeStyle();
-    private int r;
-    private int g;
-    private int b;
+    private int r = 125;
+    private int g = 125;
+    private int b = 125;
+    private int a = 125;
 
     public float width = -1;
 
@@ -33,10 +34,11 @@ public class Node {
 
     }
 
-    public void setColor(int r, int g, int b){
+    public void setColor(int r, int g, int b, int a){
         this.r = r;
         this.g = g;
         this.b = b;
+        this.a = a;
     }
 
     public int getRed(){
@@ -49,6 +51,10 @@ public class Node {
 
     public int getBlue(){
         return b;
+    }
+
+    public int getAlpha(){
+        return a;
     }
 
     public void setID(int id){
