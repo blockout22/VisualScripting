@@ -8,6 +8,7 @@ public class NodeVisualTest extends Node {
         super(graph);
         setName("Visual Test Node");
         setCategory("Test.category");
+        setColor(100, 200, 100);
     }
 
     @Override

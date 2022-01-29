@@ -1,5 +1,7 @@
 package visual.scripting;
 
+import imgui.ImColor;
+import imgui.ImDrawList;
 import imgui.ImVec2;
 import imgui.extension.nodeditor.NodeEditor;
 import imgui.extension.nodeditor.NodeEditorConfig;
@@ -16,6 +18,7 @@ import visual.scripting.node.style.NodeColor;
 import visual.scripting.node.NodeEntry;
 import visual.scripting.node.NodeSplitFlow;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +56,8 @@ public class GraphWindow {
 
     private Pin.DataType curSelectedPinDataType = null;
 
+    private Texture texture;
+
     public GraphWindow(ImGuiWindow window){
         this.window = window;
         //id will be changed to file name
@@ -73,6 +78,12 @@ public class GraphWindow {
         }
 
         LINKA.get();
+
+        try {
+            texture = TextureLoader.loadTexture("white.png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public int ToNodeColor(NodeColor nodeColor){
@@ -139,36 +150,23 @@ public class GraphWindow {
 //                    NodeEditor.pushStyleColor(NodeEditorStyleColor.LinkSelRect, 255, 0, 0, 255);
 //                    TestNodeEditor.nodeStyleEditor();
 
+                    ImVec2 headerMin = new ImVec2();
+                    ImVec2 headerMax = new ImVec2();
+
                     NodeEditor.begin("Editor");
                     {
                         for (Node node : graph.getNodes().values()) {
-//                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBar, ToNodeColor(node.getStyle().TitleBar));
-//                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBarSelected, ToNodeColor(node.getStyle().TitleBarSelected));
-//                            ImNodes.pushColorStyle(ImNodesColorStyle.TitleBarHovered, ToNodeColor(node.getStyle().TitleBarHovered));
-//                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackground, ToNodeColor(node.getStyle().NodeBackground));
-//                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundSelected, ToNodeColor(node.getStyle().NodeBackgroundSelected));
-//                            ImNodes.pushColorStyle(ImNodesColorStyle.NodeBackgroundHovered, ToNodeColor(node.getStyle().NodeBackgroundHovered));
-//                            NodeEditor.pushStyleColor(NodeEditorStyleColor., 0, 0, 0, 0);
-//                                if(beginChildFrame(293482, 500, 50)) {
+                            headerMin = headerMax = new ImVec2();
+                            NodeEditor.pushStyleVar(NodeEditorStyleVar.NodePadding, 8, 4, 8, 8);
                             NodeEditor.beginNode(node.getID());
                             {
 //                                if(button("NextId")){
 ////                                    colID++;
 //                                }
-
-//                                pushStyleVar(ImGuiStyleVar., 0, 0);
-
-//                                pushStyleColor(colID, rgbToInt(0, 0, 255));
-//                                pushStyleColor(ImGuiCol.WindowBg, rgbToInt(255, 0, 0));
                                 text(node.getName());
-//                                popStyleColor();
-//                                popStyleColor();
-//                                popStyleVar();
-//                                if(node.rect == null) {
-//                                    node.rect = new ImRect(getItemRectMin(), getItemRectMax());
-//                                }
+                                headerMin = getItemRectMin();
+                                float headerMaxY = getItemRectMax().y;
                                 newLine();
-
                                 //add node pins
                                 int max = Math.max(node.outputPins.size(), node.inputPins.size());
                                 for (int i = 0; i < max; i++) {
@@ -236,31 +234,41 @@ public class GraphWindow {
 
 
 //                                NodeEditor.group(50, 50);
+                                headerMax = new ImVec2(getItemRectMax().x, headerMaxY);
                             }
                             NodeEditor.endNode();
-//                                }
-//                                endChildFrame();
-//                            NodeEditor.popStyleColor(1);
-//                            if(NodeEditor.beginGroupHint(node.getID())){
-////                                beginGroup();
-//                                textUnformatted(node.getName());
-////                                endGroup();
-//                            }
-//                            NodeEditor.endGroupHint();
 
+                            if(isItemVisible()){
+                                float alpha = getStyle().getAlpha();
+
+                                ImDrawList drawList = NodeEditor.getNodeBackgroundDrawList(node.getID());
+                                float halfBorderWidth = NodeEditor.getStyle().getNodeBorderWidth();
+
+                                //headerColor = 0;
+
+                                float uvX = (headerMax.x - headerMin.x) / (4.0f * texture.width);
+                                float uvY = (headerMax.y - headerMin.y) / (4.0f * texture.height);
+
+                                if ((headerMax.x > headerMin.x) && (headerMax.y > headerMin.y))
+                                {
+                                    drawList.addImageRounded(texture.ID, headerMin.x - (8 - halfBorderWidth), headerMin.y - (4 - halfBorderWidth), headerMax.x + (8 - halfBorderWidth), headerMax.y + (0), 0, 0, uvX, uvY, rgbToInt(node.getRed(), node.getGreen(), node.getBlue()), NodeEditor.getStyle().getNodeRounding() , ImDrawFlags.None);
+                                }
+
+                                ImVec2 headerSeparatorMin = new ImVec2(headerMin.x, headerMin.y);
+                                ImVec2 headerSeparatorMax = new ImVec2(headerMax.x, headerMax.y);
+
+                                if ((headerSeparatorMax.x > headerSeparatorMin.x) && (headerSeparatorMax.y > headerSeparatorMin.y))
+                                {
+//                                    drawList.addLine(headerMin.x, headerMax.y, headerMax.x, headerMax.y, rgbToInt(0, 255, 0), 1.0f);
+//                                    drawList.addLine(headerSeparatorMin.x + (-(8 - halfBorderWidth)), headerSeparatorMin.y + (-0.5f), headerSeparatorMax.x + (-(8 - halfBorderWidth)), headerSeparatorMax.y + (-0.5f), rgbToInt(255, 0, 0), 1.0f);
+                                }
+
+                            }
 //                            ImRect rect = new ImRect(getItemRectMin(), getItemRectMax());
 //                            getWindowDrawList().addRectFilled(rect.min.x, rect.min.y, rect.max.x, rect.max.y, TestNodeEditor.rgbToInt(0, 0, 255));
                             if(node.width == -1) {
                                 node.width = NodeEditor.getNodeSizeX(node.getID());
                             }
-
-//                            ImNodes.popColorStyle();
-//                            ImNodes.popColorStyle();
-//                            ImNodes.popColorStyle();
-//                            ImNodes.popColorStyle();
-//                            ImNodes.popColorStyle();
-//                            ImNodes.popColorStyle();
-
 
                             //calculate connected pins values
                             for (int i = 0; i < node.outputPins.size(); i++) {

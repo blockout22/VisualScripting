@@ -179,6 +179,7 @@ Plugin-Version: 0.0.1
  
 ## Screenshots
 
+![img](Images/example.png)
 ![img](Images/example3.png)
 
 ## TODO LIST
