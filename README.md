@@ -15,7 +15,7 @@ Submit a pull request if you have a plugin to add to this list
 
 ### Add Nodes using plugins
 
-**Requirements** (See POM.xml for full list of dependencies)
+**Requirements** (See [POM.xml](pom.xml) for full list of dependencies)
 * VisualScripting.jar or this repo (repo should be more updated)
 * LWJGL which contains GLFW module
 * ImGui 
@@ -48,10 +48,10 @@ Submit a pull request if you have a plugin to add to this list
  * Gson
  ```html
  <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.8.9</version>
-    </dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.8.9</version>
+</dependency>
  ```
  
  ### Making the plugin
