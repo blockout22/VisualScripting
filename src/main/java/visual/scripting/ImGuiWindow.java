@@ -1,13 +1,12 @@
 package visual.scripting;
 
 import imgui.*;
+import imgui.extension.imguifiledialog.ImGuiFileDialog;
 import imgui.extension.imnodes.ImNodes;
-import imgui.flag.ImGuiCond;
-import imgui.flag.ImGuiConfigFlags;
-import imgui.flag.ImGuiDockNodeFlags;
-import imgui.flag.ImGuiKey;
+import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import imgui.type.ImString;
 import org.lwjgl.glfw.GLFW;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.PluginManager;
@@ -43,6 +42,8 @@ public class ImGuiWindow {
     private DarkStyle darkStyle;
 
     public static PluginManager pluginManager;
+
+    private String lastMenuAction = null;
 
     public ImGuiWindow(){
         //Create ImGui
@@ -162,6 +163,32 @@ public class ImGuiWindow {
             }
             end();
 
+            if (lastMenuAction == "File") {
+                openPopup("new_file_popup");
+                lastMenuAction = null;
+            }
+
+            //TODO have user specify the language they are writing in this will be used to filter nodes that are for the selected language
+            //languages can(/should) be setup in nodes and then a list of languages can be populated into a combo box
+            if(beginPopup("new_file_popup")){
+                text("File Name [WIP ...just click create]");
+                ImString name = new ImString();
+                if(inputText("##", name)){
+
+                }
+
+                if(button("Create")){
+                    //TODO add file name to graph
+                    graphWindows.add(new GraphWindow(this));
+                    closeCurrentPopup();
+                }
+                sameLine();
+                if(button("Close")){
+                    closeCurrentPopup();
+                }
+                endPopup();
+            }
+
 //            showStyleEditor();
             for(GraphWindow graphWindow : graphWindows){
                 graphWindow.show(menuBarHeight);
@@ -171,7 +198,7 @@ public class ImGuiWindow {
                 graphWindows.remove(queueRemoveGraphWindow.get(i));
             }
 
-//            showDemoWindow();
+            showDemoWindow();
         }
 
 
@@ -196,7 +223,8 @@ public class ImGuiWindow {
         {
             if(beginMenu("File", true)){
                 if(menuItem("New Graph")){
-                    graphWindows.add(new GraphWindow(this));
+                    lastMenuAction = "File";
+//                    graphWindows.add(new GraphWindow(this));
                 }
                 endMenu();
 

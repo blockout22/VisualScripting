@@ -15,7 +15,7 @@ Submit a pull request if you have a plugin to add to this list
 
 ### Add Nodes using plugins
 
-**Requirements**
+**Requirements** (See POM.xml for full list of dependencies)
 * VisualScripting.jar or this repo (repo should be more updated)
 * LWJGL which contains GLFW module
 * ImGui 
@@ -182,6 +182,7 @@ Plugin-Version: 0.0.1
 ![img](Images/example.png)
 ![img](Images/example2.png)
 ![img](Images/example3.png)
+![img](Images/example4.png)
 
 ## TODO LIST
 

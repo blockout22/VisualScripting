@@ -318,7 +318,8 @@ public class GraphWindow {
                         for (Node node : graph.getNodes().values()) {
                             for (Pin pin : node.outputPins) {
                                 if (pin.connectedTo != -1) {
-                                    NodeEditor.link(uniqueLinkId++, pin.getID(), pin.connectedTo);
+                                    float[] pincolor = getPinColor(pin);
+                                    NodeEditor.link(uniqueLinkId++, pin.getID(), pin.connectedTo, pincolor[0], pincolor[1], pincolor[2], pincolor[3], 1);
                                 }
                             }
                         }
@@ -485,6 +486,56 @@ public class GraphWindow {
 //                }
 //            }
 //        }
+    }
+
+    private float[] getPinColor(Pin pin){
+        float[] color = new float[4];
+        switch (pin.getDataType()) {
+            case Flow:
+                color[0] = 1;
+                color[1] = 1;
+                color[2] = 1;
+                color[3] = 1;
+                break;
+            case Bool:
+                color[0] = 1;
+                color[1] = 1;
+                color[2] = 0.196078431f;
+                color[3] = 1;
+                break;
+            case Int:
+                color[0] = 0.705882353f;
+                color[1] = 0.298039216f;
+                color[2] = 0.262745098f;
+                color[3] = 1;
+                break;
+            case Float:
+                color[0] = 0.65098039215f;
+                color[1] = 0.36862745098f;
+                color[2] = 0.18039215686f;
+                color[3] = 1;
+                break;
+            case Double:
+                color[0] = 0.19215686274f;
+                color[1] = 0.4f;
+                color[2] = 0.31372549019f;
+                color[3] = 1;
+                break;
+            case String:
+                color[0] = 0.96078431372f;
+                color[1] = 0.25098039215f;
+                color[2] = 0.1294117647f;
+                color[3] = 1;
+                break;
+            default:
+                color[0] = 0.196078431f;
+                color[1] = 1;
+                color[2] = 0.196078431f;
+                color[3] = 1;
+                break;
+        }
+
+        return color;
     }
 
     private void createContextMenuItem(Node instance, int depth) {
