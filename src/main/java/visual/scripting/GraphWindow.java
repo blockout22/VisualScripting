@@ -149,7 +149,7 @@ public class GraphWindow {
                     NodeEditor.setCurrentEditor(context);
                     NodeEditor.getStyle().setNodeRounding(2.0f);
 //                    NodeEditor.pushStyleColor(NodeEditorStyleColor.LinkSelRect, 255, 0, 0, 255);
-                    TestNodeEditor.nodeStyleEditor();
+//                    TestNodeEditor.nodeStyleEditor();
 
                     ImVec2 headerMin = new ImVec2();
                     ImVec2 headerMax = new ImVec2();
