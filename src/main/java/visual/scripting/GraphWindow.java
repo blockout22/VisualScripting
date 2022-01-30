@@ -7,20 +7,17 @@ import imgui.extension.nodeditor.NodeEditor;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
-import imgui.extension.nodeditor.flag.NodeEditorStyleColor;
 import imgui.extension.nodeditor.flag.NodeEditorStyleVar;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.*;
 import imgui.type.*;
 import visual.scripting.node.Node;
 import visual.scripting.node.NodeVisualTest;
-import visual.scripting.node.style.NodeColor;
 import visual.scripting.node.NodeEntry;
 import visual.scripting.node.NodeSplitFlow;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,23 +27,23 @@ import static imgui.ImGui.*;
 
 public class GraphWindow {
 
-    private ImBoolean closable = new ImBoolean(true);
+    private final ImBoolean closable = new ImBoolean(true);
 
-    private ImGuiWindow window;
-    private String id;
-    private Graph graph;
-    private NodeEditorContext context;
-    private boolean windowFocused;
+    private final ImGuiWindow window;
+    private final String id;
+    private final Graph graph;
+    private final NodeEditorContext context;
+//    private boolean windowFocused;
 
 //    private ArrayList<NodeBuilder> nodesTypes = new ArrayList<>();
-    private ArrayList<Class<? extends Node>> nodeList = new ArrayList<>();
-    private ArrayList<Node> nodeInstanceCache = new ArrayList<>();
+    private final ArrayList<Class<? extends Node>> nodeList = new ArrayList<>();
+    private final ArrayList<Node> nodeInstanceCache = new ArrayList<>();
 
     private final ImLong LINKA = new ImLong();
     private final ImLong LINKB = new ImLong();
 
-    private NodeCompiler nodeCompiler = new NodeCompiler();
-    private TextEditor EDITOR = new TextEditor();
+    private final NodeCompiler nodeCompiler = new NodeCompiler();
+    private final TextEditor EDITOR = new TextEditor();
 
     public Map<Integer, ImVec2> nodeQPos = new HashMap<>();
     private int nodeNavigateTo = -1;
@@ -78,7 +75,7 @@ public class GraphWindow {
             plugin.init(this);
         }
 
-        LINKA.get();
+        //LINKA.get();
 
         try {
             texture = TextureLoader.loadTexture("white.png");
@@ -87,13 +84,13 @@ public class GraphWindow {
         }
     }
 
-    public int ToNodeColor(NodeColor nodeColor){
-        int Red = (nodeColor.r << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
-        int Green = (nodeColor.g << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
-        int Blue = nodeColor.b & 0x000000FF; //Mask out anything not blue.
-
-        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
-    }
+//    public int ToNodeColor(NodeColor nodeColor){
+//        int Red = (nodeColor.r << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
+//        int Green = (nodeColor.g << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
+//        int Blue = nodeColor.b & 0x000000FF; //Mask out anything not blue.
+//
+//        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
+//    }
 
 //    private ImRect rect = new ImRect();
 //    private float outputInputSpacing = 0.0f;
@@ -101,7 +98,7 @@ public class GraphWindow {
     /**
      *  Shows the Graphs window
      */
-    int colID = 0;
+    //int colID = 0;
     public void show(float menuBarHeight){
         cursorPos = getMousePos();
         graph.update();
@@ -110,7 +107,7 @@ public class GraphWindow {
 
         if(begin(id, closable, ImGuiWindowFlags.NoCollapse)){
             //checks is value has been changed from clicking the close button
-            if(closable.get() == false){
+            if(!closable.get()){
                 //should init save
                 window.removeGraphWindow(this);
             }
@@ -135,15 +132,21 @@ public class GraphWindow {
 
             if(beginTabBar("TabBar")) {
                 if(beginTabItem("NodeEditor")) {
-                    if(beginChild("SideBar", 100, 350)){
+//                    if(beginChild("SideBar", 100, 350))
+                    beginGroup();
+                    dummy(200, 0);
+                    {
                         text("Node List");
                         for (Node node : graph.getNodes().values()) {
+                            pushID(node.getID());
                             if(button(node.getName())){
                                 nodeNavigateTo = node.getID();
                             }
+                            popID();
                         }
                     }
-                    endChild();
+                    endGroup();
+//                    endChild();
 
                     sameLine();
 
@@ -152,14 +155,15 @@ public class GraphWindow {
 //                    NodeEditor.pushStyleColor(NodeEditorStyleColor.LinkSelRect, 255, 0, 0, 255);
 //                    TestNodeEditor.nodeStyleEditor();
 
-                    ImVec2 headerMin = new ImVec2();
-                    ImVec2 headerMax = new ImVec2();
+                    ImVec2 headerMin;
+                    ImVec2 headerMax;
 
-                    float headerMaxY = 0;
+                    float headerMaxY;
                     NodeEditor.begin("Editor");
                     {
                         for (Node node : graph.getNodes().values()) {
-                            headerMin = headerMax = new ImVec2();
+//                            headerMin = new ImVec2();
+//                            headerMax = new ImVec2();
                             NodeEditor.pushStyleVar(NodeEditorStyleVar.NodePadding, 8, 4, 8, 8);
                             NodeEditor.beginNode(node.getID());
                             {
@@ -331,7 +335,7 @@ public class GraphWindow {
                             }
                         }
                     }
-                    windowFocused = isWindowHovered();
+//                    windowFocused = isWindowHovered();
 
                     if(NodeEditor.beginCreate()) {
                         holdingPinID = lastActivePin;
@@ -422,7 +426,7 @@ public class GraphWindow {
                                 System.out.println(targetLink);
                                 if(NodeEditor.deleteLink(targetLink)){
                                     System.out.println("Deleted link");
-                                };
+                                }
                                 closeCurrentPopup();
                             }
                         }
