@@ -1,24 +1,26 @@
 package visual.scripting;
 
 import imgui.*;
-import imgui.extension.imguifiledialog.ImGuiFileDialog;
 import imgui.extension.imnodes.ImNodes;
 import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import imgui.type.ImInt;
 import imgui.type.ImString;
 import org.lwjgl.glfw.GLFW;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.PluginManager;
 import org.pf4j.PluginWrapper;
+import visual.scripting.node.Node;
+import visual.scripting.node.NodeEntry;
+import visual.scripting.node.NodeSplitFlow;
+import visual.scripting.node.NodeVisualTest;
 
 import java.io.*;
-import java.net.URLClassLoader;
+import java.lang.reflect.Constructor;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static imgui.ImGui.*;
 import static imgui.flag.ImGuiWindowFlags.*;
@@ -43,7 +45,11 @@ public class ImGuiWindow {
 
     public static PluginManager pluginManager;
 
+    private String[] languageList;
+
     private String lastMenuAction = null;
+    //used in combo box when creating new graph
+    private ImInt currentLanguageSelected = new ImInt();
 
     public ImGuiWindow(){
         //Create ImGui
@@ -110,6 +116,48 @@ public class ImGuiWindow {
         pluginManager.startPlugins();
 
         List<PluginWrapper> plugins = pluginManager.getPlugins();
+
+
+        GraphWindow graph = new GraphWindow();
+        for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
+            plugin.init(graph);
+        }
+
+        LinkedHashSet<String> languageSet = new LinkedHashSet<>();
+
+        //add built in nodes to list
+        graph.addNodeToList(NodeSplitFlow.class);
+        graph.addNodeToList(NodeEntry.class);
+        graph.addNodeToList(NodeVisualTest.class);
+
+        for (Class<? extends Node> node : graph.nodeList) {
+            Constructor<? extends Node> nodeClass = null;
+            Node instance = null;
+            try {
+                nodeClass = node.getDeclaredConstructor(Graph.class);
+                instance = nodeClass.newInstance(graph.graph);
+                String[] languages = instance.getLanguages();
+
+                for(String language : languages){
+                    System.out.println("Added: " + language);
+                    languageSet.add(language);
+                }
+
+                instance = null;
+                nodeClass = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        graph = null;
+
+        languageList = new String[languageSet.size()];
+        Iterator<String> it = languageSet.iterator();
+        int index = 0;
+        while(it.hasNext()){
+            languageList[index++] = it.next();
+        }
+
     }
 
     private byte[] loadFromResources(String name){
@@ -175,6 +223,9 @@ public class ImGuiWindow {
                 ImString name = new ImString();
                 if(inputText("##", name)){
 
+                }
+                if(combo("Language", currentLanguageSelected, languageList)){
+                    System.out.println(currentLanguageSelected + " : " + languageList[currentLanguageSelected.get()]);
                 }
 
                 if(button("Create")){

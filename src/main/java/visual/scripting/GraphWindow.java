@@ -29,14 +29,14 @@ public class GraphWindow {
 
     private final ImBoolean closable = new ImBoolean(true);
 
-    private final ImGuiWindow window;
-    private final String id;
-    private final Graph graph;
-    private final NodeEditorContext context;
+    private ImGuiWindow window;
+    private String id;
+    protected Graph graph;
+    private NodeEditorContext context;
 //    private boolean windowFocused;
 
 //    private ArrayList<NodeBuilder> nodesTypes = new ArrayList<>();
-    private final ArrayList<Class<? extends Node>> nodeList = new ArrayList<>();
+    protected final ArrayList<Class<? extends Node>> nodeList = new ArrayList<>();
     private final ArrayList<Node> nodeInstanceCache = new ArrayList<>();
 
     private final ImLong LINKA = new ImLong();
@@ -55,6 +55,10 @@ public class GraphWindow {
     private Pin.DataType curSelectedPinDataType = null;
 
     private Texture texture;
+
+    protected GraphWindow(){
+        graph = new Graph();
+    }
 
     public GraphWindow(ImGuiWindow window){
         this.window = window;

@@ -9,6 +9,7 @@ public class NodeVisualTest extends Node {
         setName("Visual Test Node");
         setCategory("Test.category");
         setColor(100, 200, 100, 255);
+        setLanguages(new String[]{"java"});
     }
 
     @Override

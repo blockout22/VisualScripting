@@ -10,6 +10,7 @@ public class Node {
 
     private String CATEGORY = null;
 
+    private String[] languages = new String[0];
     private final Graph graph;
     private int ID;
     private String name = "";
@@ -39,6 +40,17 @@ public class Node {
         this.g = g;
         this.b = b;
         this.a = a;
+    }
+
+    /**
+     * if no languages are set we will assume this node can be used on any language
+     */
+    public void setLanguages(String[] languages){
+        this.languages = languages;
+    }
+
+    public String[] getLanguages(){
+        return languages;
     }
 
     public int getRed(){
