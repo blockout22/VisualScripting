@@ -64,6 +64,37 @@ Submit a pull request if you have a plugin to add to this list
 
 ### Examples 
 
+An example of the Plugin class required by pf4j (nothing is used here it's just a requirement for pf4j to load plugins)
+```java
+import org.pf4j.Plugin;
+import org.pf4j.PluginWrapper;
+
+public class VisualScriptingMaths extends Plugin {
+    public VisualScriptingMaths(PluginWrapper wrapper) {
+        super(wrapper);
+    }
+}
+```
+
+An example of VisualScriptingPlugin class used to add new nodes
+```java
+import nodes.*;
+import visual.scripting.GraphWindow;
+import visual.scripting.VisualScriptingPlugin;
+
+public class ScriptMaths extends VisualScriptingPlugin {
+
+    @Override
+    public void init(GraphWindow graphWindow) {
+        graphWindow.addNodeToList(AddFloat.class);
+        graphWindow.addNodeToList(SubtractFloat.class);
+        graphWindow.addNodeToList(MultiplyFloat.class);
+        graphWindow.addNodeToList(DivideFloat.class);
+        graphWindow.addNodeToList(PrintString.class);
+    }
+}
+```
+
 An example of a node that doesn't require the exec function
 ```java
 import imgui.type.ImString;
