@@ -68,6 +68,15 @@ public class Node {
         return pin;
     }
 
+    /**
+     * Used to fix alignment of output pins with an input pin of choice
+     */
+    public void addOutputSpacer(Node node){
+        int id = Graph.getNextAvailablePinID();
+        Pin pin = new Pin(node, id, null, Pin.PinType.Output, linkID++);
+        outputPins.add(pin);
+    }
+
     public Pin addInputPin(Pin.DataType dataType, Node node){
         int id = Graph.getNextAvailablePinID();
         Pin pin = new Pin(node, id, dataType, Pin.PinType.Input, linkID++);

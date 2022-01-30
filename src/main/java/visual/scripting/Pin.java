@@ -57,6 +57,9 @@ public class Pin {
     }
 
     private void setupData(){
+        if(dataType == null){
+            return;
+        }
         switch (dataType){
             case Flow:
                 break;

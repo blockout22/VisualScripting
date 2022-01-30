@@ -20,7 +20,8 @@ public class NodeVisualTest extends Node {
         addInputPin(Pin.DataType.Double, this);
         addInputPin(Pin.DataType.String, this);
 
-        addOutputPin(Pin.DataType.Flow, this);
+//        addOutputPin(Pin.DataType.Flow, this);
+        addOutputSpacer(this);
         addOutputPin(Pin.DataType.Bool, this);
         addOutputPin(Pin.DataType.Int, this);
         addOutputPin(Pin.DataType.Float, this);

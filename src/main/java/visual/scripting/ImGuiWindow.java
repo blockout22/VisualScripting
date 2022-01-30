@@ -170,7 +170,7 @@ public class ImGuiWindow {
 
             //TODO have user specify the language they are writing in this will be used to filter nodes that are for the selected language
             //languages can(/should) be setup in nodes and then a list of languages can be populated into a combo box
-            if(beginPopup("new_file_popup")){
+            if(beginPopupModal("new_file_popup", NoTitleBar | NoResize )){
                 text("File Name [WIP ...just click create]");
                 ImString name = new ImString();
                 if(inputText("##", name)){
@@ -199,6 +199,7 @@ public class ImGuiWindow {
             }
 
             showDemoWindow();
+            showMetricsWindow();
         }
 
 

@@ -20,6 +20,7 @@ import visual.scripting.node.NodeSplitFlow;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -191,13 +192,13 @@ public class GraphWindow {
                                         if(isItemHovered()){
                                             setNextWindowPos(NodeEditor.toScreenX(getMousePosX()), NodeEditor.toScreenY(getMousePosY() + 10), ImGuiCond.Always);
                                             beginTooltip();
+                                            textUnformatted(inPin.getPinType().name());
                                             textUnformatted("Type: " + inPin.getDataType());
                                             textUnformatted("Value: " + inPin.getData().value);
                                             endTooltip();
                                         }
                                         sameLine();
                                         configurePinUI(inPin);
-
                                     }
 
                                     if(node.width != -1) {
@@ -207,34 +208,40 @@ public class GraphWindow {
                                     if (node.outputPins.size() > i) {
                                         Pin outPin = node.outputPins.get(i);
 
-//                                        NodeEditor.pushStyleVar(NodeEditorStyleVar.PinCorners, 12);
-                                        NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
+                                        if(outPin.getDataType() == null){
+                                            NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
+                                            dummy(1f, 1f);
+                                            NodeEditor.endPin();
+                                        }else {
 
-                                        drawPinShapeAndColor(outPin);
-                                        dummy(10, 10);
-//                                        textUnformatted(" >");
-                                        NodeEditor.pinPivotAlignment(1f, .5f);
-                                        sameLine();
-                                        ImVec2 pos = getCursorPos();
-                                        NodeEditor.endPin();
+                                            NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
 
-                                        if(isItemClicked() && holdingPinID == -1){
+                                            drawPinShapeAndColor(outPin);
+                                            dummy(10, 10);
+                                            NodeEditor.pinPivotAlignment(1f, .5f);
+                                            sameLine();
+                                            ImVec2 pos = getCursorPos();
+                                            NodeEditor.endPin();
+
+                                            if (isItemHovered()) {
+                                                setNextWindowPos(NodeEditor.toScreenX(getMousePosX()), NodeEditor.toScreenY(getMousePosY() + 10), ImGuiCond.Always);
+                                                beginTooltip();
+                                                textUnformatted(outPin.getPinType().name());
+                                                textUnformatted("Type: " + outPin.getDataType());
+                                                textUnformatted("Value: " + outPin.getData().value);
+                                                endTooltip();
+                                            }
+                                        }
+
+                                        if (isItemClicked() && holdingPinID == -1) {
                                             lastActivePin = outPin.getID();
                                         }
-
-                                        if(isItemHovered()){
-                                            setNextWindowPos(NodeEditor.toScreenX(getMousePosX()), NodeEditor.toScreenY(getMousePosY() + 10), ImGuiCond.Always);
-                                            beginTooltip();
-                                            textUnformatted("Type: " + outPin.getDataType());
-                                            textUnformatted("Value: " + outPin.getData().value);
-                                            endTooltip();
-                                        }
-
 //                                        addPin(outPin);
+                                    }else{
+                                        dummy(10, 10);
                                     }
                                     newLine();
                                 }
-
 
 //                                NodeEditor.group(50, 50);
                                 headerMax = new ImVec2(getItemRectMax().x, headerMaxY);
@@ -378,6 +385,21 @@ public class GraphWindow {
                     if(isPopupOpen("node_menu" + id)){
                         final int targetNode = getStateStorage().getInt(getID("delete_node_id"));
                         if(beginPopup("node_menu" + id)){
+                            if(menuItem("Duplicate " + graph.getNodes().get(targetNode).getName())){
+                                Node newInstance = null;
+                                try {
+                                    newInstance = graph.getNodes().get(targetNode).getClass().getDeclaredConstructor(Graph.class).newInstance(graph);
+                                    graph.addNode(newInstance);
+                                    newInstance.init();
+                                    nodeQPos.put(newInstance.getID(), new ImVec2());
+                                    NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                closeCurrentPopup();
+                            }
+
+                            separator();
                             if(menuItem("Delete " + graph.getNodes().get(targetNode).getName()))
                             {
                                 graph.removeNode(targetNode);
