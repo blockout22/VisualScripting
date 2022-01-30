@@ -195,5 +195,5 @@ Plugin-Version: 0.0.1
 | Hierarchy of current Nodes in graph                                                                | :heavy_check_mark: |
 | Workspace design for File Viewer                                                                   | :x:                |
 | Improve UI                                                                                         | :x:                |
-| Examples                                                                                           | :x:                |
+| Examples                                                                                           | :pinching_hand:    |
 | Convert to the more advanced Node Editor More info here https://tinyurl.com/y75w75re               | :heavy_check_mark: |
