@@ -9,7 +9,7 @@ This program does the heavy lifting of making nodes work, to make use of this pr
 Submit a pull request if you have a plugin to add to this list 
 | List                                                                                                                    |
 | ----------------------------------------------------------------------------------------------------------------------- |
-| [Some basic maths](https://github.com/blockout22/VisualScriptingMaths)                                                  |
+| (Minimal plugin that will show you <br/>how easy it is to setup a plugin)<br/>[Some basic maths](https://github.com/blockout22/VisualScriptingMaths)                                                  |
 
 ## Custom Nodes
 
