@@ -11,6 +11,7 @@ import imgui.extension.nodeditor.flag.NodeEditorStyleVar;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.*;
 import imgui.type.*;
+import org.lwjgl.opengl.GL11;
 import visual.scripting.node.Node;
 import visual.scripting.node.NodeVisualTest;
 import visual.scripting.node.NodeEntry;
@@ -129,6 +130,7 @@ public class GraphWindow {
             //checks is value has been changed from clicking the close button
             if(!closable.get()){
                 //should init save
+                GL11.glDeleteTextures(texture.ID);
                 window.removeGraphWindow(this);
             }
 

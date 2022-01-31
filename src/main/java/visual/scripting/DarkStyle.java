@@ -72,7 +72,7 @@ public class DarkStyle {
 
         set(ImGuiCol_Text, new ImVec4(1.00f,1.00f,1.00f,1.00f));
         set(ImGuiCol_TextDisabled, new ImVec4(0.50f,0.50f,0.50f,1.00f));
-        set(ImGuiCol_WindowBg, new ImVec4(0.16f,0.14f,0.14f,0.94f));
+        set(ImGuiCol_WindowBg, new ImVec4(0.16f,0.14f,0.14f,1f));
         set(ImGuiCol_ChildBg, new ImVec4(0.00f,0.00f,0.00f,0.00f));
         set(ImGuiCol_PopupBg, new ImVec4(0.08f,0.08f,0.08f,0.94f));
         set(ImGuiCol_Border, new ImVec4(0.43f,0.43f,0.50f,0.50f));
