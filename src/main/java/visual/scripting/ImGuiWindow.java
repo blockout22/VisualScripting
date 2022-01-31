@@ -226,8 +226,8 @@ public class ImGuiWindow {
 
             //TODO have user specify the language they are writing in this will be used to filter nodes that are for the selected language
             //languages can(/should) be setup in nodes and then a list of languages can be populated into a combo box
-            if(beginPopupModal("new_file_popup", NoTitleBar | NoResize )){
-                text("File Name [WIP ...just click create]");
+            if(beginPopupModal("new_file_popup", NoTitleBar | NoResize | AlwaysAutoResize )){
+                text("File Name");
 
                 if(inputText("##", inputFileName)){
 
@@ -235,13 +235,16 @@ public class ImGuiWindow {
                 if(combo("Language", currentLanguageSelected, languageList)){
                     System.out.println(currentLanguageSelected + " : " + languageList[currentLanguageSelected.get()]);
                 }
+                if(inputFileName.get().length() > 0) {
+                    if (button("Create")) {
+                        //TODO add file name to graph
 
-                if(button("Create")){
-                    //TODO add file name to graph
-                    if(inputFileName.get().length() > 0) {
                         graphWindows.add(new GraphWindow(this, inputFileName.get(), languageList[currentLanguageSelected.get()]));
                         closeCurrentPopup();
+
                     }
+                }else{
+                    textUnformatted("Create");
                 }
                 sameLine();
                 if(button("Close")){
