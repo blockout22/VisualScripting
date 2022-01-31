@@ -19,18 +19,20 @@ public class GraphSaver {
     //Nodes them self's
     //Node position
     //Nodes and their pins they are connected to
-    private static File file = new File("savedGraph.vsgraph");
+//    private static File file = new File("savedGraph.vsgraph");
 
-    private static transient ArrayList<NodeSave> savedNodes = new ArrayList<>();
+//    private static transient ArrayList<NodeSave> savedNodes = new ArrayList<>();
+    private static transient GraphSave graphSave = new GraphSave();
     private static StringBuilder sb = new StringBuilder();
 
     /**
      * Saves nodes to a file [WIP]
      * @param graph
      */
-    public static void save(Graph graph){
+    public static void save(String fileName, Graph graph){
         sb.setLength(0);
-        savedNodes.clear();
+        graphSave.nodeSaves.clear();
+        File file = new File(fileName + ".vsgraph");
         if(!file.exists()){
             try {
                 file.createNewFile();
@@ -39,6 +41,9 @@ public class GraphSaver {
                 return;
             }
         }
+
+        graphSave.language = graph.getLanguage();
+        System.out.println(graphSave.language);
 
         for(Node node : graph.getNodes().values()){
             String className = node.getClass().getName();
@@ -59,10 +64,10 @@ public class GraphSaver {
                 save.pinIDs.add(outputs.getID());
                 save.connectedToList.add(outputs.connectedTo);
             }
-            savedNodes.add(save);
+            graphSave.nodeSaves.add(save);
         }
 
-        for(NodeSave save : savedNodes) {
+        for(NodeSave save : graphSave.nodeSaves) {
             sb.append("class=" + save.className + ":" + "posX=" + save.x + ":" + "posY=" + save.y + ":");
             sb.append("connections[");
             for (int i = 0; i < save.connectedToList.size(); i++) {
@@ -76,7 +81,7 @@ public class GraphSaver {
 
         try {
             Gson json = new GsonBuilder().setPrettyPrinting().create();
-            String output = json.toJson(savedNodes);
+            String output = json.toJson(graphSave);
 
 //            System.out.println(output);
 
@@ -94,17 +99,17 @@ public class GraphSaver {
 
     /**
      * Loads Nodes from a file and adds the to the Graph [WIP]
-     * @param graphWindow
-     * @param graph
      */
-    public static void load(GraphWindow graphWindow, Graph graph) {
+    public static Graph load(String fileName) {
         try {
+            File file = new File(fileName + ".vsgraph");
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             Gson json = new GsonBuilder().setPrettyPrinting().create();
 //            ArrayList<NodeSave> saveList = new ArrayList<>();
 //            TypeToken<ArrayList<NodeSave>> list = new TypeToken<ArrayList<NodeSave>>(){};
-            ArrayList<NodeSave> saveList = json.fromJson(br, new TypeToken<ArrayList<NodeSave>>(){}.getType());
+//            ArrayList<NodeSave> saveList = json.fromJson(br, new TypeToken<ArrayList<NodeSave>>(){}.getType());
+            GraphSave gs = json.fromJson(br, GraphSave.class);
 
 //            String line;
 //            while ((line = br.readLine()) != null) {
@@ -124,11 +129,13 @@ public class GraphSaver {
 //            }
             br.close();
 
-            Node[] loadedNode = new Node[saveList.size()];
+            Node[] loadedNode = new Node[gs.nodeSaves.size()];
+
+            Graph graph = new Graph(gs.language);
 
             //add node to graph and set it's position
-            for (int i = 0; i < saveList.size(); i++) {
-                NodeSave save = saveList.get(i);
+            for (int i = 0; i < gs.nodeSaves.size(); i++) {
+                NodeSave save = gs.nodeSaves.get(i);
                 Class classNode = null;
 
                 try {
@@ -159,13 +166,16 @@ public class GraphSaver {
 
                 if (classNode == null) {
                     System.out.println("Class was null, couldn't load");
-                    return;
+                    return null;
                 }
+
+
 
                 Node node = (Node) classNode.getDeclaredConstructor(Graph.class).newInstance(graph);
                 graph.addNode(node);
+                node.setLoadedPosition(save.x, save.y);
                 node.init();
-                NodeEditor.setNodePosition(node.getID(), save.x, save.y);
+//                NodeEditor.setNodePosition(node.getID(), save.x, save.y);
                 loadedNode[i] = node;
             }
 
@@ -176,7 +186,7 @@ public class GraphSaver {
             for (int i = 0; i < loadedNode.length; i++) {
                 Node node = loadedNode[i];
                 if(node != null){
-                    NodeSave save = saveList.get(i);
+                    NodeSave save = gs.nodeSaves.get(i);
 //                    System.out.println(save.className);
 
                     int index = 0;
@@ -201,7 +211,7 @@ public class GraphSaver {
                     }
                 }
             }
-
+            return graph;
 
         }catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -216,10 +226,17 @@ public class GraphSaver {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
+
+        return null;
+    }
+
+    private static class GraphSave{
+        private String language;
+        private ArrayList<NodeSave> nodeSaves = new ArrayList<>();
     }
 
 
-    public static class NodeSave{
+    private static class NodeSave{
         private String className;
         private float x;
         private float y;

@@ -1,0 +1,31 @@
+{
+  "language": "java",
+  "nodeSaves": [
+    {
+      "className": "visual.scripting.node.NodeEntry",
+      "x": 0.0,
+      "y": 0.0,
+      "pinIDs": [
+        1001
+      ],
+      "connectedToList": [
+        1002
+      ]
+    },
+    {
+      "className": "nodes.PrintString",
+      "x": 104.0,
+      "y": -10.0,
+      "pinIDs": [
+        1002,
+        1004,
+        1003
+      ],
+      "connectedToList": [
+        1001,
+        -1,
+        -1
+      ]
+    }
+  ]
+}

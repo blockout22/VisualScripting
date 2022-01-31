@@ -9,6 +9,7 @@ import java.util.Map;
 public class Graph {
 
 
+    private String language;
     private final Map<Integer, Node> nodes = new HashMap<>();
     private ArrayList<Integer> queuedForRemoval = new ArrayList<>();
 
@@ -16,11 +17,23 @@ public class Graph {
     private static int nextNodeID = 1;
     private static int nextPinID = 1000;
 
+    public Graph(String language){
+        this.language = language;
+    }
+
     public boolean addNode(Node node){
         node.setID(nextNodeID++);
         node.setName(node.getName());
         nodes.put(node.getID(), node);
         return true;
+    }
+
+    public String getLanguage(){
+        return language;
+    }
+
+    public void setLanguage(String language){
+        this.language = language;
     }
 
     public void removeNode(int node){

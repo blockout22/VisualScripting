@@ -61,7 +61,7 @@ public class AdvancedGraphWindow {
         this.window = window;
         //id will be changed to file name
         this.id = "new" + new Random().nextInt(100);
-        graph = new Graph();
+        graph = new Graph("who cares I need to delete this class anyways");
 //        context = ImNodes.editorContextCreate();
 
         NodeEditorConfig config = new NodeEditorConfig();
@@ -180,7 +180,7 @@ public class AdvancedGraphWindow {
             //used to call the method used to convert the nodes to the nodes output text
             if(button("Compile")){
                 EDITOR.setText(nodeCompiler.compile(graph));
-                GraphSaver.save(graph);
+                GraphSaver.save("don't care",graph);
             }
 
             //loads the nodes into the graph from a save file

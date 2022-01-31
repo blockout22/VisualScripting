@@ -1,5 +1,6 @@
 package visual.scripting.node;
 
+import imgui.ImVec2;
 import visual.scripting.Graph;
 import visual.scripting.Pin;
 import visual.scripting.node.style.NodeStyle;
@@ -26,6 +27,7 @@ public class Node {
     private int a = 125;
 
     public float width = -1;
+    private ImVec2 loadedPosition = new ImVec2();
 
     public Node(Graph graph){
         this.graph = graph;
@@ -40,6 +42,23 @@ public class Node {
         this.g = g;
         this.b = b;
         this.a = a;
+    }
+
+    /**
+     * Only used during loading phase to set the positions of the nodes when the graph is loaded from a save file
+     * @param x
+     * @param y
+     */
+    public void setLoadedPosition(float x, float y){
+        this.loadedPosition.set(x, y);
+    }
+
+    /**
+     * Only used during loading phase to set the positions of the nodes when the graph is loaded from a save file
+     * @return
+     */
+    public ImVec2 getLoadedPosition(){
+        return loadedPosition;
     }
 
     /**

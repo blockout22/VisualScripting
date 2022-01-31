@@ -59,15 +59,29 @@ public class GraphWindow {
 
     private Texture texture;
 
+    private boolean justLoadedFromFile = false;
+
     protected GraphWindow(){
-        graph = new Graph();
+        graph = new Graph("");
     }
 
-    public GraphWindow(ImGuiWindow window){
+    public GraphWindow(ImGuiWindow window, String filename, Graph graph){
         this.window = window;
-        //id will be changed to file name
-        this.id = "new" + new Random().nextInt(100);
-        graph = new Graph();
+        this.id = filename;
+        this.graph = graph;
+        justLoadedFromFile = true;
+        init();
+    }
+
+    public GraphWindow(ImGuiWindow window, String fileName, String language){
+        this.window = window;
+        this.id = fileName;
+        graph = new Graph(language);
+        graph.addNode(new NodeEntry(graph));
+        init();
+    }
+
+    private void init(){
         NodeEditorConfig config = new NodeEditorConfig();
         config.setSettingsFile(null);
         context = new NodeEditorContext(config);
@@ -76,7 +90,6 @@ public class GraphWindow {
         addNodeToList(NodeSplitFlow.class);
         addNodeToList(NodeVisualTest.class);
         //add a starter node to the graph
-        graph.addNode(new NodeEntry(graph));
 
         for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
             plugin.init(this);
@@ -120,15 +133,15 @@ public class GraphWindow {
             }
 
             //used to call the method used to convert the nodes to the nodes output text
-            if(button("Compile")){
+            if(button("Save & Compile")){
                 EDITOR.setText(nodeCompiler.compile(graph));
-                GraphSaver.save(graph);
+                GraphSaver.save(id, graph);
             }
 
             //loads the nodes into the graph from a save file
-            if(button("load")){
-                GraphSaver.load(this, graph);
-            }
+//            if(button("load")){
+//                GraphSaver.load(this, graph);
+//            }
 
             //clears all nodes from the graph and resets the graph
             //this may cause an ConcurrentModificationException, needs testing
@@ -168,6 +181,15 @@ public class GraphWindow {
                     float headerMaxY;
                     NodeEditor.begin("Editor");
                     {
+                        //check if loaded from save file
+                        if(justLoadedFromFile){
+                            System.out.println("Setting node positions from loaded file");
+                            for(Node node : graph.getNodes().values()) {
+                                NodeEditor.setNodePosition(node.getID(), node.getLoadedPosition().x, node.getLoadedPosition().y);
+                            }
+                            justLoadedFromFile = false;
+                        }
+
                         for (Node node : graph.getNodes().values()) {
 //                            headerMin = new ImVec2();
 //                            headerMax = new ImVec2();

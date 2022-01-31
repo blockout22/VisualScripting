@@ -50,6 +50,7 @@ public class ImGuiWindow {
     private String lastMenuAction = null;
     //used in combo box when creating new graph
     private ImInt currentLanguageSelected = new ImInt();
+    private ImString inputFileName = new ImString();
 
     public ImGuiWindow(){
         //Create ImGui
@@ -198,15 +199,22 @@ public class ImGuiWindow {
             if(begin("FileViewer (current directory [WIP])")){
 
                 for(File file : workingDir.listFiles()) {
-                    if(button(file.getName())){
-                        System.out.println(file.length());
-                    }
-                    sameLine();
-                    if(file.isDirectory()){
-                        text("Directory");
-                    }else{
-                        text("File");
-                    }
+                        if (file.isDirectory()) {
+                            if (button(file.getName())) {
+                                System.out.println(file.length());
+                            }
+                            text("Directory");
+                        } else {
+                            if(file.getName().endsWith(".vsgraph")) {
+                                //TODO check if the file is already open
+                                if(button(file.getName())){
+                                    Graph graph = GraphSaver.load(file.getName().split("\\.")[0]);
+//                                    System.out.println(graph.getLanguage());
+//                                    graphWindows.add(new GraphWindow(this, "new", "java"));
+                                    graphWindows.add(new GraphWindow(this, file.getName().split("\\.")[0], graph));
+                                }
+                            }
+                        }
                 }
             }
             end();
@@ -220,8 +228,8 @@ public class ImGuiWindow {
             //languages can(/should) be setup in nodes and then a list of languages can be populated into a combo box
             if(beginPopupModal("new_file_popup", NoTitleBar | NoResize )){
                 text("File Name [WIP ...just click create]");
-                ImString name = new ImString();
-                if(inputText("##", name)){
+
+                if(inputText("##", inputFileName)){
 
                 }
                 if(combo("Language", currentLanguageSelected, languageList)){
@@ -230,8 +238,10 @@ public class ImGuiWindow {
 
                 if(button("Create")){
                     //TODO add file name to graph
-                    graphWindows.add(new GraphWindow(this));
-                    closeCurrentPopup();
+                    if(inputFileName.get().length() > 0) {
+                        graphWindows.add(new GraphWindow(this, inputFileName.get(), languageList[currentLanguageSelected.get()]));
+                        closeCurrentPopup();
+                    }
                 }
                 sameLine();
                 if(button("Close")){
