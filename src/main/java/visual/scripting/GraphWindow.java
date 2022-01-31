@@ -54,6 +54,9 @@ public class GraphWindow {
 
     private Pin.DataType curSelectedPinDataType = null;
 
+    private int openSourcePreview = 0;
+    private int currentNodeSourceID = -1;
+
     private Texture texture;
 
     protected GraphWindow(){
@@ -339,6 +342,7 @@ public class GraphWindow {
                             }
                         }
                     }
+                    ImVec2 previewRect = getItemRectMax();
 //                    windowFocused = isWindowHovered();
 
                     if(NodeEditor.beginCreate()) {
@@ -372,7 +376,6 @@ public class GraphWindow {
                         }
                     }
                     NodeEditor.endDelete();
-
 
                     NodeEditor.suspend();
 
@@ -413,8 +416,32 @@ public class GraphWindow {
                                 graph.removeNode(targetNode);
                                 closeCurrentPopup();
                             }
+
+                            if(menuItem("Preview Source")){
+                                currentNodeSourceID = targetNode;
+                                openSourcePreview = 1;
+                            }
                         }
                         endPopup();
+                    }
+
+                    if(openSourcePreview == 1){
+                        openSourcePreview = 0;
+                        openPopup("PreviewSource");
+                    }
+
+                    if(isPopupOpen("PreviewSource")) {
+                        if (beginPopupModal("PreviewSource", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize)) {
+                            StringBuilder sb = new StringBuilder();
+                            graph.getNodes().get(currentNodeSourceID).printSource(sb);
+                            text(sb.toString());
+
+                            if (button("Close")) {
+                                closeCurrentPopup();
+                            }
+                            endPopup();
+//                        System.out.println(sb);
+                        }
                     }
 
                     final long linkWithContextMenu = NodeEditor.getLinkWithContextMenu();
