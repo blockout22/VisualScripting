@@ -25,6 +25,8 @@ public class GraphSaver {
     private static transient GraphSave graphSave = new GraphSave();
     private static StringBuilder sb = new StringBuilder();
 
+    static String workspace = "Workspace";
+
     /**
      * Saves nodes to a file [WIP]
      * @param graph
@@ -32,7 +34,7 @@ public class GraphSaver {
     public static void save(String fileName, Graph graph){
         sb.setLength(0);
         graphSave.nodeSaves.clear();
-        File file = new File(fileName + ".vsgraph");
+        File file = new File(workspace + File.separator + fileName + ".vsgraph");
         if(!file.exists()){
             try {
                 file.createNewFile();
@@ -102,7 +104,7 @@ public class GraphSaver {
      */
     public static Graph load(String fileName) {
         try {
-            File file = new File(fileName + ".vsgraph");
+            File file = new File(workspace + File.separator + fileName + ".vsgraph");
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             Gson json = new GsonBuilder().setPrettyPrinting().create();

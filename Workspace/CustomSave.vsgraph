@@ -14,8 +14,8 @@
     },
     {
       "className": "nodes.PrintString",
-      "x": 104.0,
-      "y": -10.0,
+      "x": 272.0,
+      "y": 6.0,
       "pinIDs": [
         1002,
         1004,
