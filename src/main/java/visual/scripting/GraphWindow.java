@@ -135,9 +135,18 @@ public class GraphWindow {
             }
 
             //used to call the method used to convert the nodes to the nodes output text
-            if(button("Save & Compile")){
+            if(button("Save & Convert")){
+                //Converts to Source
                 EDITOR.setText(nodeCompiler.compile(graph));
+                //Saves Node Graph information (nodes, nodes positions, node links etc...)
                 GraphSaver.save(id, graph);
+            }
+
+            if(isItemHovered()){
+                setNextWindowPos(getMousePosOnOpeningCurrentPopupX(), getMousePosOnOpeningCurrentPopupY() + 10, ImGuiCond.Always);
+                beginTooltip();
+                textUnformatted("Saves & converts nodes to source code");
+                endTooltip();
             }
 
             //loads the nodes into the graph from a save file

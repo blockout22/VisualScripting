@@ -8,7 +8,7 @@ public class NodeCompiler {
     private StringBuilder output = new StringBuilder();
 
     /**
-     * converts nodes linked to Start node to text
+     * converts nodes to source each section starting from NodeEntry
      * @param graph
      * @return
      */

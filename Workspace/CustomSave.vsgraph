@@ -24,7 +24,37 @@
       "connectedToList": [
         1001,
         -1,
+        1005
+      ]
+    },
+    {
+      "className": "nodes.PrintString",
+      "x": 521.0,
+      "y": 255.0,
+      "pinIDs": [
+        1005,
+        1007,
+        1006
+      ],
+      "connectedToList": [
+        1003,
+        1010,
         -1
+      ]
+    },
+    {
+      "className": "nodes.MultiplyFloat",
+      "x": 192.0,
+      "y": 277.0,
+      "pinIDs": [
+        1008,
+        1009,
+        1010
+      ],
+      "connectedToList": [
+        -1,
+        -1,
+        1007
       ]
     }
   ]

@@ -13,7 +13,7 @@ public class NodeEntry extends Node{
         setColor(255, 255, 255, 255);
 
         output = addOutputPin(Pin.DataType.Flow, this);
-        setLanguages(new String[]{"java", "python", "c++"});
+        //setLanguages(new String[]{"java", "python", "c++"});
     }
 
     @Override

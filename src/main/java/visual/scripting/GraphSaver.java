@@ -54,6 +54,7 @@ public class GraphSaver {
 //            getNodeEditorSpacePos(node.getID(), pos);
 
             NodeSave save = new NodeSave();
+            //TODO save pin values
             save.className = className;
             save.x = pos.x;
             save.y = pos.y;
