@@ -10,14 +10,14 @@ Submit a pull request if you have a plugin to add to this list
 | List                                                                                                                    |
 | ----------------------------------------------------------------------------------------------------------------------- |
 | (Minimal plugin that will show you <br/>how easy it is to setup a plugin)<br/>[Some basic maths](https://github.com/blockout22/VisualScriptingMaths)                                                  |
+| [Json](https://github.com/blockout22/VisualScriptingJson) |
 
 ## Custom Nodes
 
 ### Add Nodes using plugins
 
-**Requirements** (See [POM.xml](pom.xml) for full list of dependencies)
+**Requirements** (See [https://github.com/blockout22/VisualScriptingJson/blob/main/pom.xml](pom.xml) for example of POM file)
 * VisualScripting.jar or this repo (repo should be more updated)
-* LWJGL which contains GLFW module
 * ImGui 
 ```html
 <dependency>
@@ -43,15 +43,6 @@ Submit a pull request if you have a plugin to add to this list
      <artifactId>pf4j</artifactId>
      <version>${pf4j.version}</version>
  </dependency> 
- ```
- 
- * Gson
- ```html
- <dependency>
-    <groupId>com.google.code.gson</groupId>
-    <artifactId>gson</artifactId>
-    <version>2.8.9</version>
-</dependency>
  ```
  
  ### Making the plugin
