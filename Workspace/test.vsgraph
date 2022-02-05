@@ -2,129 +2,37 @@
   "language": "java",
   "nodeSaves": [
     {
-      "className": "nodes.AddFloat",
-      "x": -56.0,
-      "y": 37.0,
-      "inputPins": [
-        {
-          "ID": 1000,
-          "type": "Float",
-          "value": "1.0",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1001,
-          "type": "Float",
-          "value": "2.0",
-          "connectedTo": -1
-        }
-      ],
+      "className": "visual.scripting.node.NodeEntry",
+      "x": -1028.0,
+      "y": -500.0,
+      "inputPins": [],
       "outputPins": [
         {
-          "ID": 1002,
-          "type": "Float",
-          "connectedTo": 1003
+          "ID": 14619,
+          "type": "Flow",
+          "connectedTo": 14620
         }
       ]
     },
     {
-      "className": "nodes.SubtractFloat",
-      "x": 216.0,
-      "y": 5.0,
+      "className": "visual.scripting.node.NodeSplitFlow",
+      "x": -914.0,
+      "y": -544.0,
       "inputPins": [
         {
-          "ID": 1003,
-          "type": "Float",
-          "value": "3.0",
-          "connectedTo": 1002
-        },
-        {
-          "ID": 1004,
-          "type": "Float",
-          "value": "3.0",
-          "connectedTo": -1
+          "ID": 14620,
+          "type": "Flow",
+          "connectedTo": 14619
         }
       ],
       "outputPins": [
         {
-          "ID": 1005,
-          "type": "Float",
-          "connectedTo": 1007
-        }
-      ]
-    },
-    {
-      "className": "nodes.MultiplyFloat",
-      "x": 456.0,
-      "y": -27.0,
-      "inputPins": [
-        {
-          "ID": 1006,
-          "type": "Float",
-          "value": "4.0",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1007,
-          "type": "Float",
-          "value": "0.0",
-          "connectedTo": 1005
-        }
-      ],
-      "outputPins": [
-        {
-          "ID": 1008,
-          "type": "Float",
-          "connectedTo": 1009
-        }
-      ]
-    },
-    {
-      "className": "nodes.DivideFloat",
-      "x": 688.0,
-      "y": -27.0,
-      "inputPins": [
-        {
-          "ID": 1009,
-          "type": "Float",
-          "value": "0.0",
-          "connectedTo": 1008
-        },
-        {
-          "ID": 1010,
-          "type": "Float",
-          "value": "5.0",
-          "connectedTo": -1
-        }
-      ],
-      "outputPins": [
-        {
-          "ID": 1011,
-          "type": "Float",
-          "connectedTo": 1014
-        }
-      ]
-    },
-    {
-      "className": "nodes.PrintString",
-      "x": 968.0,
-      "y": -90.0,
-      "inputPins": [
-        {
-          "ID": 1012,
+          "ID": 14621,
           "type": "Flow",
           "connectedTo": -1
         },
         {
-          "ID": 1014,
-          "type": "Float",
-          "value": "0.0",
-          "connectedTo": 1011
-        }
-      ],
-      "outputPins": [
-        {
-          "ID": 1013,
+          "ID": 14622,
           "type": "Flow",
           "connectedTo": -1
         }

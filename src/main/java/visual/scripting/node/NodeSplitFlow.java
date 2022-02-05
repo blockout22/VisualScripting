@@ -2,6 +2,8 @@ package visual.scripting.node;
 
 import visual.scripting.Graph;
 import visual.scripting.Pin;
+import visual.scripting.ui.Button;
+import visual.scripting.ui.listeners.ClickListener;
 
 public class NodeSplitFlow extends Node{
 
@@ -15,6 +17,13 @@ public class NodeSplitFlow extends Node{
 
     @Override
     public void init() {
+        Button button = addButton("Add Output Pin");
+        button.addClickListener(new ClickListener() {
+            @Override
+            public void onClicked() {
+                addOutputPin(Pin.DataType.Flow, getSelf());
+            }
+        });
         input = addInputPin(Pin.DataType.Flow, this);
         output1 = addOutputPin(Pin.DataType.Flow, this);
         output2 = addOutputPin(Pin.DataType.Flow, this);

@@ -224,6 +224,7 @@ public class GraphSaver {
 //                    }
 
                     for (int j = 0; j < save.inputPins.size(); j++) {
+                        //TODO check data type before adding
                         if(j >= node.inputPins.size()){
                             node.addInputPin(Pin.DataType.String, node);
                         }
@@ -237,6 +238,12 @@ public class GraphSaver {
                     }
 
                     for (int j = 0; j < save.outputPins.size(); j++) {
+
+                        //TODO check data type before adding
+                        if(j >= node.outputPins.size()){
+                            node.addOutputPin(Pin.DataType.Flow, node);
+                        }
+
                         node.outputPins.get(j).setID(save.outputPins.get(j).ID);
                         if(save.outputPins.get(j).connectedTo != -1){
                             node.outputPins.get(j).connectedTo = save.outputPins.get(j).connectedTo;

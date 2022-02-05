@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class Node {
 
+    private Node self;
     private String CATEGORY = null;
 
     private String[] languages = new String[0];
@@ -33,7 +34,13 @@ public class Node {
     public ArrayList<Button> buttons = new ArrayList<>();
 
     public Node(Graph graph){
+        this.self = this;
         this.graph = graph;
+    }
+
+    public Node getSelf()
+    {
+        return self;
     }
 
     public void init(){
