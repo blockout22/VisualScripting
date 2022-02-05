@@ -3,8 +3,8 @@
   "nodeSaves": [
     {
       "className": "nodes.JsonEntry",
-      "x": 888.0,
-      "y": 230.0,
+      "x": 1320.0,
+      "y": 24.0,
       "inputPins": [
         {
           "ID": 1015,
@@ -47,6 +47,18 @@
           "type": "String",
           "value": "\"seven\": \"7\"",
           "connectedTo": 1049
+        },
+        {
+          "ID": 1050,
+          "type": "String",
+          "value": "\"MyBoolean\": true",
+          "connectedTo": 1053
+        },
+        {
+          "ID": 1054,
+          "type": "String",
+          "value": "\"MyInteger\": 4",
+          "connectedTo": 1057
         }
       ],
       "outputPins": []
@@ -54,7 +66,7 @@
     {
       "className": "nodes.Node_String",
       "x": 392.0,
-      "y": 509.0,
+      "y": 597.0,
       "inputPins": [
         {
           "ID": 1025,
@@ -80,7 +92,7 @@
     {
       "className": "nodes.Node_String",
       "x": 392.0,
-      "y": 381.0,
+      "y": 437.0,
       "inputPins": [
         {
           "ID": 1032,
@@ -106,7 +118,7 @@
     {
       "className": "nodes.Node_String",
       "x": 392.0,
-      "y": 253.0,
+      "y": 284.0,
       "inputPins": [
         {
           "ID": 1035,
@@ -132,7 +144,7 @@
     {
       "className": "nodes.Node_String",
       "x": 392.0,
-      "y": 133.0,
+      "y": 149.0,
       "inputPins": [
         {
           "ID": 1038,
@@ -184,7 +196,7 @@
     {
       "className": "nodes.Node_String",
       "x": 392.0,
-      "y": -123.0,
+      "y": -155.0,
       "inputPins": [
         {
           "ID": 1044,
@@ -210,7 +222,7 @@
     {
       "className": "nodes.Node_String",
       "x": 392.0,
-      "y": 637.0,
+      "y": 757.0,
       "inputPins": [
         {
           "ID": 1047,
@@ -230,6 +242,58 @@
           "ID": 1049,
           "type": "String",
           "connectedTo": 1023
+        }
+      ]
+    },
+    {
+      "className": "nodes.Node_Boolean",
+      "x": 968.0,
+      "y": 476.0,
+      "inputPins": [
+        {
+          "ID": 1051,
+          "type": "String",
+          "value": "MyBoolean",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1052,
+          "type": "Bool",
+          "value": "true",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1053,
+          "type": "String",
+          "connectedTo": 1050
+        }
+      ]
+    },
+    {
+      "className": "nodes.Node_Integer",
+      "x": 968.0,
+      "y": 636.0,
+      "inputPins": [
+        {
+          "ID": 1055,
+          "type": "String",
+          "value": "MyInteger",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1056,
+          "type": "Int",
+          "value": "4",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1057,
+          "type": "String",
+          "connectedTo": 1054
         }
       ]
     }

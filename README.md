@@ -206,6 +206,10 @@ Plugin-Version: 0.0.1
 ![img](Images/example3.png)
 ![img](Images/example4.png)
 
+Image of the [Json](https://github.com/blockout22/VisualScriptingJson) plugin
+### 
+![img](Images/example5.png)
+
 ## Feature List / TODO LIST
 
 | TODO                                                                                               | Completed          |
