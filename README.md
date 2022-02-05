@@ -16,7 +16,7 @@ Submit a pull request if you have a plugin to add to this list
 
 ### Add Nodes using plugins
 
-**Requirements** (See [https://github.com/blockout22/VisualScriptingJson/blob/main/pom.xml](pom.xml) for example of POM file)
+**Requirements** (See [POM.xml](https://github.com/blockout22/VisualScriptingJson/blob/main/pom.xml) for example of POM file)
 * VisualScripting.jar or this repo (repo should be more updated)
 * ImGui 
 ```html
