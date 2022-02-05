@@ -280,7 +280,10 @@ public class GraphWindow {
                                             endTooltip();
                                         }
                                         sameLine();
+                                        beginGroup();
                                         configurePinUI(inPin);
+                                        text(inPin.getName());
+                                        endGroup();
                                     }
 
                                     if(node.width != -1) {

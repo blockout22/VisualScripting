@@ -112,11 +112,13 @@ public class Pin {
         return dataType;
     }
 
-    public void setName(String name){
+    public Pin setName(String name){
         if(name == null){
             name = "";
         }
         this.name = name;
+
+        return this;
     }
 
     public String getName(){

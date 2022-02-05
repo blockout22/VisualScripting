@@ -15,11 +15,11 @@ public class NodeVisualTest extends Node {
     @Override
     public void init() {
         addInputPin(Pin.DataType.Flow, this);
-        addInputPin(Pin.DataType.Bool, this);
-        addInputPin(Pin.DataType.Int, this);
-        addInputPin(Pin.DataType.Float, this);
-        addInputPin(Pin.DataType.Double, this);
-        addInputPin(Pin.DataType.String, this);
+        addInputPin(Pin.DataType.Bool, this).setName("Boolean");
+        addInputPin(Pin.DataType.Int, this).setName("Integer");
+        addInputPin(Pin.DataType.Float, this).setName("Float");
+        addInputPin(Pin.DataType.Double, this).setName("Double");
+        addInputPin(Pin.DataType.String, this).setName("String");
 
 //        addOutputPin(Pin.DataType.Flow, this);
         addOutputSpacer(this);
