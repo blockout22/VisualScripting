@@ -95,6 +95,7 @@ public class GraphWindow {
         context = new NodeEditorContext(config);
 
         //add a node to allow more than one flow
+        addNodeToList(NodeEntry.class);
         addNodeToList(NodeSplitFlow.class);
         addNodeToList(NodeVisualTest.class);
         //add a starter node to the graph
@@ -190,7 +191,7 @@ public class GraphWindow {
             //this may cause an ConcurrentModificationException, needs testing
             if(button("Clear Graph")){
                 graph.getNodes().clear();
-                graph.addNode(new NodeEntry(graph));
+//                graph.addNode(new NodeEntry(graph));
             }
 
             if(beginTabBar("TabBar")) {

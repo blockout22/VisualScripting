@@ -78,6 +78,7 @@ public class Graph {
     public static int getNextAvailablePinID(){
         return nextPinID++;
     }
+
     public void setHighestPinID(int id){
         if (id > nextPinID){
             nextPinID = id;

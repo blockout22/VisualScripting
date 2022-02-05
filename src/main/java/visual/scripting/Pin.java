@@ -96,7 +96,7 @@ public class Pin {
 
     public void setID(int id){
         this.ID = id;
-        getNode().getGraph().setHighestPinID(id);
+        getNode().getGraph().setHighestPinID(++id);
     }
 
     public int getID(){
