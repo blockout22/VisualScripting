@@ -228,3 +228,4 @@ Plugin-Version: 0.0.1
 | Improve UI                                                                                         | :x:                |
 | Examples                                                                                           | :pinching_hand:    |
 | Convert to the more advanced Node Editor More info here https://tinyurl.com/y75w75re               | :heavy_check_mark: |
+| Variables                                                                                          | :x:                |
