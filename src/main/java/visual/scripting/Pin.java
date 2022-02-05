@@ -44,6 +44,7 @@ public class Pin {
     private NodeData data;
 
     private String variable;
+    private boolean canDelete = false;
 
 //    public ImVec2 spacing;
 
@@ -156,6 +157,14 @@ public class Pin {
 
     public Node getNode() {
         return node;
+    }
+
+    public boolean isCanDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(boolean canDelete) {
+        this.canDelete = canDelete;
     }
 }
 

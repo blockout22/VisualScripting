@@ -413,7 +413,7 @@ public class GraphWindow {
                             }
                         }
                     }
-                    ImVec2 previewRect = getItemRectMax();
+//                    ImVec2 previewRect = getItemRectMax();
 //                    windowFocused = isWindowHovered();
 
                     if(NodeEditor.beginCreate()) {
@@ -456,6 +456,26 @@ public class GraphWindow {
                         NodeEditor.selectNode(nodeNavigateTo, false);
                         NodeEditor.navigateToSelection(false, 1.5f);
                         nodeNavigateTo = -1;
+                    }
+
+                    final long pinWithContextMenu = NodeEditor.getPinWithContextMenu();
+                    if(pinWithContextMenu != -1){
+                        openPopup("pin_menu" + id);
+                        getStateStorage().setInt(getID("node_pin_id"), (int)pinWithContextMenu);
+                    }
+
+                    if(isPopupOpen("pin_menu" + id)){
+                        final int targetPin = getStateStorage().getInt(getID("node_pin_id"));
+                        Pin pin = graph.findPinById(targetPin);
+                        if(pin.isCanDelete()) {
+                            if (beginPopup("pin_menu" + id)) {
+                                if(menuItem("Delete Pin")) {
+                                    pin.getNode().removePinById(targetPin);
+                                    closeCurrentPopup();
+                                }
+                            }
+                            endPopup();
+                        }
                     }
 
                     final long nodeWithContextMenu = NodeEditor.getNodeWithContextMenu();

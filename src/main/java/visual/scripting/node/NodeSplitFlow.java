@@ -21,7 +21,8 @@ public class NodeSplitFlow extends Node{
         button.addClickListener(new ClickListener() {
             @Override
             public void onClicked() {
-                addOutputPin(Pin.DataType.Flow, getSelf());
+                Pin pin = addOutputPin(Pin.DataType.Flow, getSelf());
+                pin.setCanDelete(true);
             }
         });
         input = addInputPin(Pin.DataType.Flow, this);
