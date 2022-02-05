@@ -39,7 +39,7 @@ public class ImGuiWindow {
     private ArrayList<GraphWindow> graphWindows = new ArrayList<>();
     private ArrayList<GraphWindow> queueRemoveGraphWindow = new ArrayList<>();
 
-    private File workingDir = new File(System.getProperty("user.dir") + File.separator + "Workspace");
+    public static File workingDir = new File(System.getProperty("user.dir") + File.separator + "Workspace");
 
     private DarkStyle darkStyle;
 

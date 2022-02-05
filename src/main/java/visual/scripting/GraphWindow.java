@@ -17,6 +17,9 @@ import visual.scripting.node.NodeVisualTest;
 import visual.scripting.node.NodeEntry;
 import visual.scripting.node.NodeSplitFlow;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -137,7 +140,24 @@ public class GraphWindow {
             //used to call the method used to convert the nodes to the nodes output text
             if(button("Save & Convert")){
                 //Converts to Source
-                EDITOR.setText(nodeCompiler.compile(graph));
+                String text = nodeCompiler.compile(graph);
+                File file = new File(ImGuiWindow.workingDir.getAbsolutePath().toString() + File.separator + id + "." + graph.getLanguage());
+                if(!file.exists()){
+                    try {
+                        file.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                try {
+                    BufferedWriter br = new BufferedWriter(new FileWriter(file));
+                    br.write(text);
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                EDITOR.setText(text);
                 //Saves Node Graph information (nodes, nodes positions, node links etc...)
                 GraphSaver.save(id, graph);
             }
