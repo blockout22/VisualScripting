@@ -481,7 +481,7 @@ public class GraphWindow {
                                         Global.setPinValue(newInstance.inputPins.get(i), String.valueOf(target.inputPins.get(i).getData().value));
                                     }
 
-                                    //output pins are usually set based on the input pins no need to duplicate 
+                                    //output pins are usually set based on the input pins no need to duplicate
 //                                    for (int i = 0; i < newInstance.outputPins.size(); i++) {
 //                                      Global.setPinValue(newInstance.outputPins.get(i), String.valueOf(target.outputPins.get(i).getData().value));
 //                                    }
@@ -678,6 +678,19 @@ public class GraphWindow {
 
     private void createContextMenuItem(Node instance, int depth) {
         if(instance.getCategory() != null) {
+            String[] languages = instance.getLanguages();
+            boolean shouldAdd = false;
+            for(String lang : languages){
+                if(lang.equals(graph.getLanguage())){
+                    shouldAdd = true;
+                    break;
+                }
+            }
+
+            if(!shouldAdd){
+                return;
+            }
+
             String[] cats = instance.getCategory().split("\\.");
 //            for (int i = 0; i < cats.length; i++) {
 //                System.out.println(cats[i]);
