@@ -230,7 +230,7 @@ public class GraphSaver {
                         }
 
                         node.inputPins.get(j).setID(save.inputPins.get(j).ID);
-                        setPinValue(node.inputPins.get(j), save.inputPins.get(j));
+                        Global.setPinValue(node.inputPins.get(j), save.inputPins.get(j).value);
 
                         if(save.inputPins.get(j).connectedTo != -1){
                             node.inputPins.get(j).connectedTo = save.inputPins.get(j).connectedTo;
@@ -275,36 +275,6 @@ public class GraphSaver {
         }
 
         return null;
-    }
-
-    private static void setPinValue(Pin pin, PinData pinData){
-        switch (pin.getDataType()){
-            case Bool:
-                NodeData<ImBoolean> boolData = pin.getData();
-                boolData.value.set(Boolean.parseBoolean(pinData.value));
-                break;
-            case Int:
-                NodeData<ImInt> intData = pin.getData();
-                intData.value.set(Integer.parseInt(pinData.value));
-                break;
-            case Float:
-                NodeData<ImFloat> floatData = pin.getData();
-                floatData.value.set(Float.parseFloat(pinData.value));
-                break;
-            case Double:
-                NodeData<ImDouble> doubleData = pin.getData();
-                doubleData.value.set(Double.parseDouble(pinData.value));
-                break;
-            case String:
-                NodeData<ImString> stringData = pin.getData();
-                stringData.value.set(pinData.value);
-                break;
-            case Object:
-//                data.setValue();
-                break;
-            case Function:
-                break;
-        }
     }
 
     private static class GraphSave{

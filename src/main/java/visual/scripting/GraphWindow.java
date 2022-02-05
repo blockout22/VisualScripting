@@ -470,11 +470,21 @@ public class GraphWindow {
                             if(menuItem("Duplicate " + graph.getNodes().get(targetNode).getName())){
                                 Node newInstance = null;
                                 try {
-                                    newInstance = graph.getNodes().get(targetNode).getClass().getDeclaredConstructor(Graph.class).newInstance(graph);
+                                    Node target = graph.getNodes().get(targetNode);
+                                    newInstance = target.getClass().getDeclaredConstructor(Graph.class).newInstance(graph);
                                     graph.addNode(newInstance);
                                     newInstance.init();
                                     nodeQPos.put(newInstance.getID(), new ImVec2());
                                     NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+
+                                    for (int i = 0; i < newInstance.inputPins.size(); i++) {
+                                        Global.setPinValue(newInstance.inputPins.get(i), String.valueOf(target.inputPins.get(i).getData().value));
+                                    }
+
+                                    //output pins are usually set based on the input pins no need to duplicate 
+//                                    for (int i = 0; i < newInstance.outputPins.size(); i++) {
+//                                      Global.setPinValue(newInstance.outputPins.get(i), String.valueOf(target.outputPins.get(i).getData().value));
+//                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
