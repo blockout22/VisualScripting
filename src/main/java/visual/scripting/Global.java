@@ -1,6 +1,7 @@
 package visual.scripting;
 
 import imgui.type.*;
+import visual.scripting.node.Node;
 
 /**
  * stores and useful static functions here that are used in multiple classes
