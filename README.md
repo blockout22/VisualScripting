@@ -215,7 +215,7 @@ Plugin-Version: 0.0.1
 ![img](Images/example3.png)
 ![img](Images/example4.png)
 
-## TODO LIST
+## Feature List / TODO LIST
 
 | TODO                                                                                               | Completed          |
 | -------------------------------------------------------------------------------------------------- | ------------------ |
