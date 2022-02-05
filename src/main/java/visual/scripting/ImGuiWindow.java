@@ -15,6 +15,8 @@ import visual.scripting.node.Node;
 import visual.scripting.node.NodeEntry;
 import visual.scripting.node.NodeSplitFlow;
 import visual.scripting.node.NodeVisualTest;
+import visual.scripting.ui.Button;
+import visual.scripting.ui.listeners.ClickListener;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -31,6 +33,8 @@ import static imgui.flag.ImGuiWindowFlags.*;
  * This class is setup to be ready to add to your OpenGL GLFW window by calling {@link #update()} in your game loop
  */
 public class ImGuiWindow {
+
+    private ImGuiWindow self;
 
     private final ImGuiImplGlfw imGuiGLFW = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
@@ -52,7 +56,10 @@ public class ImGuiWindow {
     private ImInt currentLanguageSelected = new ImInt();
     private ImString inputFileName = new ImString();
 
+    private ArrayList<Button> fileButtons = new ArrayList<>();
+
     public ImGuiWindow(){
+        self = this;
         //Create ImGui
         ImNodes.createContext();
         ImGui.createContext();
@@ -103,6 +110,23 @@ public class ImGuiWindow {
             loadPlugins();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        for(File file : workingDir.listFiles()){
+            if(file.isDirectory()){
+
+            }else{
+                if(file.getName().endsWith(".vsgraph")) {
+                    Button button = new Button(file.getName());
+                    button.addClickListener(new ClickListener() {
+                        public void onClicked() {
+                            Graph graph = GraphSaver.load(file.getName().split("\\.")[0]);
+                            graphWindows.add(new GraphWindow(self, file.getName().split("\\.")[0], graph));
+                        }
+                    });
+                    fileButtons.add(button);
+                }
+            }
         }
     }
 
@@ -202,24 +226,27 @@ public class ImGuiWindow {
             //this will be used to view your workspace and to load and create new graph files
             if(begin("FileViewer (current directory [WIP])")){
 
-                for(File file : workingDir.listFiles()) {
-                        if (file.isDirectory()) {
-                            if (button(file.getName())) {
-                                System.out.println(file.length());
-                            }
-                            text("Directory");
-                        } else {
-                            if(file.getName().endsWith(".vsgraph")) {
-                                //TODO check if the file is already open
-                                if(button(file.getName())){
-                                    Graph graph = GraphSaver.load(file.getName().split("\\.")[0]);
-//                                    System.out.println(graph.getLanguage());
-//                                    graphWindows.add(new GraphWindow(this, "new", "java"));
-                                    graphWindows.add(new GraphWindow(this, file.getName().split("\\.")[0], graph));
-                                }
-                            }
-                        }
+                for(Button b : fileButtons){
+                    b.show();
                 }
+//                for(File file : workingDir.listFiles()) {
+//                        if (file.isDirectory()) {
+//                            if (button(file.getName())) {
+//                                System.out.println(file.length());
+//                            }
+//                            text("Directory");
+//                        } else {
+//                            if(file.getName().endsWith(".vsgraph")) {
+//                                //TODO check if the file is already open
+//                                if(button(file.getName())){
+//                                    Graph graph = GraphSaver.load(file.getName().split("\\.")[0]);
+////                                    System.out.println(graph.getLanguage());
+////                                    graphWindows.add(new GraphWindow(this, "new", "java"));
+//                                    graphWindows.add(new GraphWindow(this, file.getName().split("\\.")[0], graph));
+//                                }
+//                            }
+//                        }
+//                }
             }
             end();
 

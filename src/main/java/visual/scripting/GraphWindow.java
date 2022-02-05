@@ -68,6 +68,7 @@ public class GraphWindow {
     private boolean justLoadedFromFile = false;
 
     private Button convertAndSaveBtn = new Button("Save & Convert");
+    private Button clearGraphBtn = new Button("Clear Graph");
 
     protected GraphWindow(){
         graph = new Graph("");
@@ -149,6 +150,13 @@ public class GraphWindow {
                 endTooltip();
             }
         });
+
+        clearGraphBtn.addClickListener(new ClickListener() {
+            @Override
+            public void onClicked() {
+                graph.getNodes().clear();
+            }
+        });
     }
 
 //    public int ToNodeColor(NodeColor nodeColor){
@@ -181,18 +189,9 @@ public class GraphWindow {
             }
 
             convertAndSaveBtn.show();
-
-            //loads the nodes into the graph from a save file
-//            if(button("load")){
-//                GraphSaver.load(this, graph);
-//            }
-
             //clears all nodes from the graph and resets the graph
-            //this may cause an ConcurrentModificationException, needs testing
-            if(button("Clear Graph")){
-                graph.getNodes().clear();
-//                graph.addNode(new NodeEntry(graph));
-            }
+            clearGraphBtn.show();
+
 
             if(beginTabBar("TabBar")) {
                 if(beginTabItem("NodeEditor")) {
