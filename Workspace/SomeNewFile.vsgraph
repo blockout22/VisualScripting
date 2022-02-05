@@ -1,0 +1,76 @@
+{
+  "language": "java",
+  "nodeSaves": [
+    {
+      "className": "visual.scripting.node.NodeEntry",
+      "x": 0.0,
+      "y": 0.0,
+      "pinIDs": [
+        1001
+      ],
+      "connectedToList": [
+        1014
+      ]
+    },
+    {
+      "className": "nodes.SubtractFloat",
+      "x": 160.0,
+      "y": 285.0,
+      "pinIDs": [
+        1005,
+        1006,
+        1007
+      ],
+      "connectedToList": [
+        -1,
+        1010,
+        1016
+      ]
+    },
+    {
+      "className": "nodes.SubtractFloat",
+      "x": -88.0,
+      "y": 333.0,
+      "pinIDs": [
+        1008,
+        1009,
+        1010
+      ],
+      "connectedToList": [
+        1013,
+        -1,
+        1006
+      ]
+    },
+    {
+      "className": "nodes.MultiplyFloat",
+      "x": -312.0,
+      "y": 205.0,
+      "pinIDs": [
+        1011,
+        1012,
+        1013
+      ],
+      "connectedToList": [
+        -1,
+        -1,
+        1008
+      ]
+    },
+    {
+      "className": "nodes.PrintString",
+      "x": 384.0,
+      "y": 118.0,
+      "pinIDs": [
+        1014,
+        1016,
+        1015
+      ],
+      "connectedToList": [
+        1001,
+        1007,
+        -1
+      ]
+    }
+  ]
+}

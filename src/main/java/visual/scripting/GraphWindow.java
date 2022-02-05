@@ -16,6 +16,9 @@ import visual.scripting.node.Node;
 import visual.scripting.node.NodeVisualTest;
 import visual.scripting.node.NodeEntry;
 import visual.scripting.node.NodeSplitFlow;
+import visual.scripting.ui.Button;
+import visual.scripting.ui.listeners.ClickListener;
+import visual.scripting.ui.listeners.HoverListener;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,7 +28,6 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import static imgui.ImGui.*;
 
@@ -64,6 +66,8 @@ public class GraphWindow {
     private Texture texture;
 
     private boolean justLoadedFromFile = false;
+
+    private Button convertAndSaveBtn = new Button("Save & Convert");
 
     protected GraphWindow(){
         graph = new Graph("");
@@ -106,6 +110,44 @@ public class GraphWindow {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        convertAndSaveBtn.addClickListener(new ClickListener() {
+            @Override
+            public void onClicked() {
+                //used to convert the nodes to source text
+                //Converts to Source
+                String text = nodeCompiler.compile(graph);
+                File file = new File(ImGuiWindow.workingDir.getAbsolutePath().toString() + File.separator + id + "." + graph.getLanguage());
+                if(!file.exists()){
+                    try {
+                        file.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                try {
+                    BufferedWriter br = new BufferedWriter(new FileWriter(file));
+                    br.write(text);
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                EDITOR.setText(text);
+                //Saves Node Graph information (nodes, nodes positions, node links etc...)
+                GraphSaver.save(id, graph);
+            }
+        });
+
+        convertAndSaveBtn.addHoverListener(new HoverListener() {
+            @Override
+            public void onHovered() {
+                setNextWindowPos(getMousePosOnOpeningCurrentPopupX(), getMousePosOnOpeningCurrentPopupY() + 10, ImGuiCond.Always);
+                beginTooltip();
+                textUnformatted("Saves & converts nodes to source code");
+                endTooltip();
+            }
+        });
     }
 
 //    public int ToNodeColor(NodeColor nodeColor){
@@ -137,37 +179,7 @@ public class GraphWindow {
                 window.removeGraphWindow(this);
             }
 
-            //used to call the method used to convert the nodes to the nodes output text
-            if(button("Save & Convert")){
-                //Converts to Source
-                String text = nodeCompiler.compile(graph);
-                File file = new File(ImGuiWindow.workingDir.getAbsolutePath().toString() + File.separator + id + "." + graph.getLanguage());
-                if(!file.exists()){
-                    try {
-                        file.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    BufferedWriter br = new BufferedWriter(new FileWriter(file));
-                    br.write(text);
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                EDITOR.setText(text);
-                //Saves Node Graph information (nodes, nodes positions, node links etc...)
-                GraphSaver.save(id, graph);
-            }
-
-            if(isItemHovered()){
-                setNextWindowPos(getMousePosOnOpeningCurrentPopupX(), getMousePosOnOpeningCurrentPopupY() + 10, ImGuiCond.Always);
-                beginTooltip();
-                textUnformatted("Saves & converts nodes to source code");
-                endTooltip();
-            }
+            convertAndSaveBtn.show();
 
             //loads the nodes into the graph from a save file
 //            if(button("load")){
