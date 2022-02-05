@@ -3,21 +3,21 @@
 # VisualScripting
 Make code using nodes 
 
-This program does the heavy lifting of making nodes work, to make use of this program plugins are required, plugins can be made by deveopers and could make for example:- they could make a plugin to translate the nodes to c++ c# or java or they could even make a plugin to make Overwatch workshop gamemades these features are only limited to the plugin the developers 
+This program does the heavy lifting of making nodes work, to make use of this program plugins are required, plugins can be made by deveopers and could make for example:- they could make a plugin to translate the nodes to c++ c# or java or they could even make a plugin to make Overwatch workshop gamemades these features are only limited to the plugins that are made from developers
 
 ## Plugins
 Submit a pull request if you have a plugin to add to this list 
 | List                                                                                                                    |
 | ----------------------------------------------------------------------------------------------------------------------- |
 | (Minimal plugin that will show you <br/>how easy it is to setup a plugin)<br/>[Some basic maths](https://github.com/blockout22/VisualScriptingMaths)                                                  |
+| [Json](https://github.com/blockout22/VisualScriptingJson) |
 
 ## Custom Nodes
 
 ### Add Nodes using plugins
 
-**Requirements** (See [POM.xml](pom.xml) for full list of dependencies)
+**Requirements** (See [POM.xml](https://github.com/blockout22/VisualScriptingJson/blob/main/pom.xml) for example of POM file)
 * VisualScripting.jar or this repo (repo should be more updated)
-* LWJGL which contains GLFW module
 * ImGui 
 ```html
 <dependency>
@@ -43,15 +43,6 @@ Submit a pull request if you have a plugin to add to this list
      <artifactId>pf4j</artifactId>
      <version>${pf4j.version}</version>
  </dependency> 
- ```
- 
- * Gson
- ```html
- <dependency>
-    <groupId>com.google.code.gson</groupId>
-    <artifactId>gson</artifactId>
-    <version>2.8.9</version>
-</dependency>
  ```
  
  ### Making the plugin
