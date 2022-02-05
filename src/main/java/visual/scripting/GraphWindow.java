@@ -248,6 +248,11 @@ public class GraphWindow {
 //                                dummy(getItemRectMax().x, 2);
                                 headerMaxY = getItemRectMax().y;
                                 newLine();
+
+                                for(Button nodeButton : node.buttons){
+                                    nodeButton.show();
+                                }
+
                                 //add node pins
                                 int max = Math.max(node.outputPins.size(), node.inputPins.size());
                                 for (int i = 0; i < max; i++) {

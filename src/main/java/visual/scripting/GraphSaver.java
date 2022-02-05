@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import imgui.ImVec2;
 import imgui.extension.nodeditor.NodeEditor;
+import imgui.type.*;
 import org.pf4j.PluginWrapper;
 import visual.scripting.node.Node;
 
@@ -59,28 +60,44 @@ public class GraphSaver {
             save.x = pos.x;
             save.y = pos.y;
             for(Pin inputs : node.inputPins){
-                save.pinIDs.add(inputs.getID());
-                save.connectedToList.add(inputs.connectedTo);
+                PinData pinData = new PinData();
+                pinData.ID = inputs.getID();
+                pinData.type = inputs.getDataType().name();
+                pinData.connectedTo = inputs.connectedTo;
+                if(inputs.getData() != null) {
+                    if(inputs.getData().getValue() != null) {
+                        pinData.value = inputs.getData().getValue().toString();
+                    }
+                }
+
+                save.inputPins.add(pinData);
+//                save.connectedToList.add(inputs.connectedTo);
             }
 
             for(Pin outputs : node.outputPins){
-                save.pinIDs.add(outputs.getID());
-                save.connectedToList.add(outputs.connectedTo);
+                PinData pinData = new PinData();
+                pinData.ID = outputs.getID();
+                pinData.type = outputs.getDataType().name();
+
+                pinData.connectedTo = outputs.connectedTo;
+
+                save.outputPins.add(pinData);
+//                save.connectedToList.add(outputs.connectedTo);
             }
             graphSave.nodeSaves.add(save);
         }
 
-        for(NodeSave save : graphSave.nodeSaves) {
-            sb.append("class=" + save.className + ":" + "posX=" + save.x + ":" + "posY=" + save.y + ":");
-            sb.append("connections[");
-            for (int i = 0; i < save.connectedToList.size(); i++) {
-                sb.append("connectedTo=" + save.connectedToList.get(i));
-                if(i < save.connectedToList.size() - 1){
-                    sb.append(",");
-                }
-            }
-            sb.append("]\n");
-        }
+//        for(NodeSave save : graphSave.nodeSaves) {
+//            sb.append("class=" + save.className + ":" + "posX=" + save.x + ":" + "posY=" + save.y + ":");
+//            sb.append("connections[");
+//            for (int i = 0; i < save.connectedToList.size(); i++) {
+//                sb.append("connectedTo=" + save.connectedToList.get(i));
+//                if(i < save.connectedToList.size() - 1){
+//                    sb.append(",");
+//                }
+//            }
+//            sb.append("]\n");
+//        }
 
         try {
             Gson json = new GsonBuilder().setPrettyPrinting().create();
@@ -192,26 +209,43 @@ public class GraphSaver {
                     NodeSave save = gs.nodeSaves.get(i);
 //                    System.out.println(save.className);
 
-                    int index = 0;
-                    Pin[] pins = new Pin[node.inputPins.size() + node.outputPins.size()];
-                    for(Pin pin : node.inputPins){
-                        pins[index++] = pin;
-                    }
+//                    int index = 0;
+//                    Pin[] pins = new Pin[node.inputPins.size() + node.outputPins.size()];
+//                    for(Pin pin : node.inputPins){
+//                        pins[index++] = pin;
+//                    }
+//
+//                    for(Pin pin : node.outputPins){
+//                        pins[index++] = pin;
+//                    }
+//
+//                    for (int j = 0; j < save.pins.size(); j++) {
+//                        pins[j].setID(save.pins.get(j).ID);
+//                    }
 
-                    for(Pin pin : node.outputPins){
-                        pins[index++] = pin;
-                    }
+                    for (int j = 0; j < save.inputPins.size(); j++) {
+                        node.inputPins.get(j).setID(save.inputPins.get(j).ID);
+                        System.out.println(save.inputPins.get(j).value);
+                        setPinValue(node.inputPins.get(j), save.inputPins.get(j));
 
-                    for (int j = 0; j < save.pinIDs.size(); j++) {
-                        pins[j].setID(save.pinIDs.get(j));
-                    }
-
-                    for (int j = 0; j < save.connectedToList.size(); j++) {
-                        if(save.connectedToList.get(j) != -1){
-                            pins[j].connectedTo = save.connectedToList.get(j);
-//                            System.out.println(save.connectedToList.get(j));
+                        if(save.inputPins.get(j).connectedTo != -1){
+                            node.inputPins.get(j).connectedTo = save.inputPins.get(j).connectedTo;
                         }
                     }
+
+                    for (int j = 0; j < save.outputPins.size(); j++) {
+                        node.outputPins.get(j).setID(save.outputPins.get(j).ID);
+                        if(save.outputPins.get(j).connectedTo != -1){
+                            node.outputPins.get(j).connectedTo = save.outputPins.get(j).connectedTo;
+                        }
+                    }
+
+//                    for (int j = 0; j < save.connectedToList.size(); j++) {
+//                        if(save.connectedToList.get(j) != -1){
+//                            pins[j].connectedTo = save.connectedToList.get(j);
+////                            System.out.println(save.connectedToList.get(j));
+//                        }
+//                    }
                 }
             }
             return graph;
@@ -233,9 +267,46 @@ public class GraphSaver {
         return null;
     }
 
+    private static void setPinValue(Pin pin, PinData pinData){
+        switch (pin.getDataType()){
+            case Bool:
+                NodeData<ImBoolean> boolData = pin.getData();
+                boolData.value.set(Boolean.parseBoolean(pinData.value));
+                break;
+            case Int:
+                NodeData<ImInt> intData = pin.getData();
+                intData.value.set(Integer.parseInt(pinData.value));
+                break;
+            case Float:
+                NodeData<ImFloat> floatData = pin.getData();
+                floatData.value.set(Float.parseFloat(pinData.value));
+                break;
+            case Double:
+                NodeData<ImDouble> doubleData = pin.getData();
+                doubleData.value.set(Double.parseDouble(pinData.value));
+                break;
+            case String:
+                NodeData<ImString> stringData = pin.getData();
+                stringData.value.set(pinData.value);
+                break;
+            case Object:
+//                data.setValue();
+                break;
+            case Function:
+                break;
+        }
+    }
+
     private static class GraphSave{
         private String language;
         private ArrayList<NodeSave> nodeSaves = new ArrayList<>();
+    }
+
+    private static class PinData{
+        private Integer ID;
+        private String type;
+        private String value;
+        private Integer connectedTo;
     }
 
 
@@ -243,8 +314,10 @@ public class GraphSaver {
         private String className;
         private float x;
         private float y;
-        private ArrayList<Integer> pinIDs = new ArrayList<>();
-        private ArrayList<Integer> connectedToList = new ArrayList<>();
+        //save Pin array
+        private ArrayList<PinData> inputPins = new ArrayList<>();
+        private ArrayList<PinData> outputPins = new ArrayList<>();
+//        private ArrayList<Integer> connectedToList = new ArrayList<>();
 
     }
 }

@@ -4,6 +4,7 @@ import imgui.ImVec2;
 import visual.scripting.Graph;
 import visual.scripting.Pin;
 import visual.scripting.node.style.NodeStyle;
+import visual.scripting.ui.Button;
 
 import java.util.ArrayList;
 
@@ -28,6 +29,8 @@ public class Node {
 
     public float width = -1;
     private ImVec2 loadedPosition = new ImVec2();
+
+    public ArrayList<Button> buttons = new ArrayList<>();
 
     public Node(Graph graph){
         this.graph = graph;
@@ -113,6 +116,12 @@ public class Node {
         Pin pin = new Pin(node, id, dataType, Pin.PinType.Input, linkID++);
         inputPins.add(pin);
         return pin;
+    }
+
+    public Button addButton(String text){
+        Button button = new Button(text);
+        buttons.add(button);
+        return button;
     }
 
     public void execute(){
