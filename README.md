@@ -221,7 +221,7 @@ Plugin-Version: 0.0.1
 | -------------------------------------------------------------------------------------------------- | ------------------ |
 | Nodes update automatically                                                                         | :heavy_check_mark: |
 | Convert to source/text                                                                             | :heavy_check_mark: |
-| Save/Load nodes from file                                                                          | :heavy_check_mark: |
+| Save/Load nodes from file                                                                          | :pinching_hand:    |
 | Plugin Support                                                                                     | :heavy_check_mark: |
 | Hierarchy of current Nodes in graph                                                                | :heavy_check_mark: |
 | Workspace design for File Viewer                                                                   | :x:                |
