@@ -224,8 +224,11 @@ public class GraphSaver {
 //                    }
 
                     for (int j = 0; j < save.inputPins.size(); j++) {
+                        if(j >= node.inputPins.size()){
+                            node.addInputPin(Pin.DataType.String, node);
+                        }
+
                         node.inputPins.get(j).setID(save.inputPins.get(j).ID);
-                        System.out.println(save.inputPins.get(j).value);
                         setPinValue(node.inputPins.get(j), save.inputPins.get(j));
 
                         if(save.inputPins.get(j).connectedTo != -1){
