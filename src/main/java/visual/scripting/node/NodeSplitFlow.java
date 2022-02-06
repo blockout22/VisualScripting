@@ -3,7 +3,7 @@ package visual.scripting.node;
 import visual.scripting.Graph;
 import visual.scripting.Pin;
 import visual.scripting.ui.Button;
-import visual.scripting.ui.listeners.ClickListener;
+import visual.scripting.ui.listeners.LeftClickListener;
 
 public class NodeSplitFlow extends Node{
 
@@ -18,7 +18,7 @@ public class NodeSplitFlow extends Node{
     @Override
     public void init() {
         Button button = addButton("Add Output Pin");
-        button.addClickListener(new ClickListener() {
+        button.addLeftClickListener(new LeftClickListener() {
             @Override
             public void onClicked() {
                 Pin pin = addOutputPin(Pin.DataType.Flow, getSelf());

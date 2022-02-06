@@ -17,7 +17,7 @@ import visual.scripting.node.NodeVisualTest;
 import visual.scripting.node.NodeEntry;
 import visual.scripting.node.NodeSplitFlow;
 import visual.scripting.ui.Button;
-import visual.scripting.ui.listeners.ClickListener;
+import visual.scripting.ui.listeners.LeftClickListener;
 import visual.scripting.ui.listeners.HoverListener;
 
 import java.io.BufferedWriter;
@@ -114,7 +114,7 @@ public class GraphWindow {
             e.printStackTrace();
         }
 
-        convertAndSaveBtn.addClickListener(new ClickListener() {
+        convertAndSaveBtn.addLeftClickListener(new LeftClickListener() {
             @Override
             public void onClicked() {
                 //used to convert the nodes to source text
@@ -138,7 +138,7 @@ public class GraphWindow {
                 }
                 EDITOR.setText(text);
                 //Saves Node Graph information (nodes, nodes positions, node links etc...)
-                GraphSaver.save(id, graph);
+                GraphSaver.save(id + "." + graph.getLanguage(), graph);
             }
         });
 
@@ -152,7 +152,7 @@ public class GraphWindow {
             }
         });
 
-        clearGraphBtn.addClickListener(new ClickListener() {
+        clearGraphBtn.addLeftClickListener(new LeftClickListener() {
             @Override
             public void onClicked() {
                 graph.getNodes().clear();
@@ -245,6 +245,7 @@ public class GraphWindow {
 //                                if(button("NextId")){
 ////                                    colID++;
 //                                }
+
                                     text(node.getName());
                                     headerMin = getItemRectMin();
 //                                dummy(getItemRectMax().x, 2);

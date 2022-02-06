@@ -1,8 +1,9 @@
 package visual.scripting.ui;
 
 import imgui.ImGui;
-import visual.scripting.ui.listeners.ClickListener;
+import visual.scripting.ui.listeners.LeftClickListener;
 import visual.scripting.ui.listeners.HoverListener;
+import visual.scripting.ui.listeners.RightClickListener;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -13,21 +14,26 @@ public abstract class UiComponent {
 
     protected String uniqueID = UUID.randomUUID().toString();
     protected ArrayList<HoverListener> hoverListeners = new ArrayList<>();
-    protected ArrayList<ClickListener> clickListeners = new ArrayList<>();
+    protected ArrayList<LeftClickListener> leftClickListeners = new ArrayList<>();
+    protected ArrayList<RightClickListener> rightClickListeners = new ArrayList<>();
 
     public void addHoverListener(HoverListener hoverListener){
         hoverListeners.add(hoverListener);
     }
 
-    public void addClickListener(ClickListener clickListener){
-        clickListeners.add(clickListener);
+    public void addLeftClickListener(LeftClickListener clickListener){
+        leftClickListeners.add(clickListener);
+    }
+
+    public void addRightClickListener(RightClickListener clickListener){
+        rightClickListeners.add(clickListener);
     }
 
     protected void pollEvents(){
         if(ImGui.isItemClicked()){
-            for (int i = 0; i < clickListeners.size(); i++) {
-                if(clickListeners.get(i) != null){
-                    clickListeners.get(i).onClicked();
+            for (int i = 0; i < leftClickListeners.size(); i++) {
+                if(leftClickListeners.get(i) != null){
+                    leftClickListeners.get(i).onClicked();
                 }
             }
         }
@@ -39,6 +45,14 @@ public abstract class UiComponent {
                     if(hoverListeners.get(i) != null){
                         hoverListeners.get(i).onHovered();
                     }
+                }
+            }
+        }
+
+        if(ImGui.isItemClicked(1)){
+            for (int i = 0; i < rightClickListeners.size(); i++) {
+                if(rightClickListeners.get(i) != null){
+                    rightClickListeners.get(i).onClicked();
                 }
             }
         }

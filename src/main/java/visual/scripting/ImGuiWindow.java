@@ -16,13 +16,15 @@ import visual.scripting.node.NodeEntry;
 import visual.scripting.node.NodeSplitFlow;
 import visual.scripting.node.NodeVisualTest;
 import visual.scripting.ui.Button;
-import visual.scripting.ui.listeners.ClickListener;
+import visual.scripting.ui.listeners.LeftClickListener;
 
+import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 
 import static imgui.ImGui.*;
 import static imgui.flag.ImGuiWindowFlags.*;
@@ -117,8 +119,9 @@ public class ImGuiWindow {
 
             }else{
                 if(file.getName().endsWith(".vsgraph")) {
-                    Button button = new Button(file.getName());
-                    button.addClickListener(new ClickListener() {
+                    Button button = new Button(file.getName().split("\\.")[0] + "\nLanguage: " + file.getName().split("\\.")[1]);
+
+                    button.addLeftClickListener(new LeftClickListener() {
                         public void onClicked() {
                             Graph graph = GraphSaver.load(file.getName().split("\\.")[0]);
                             boolean isAlreadyOpen = false;
@@ -133,6 +136,15 @@ public class ImGuiWindow {
                             graphWindows.add(new GraphWindow(self, file.getName().split("\\.")[0], graph));
                         }
                     });
+
+                    button.addRightClickListener(() -> {
+                        try {
+                            Desktop.getDesktop().open(file.getParentFile());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
                     fileButtons.add(button);
                 }
             }
