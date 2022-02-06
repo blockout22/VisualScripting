@@ -221,6 +221,6 @@ Image of the [Json](https://github.com/blockout22/VisualScriptingJson) plugin
 | Hierarchy of current Nodes in graph                                                                | :heavy_check_mark: |
 | Workspace design for File Viewer                                                                   | :x:                |
 | Improve UI                                                                                         | :x:                |
-| Examples                                                                                           | :pinching_hand:    |
+| Examples [wiki](https://github.com/blockout22/VisualScripting/wiki)                                | :heavy_check_mark: |
 | Convert to the more advanced Node Editor More info here https://tinyurl.com/y75w75re               | :heavy_check_mark: |
 | Variables                                                                                          | :x:                |
