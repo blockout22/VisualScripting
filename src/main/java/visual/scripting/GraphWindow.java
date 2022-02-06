@@ -223,386 +223,408 @@ public class GraphWindow {
                     ImVec2 headerMax;
 
                     float headerMaxY;
-                    NodeEditor.begin("Editor");
+                    beginGroup();
                     {
-                        //check if loaded from save file
-                        if(justLoadedFromFile){
-                            System.out.println("Setting node positions from loaded file");
-                            for(Node node : graph.getNodes().values()) {
-                                NodeEditor.setNodePosition(node.getID(), node.getLoadedPosition().x, node.getLoadedPosition().y);
+                        NodeEditor.begin("Editor");
+                        {
+                            //check if loaded from save file
+                            if (justLoadedFromFile) {
+                                System.out.println("Setting node positions from loaded file");
+                                for (Node node : graph.getNodes().values()) {
+                                    NodeEditor.setNodePosition(node.getID(), node.getLoadedPosition().x, node.getLoadedPosition().y);
+                                }
+                                justLoadedFromFile = false;
                             }
-                            justLoadedFromFile = false;
-                        }
 
-                        for (Node node : graph.getNodes().values()) {
+                            for (Node node : graph.getNodes().values()) {
 //                            headerMin = new ImVec2();
 //                            headerMax = new ImVec2();
-                            NodeEditor.pushStyleVar(NodeEditorStyleVar.NodePadding, 8, 4, 8, 8);
-                            NodeEditor.beginNode(node.getID());
-                            {
+                                NodeEditor.pushStyleVar(NodeEditorStyleVar.NodePadding, 8, 4, 8, 8);
+                                NodeEditor.beginNode(node.getID());
+                                {
 //                                if(button("NextId")){
 ////                                    colID++;
 //                                }
-                                text(node.getName());
-                                headerMin = getItemRectMin();
+                                    text(node.getName());
+                                    headerMin = getItemRectMin();
 //                                dummy(getItemRectMax().x, 2);
-                                headerMaxY = getItemRectMax().y;
-                                newLine();
+                                    headerMaxY = getItemRectMax().y;
+                                    newLine();
 
-                                for(Button nodeButton : node.buttons){
-                                    nodeButton.show();
-                                }
+                                    for (Button nodeButton : node.buttons) {
+                                        nodeButton.show();
+                                    }
 
-                                //add node pins
-                                int max = Math.max(node.outputPins.size(), node.inputPins.size());
-                                for (int i = 0; i < max; i++) {
+                                    //add node pins
+                                    int max = Math.max(node.outputPins.size(), node.inputPins.size());
+                                    for (int i = 0; i < max; i++) {
 
-                                    if (node.inputPins.size() > i) {
-                                        Pin inPin = node.inputPins.get(i);
+                                        if (node.inputPins.size() > i) {
+                                            Pin inPin = node.inputPins.get(i);
 //                                        addPin(inPin);
-                                        NodeEditor.beginPin(inPin.getID(), NodeEditorPinKind.Input);//
-                                        drawPinShapeAndColor(inPin);
-                                        dummy(10, 10);
-
-                                        NodeEditor.pinPivotAlignment(0f, .5f);
-                                        NodeEditor.endPin();
-
-                                        if(isItemClicked() && holdingPinID == -1){
-                                            lastActivePin = inPin.getID();
-                                        }
-
-                                        if(isItemHovered()){
-                                            setNextWindowPos(NodeEditor.toScreenX(getMousePosX()), NodeEditor.toScreenY(getMousePosY() + 10), ImGuiCond.Always);
-                                            beginTooltip();
-                                            textUnformatted(inPin.getPinType().name());
-                                            textUnformatted("Type: " + inPin.getDataType());
-                                            textUnformatted("Value: " + inPin.getData().value);
-                                            endTooltip();
-                                        }
-                                        sameLine();
-                                        beginGroup();
-                                        configurePinUI(inPin);
-                                        text(inPin.getName());
-                                        endGroup();
-                                    }
-
-                                    if(node.width != -1) {
-                                        sameLine(node.width - 10);
-                                    }
-
-                                    if (node.outputPins.size() > i) {
-                                        Pin outPin = node.outputPins.get(i);
-
-                                        if(outPin.getDataType() == null){
-                                            NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
-                                            dummy(1f, 1f);
-                                            NodeEditor.endPin();
-                                        }else {
-
-                                            NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
-
-                                            drawPinShapeAndColor(outPin);
+                                            NodeEditor.beginPin(inPin.getID(), NodeEditorPinKind.Input);//
+                                            drawPinShapeAndColor(inPin);
                                             dummy(10, 10);
-                                            NodeEditor.pinPivotAlignment(1f, .5f);
-                                            sameLine();
-                                            ImVec2 pos = getCursorPos();
+
+                                            NodeEditor.pinPivotAlignment(0f, .5f);
                                             NodeEditor.endPin();
+
+                                            if (isItemClicked() && holdingPinID == -1) {
+                                                lastActivePin = inPin.getID();
+                                            }
 
                                             if (isItemHovered()) {
                                                 setNextWindowPos(NodeEditor.toScreenX(getMousePosX()), NodeEditor.toScreenY(getMousePosY() + 10), ImGuiCond.Always);
                                                 beginTooltip();
-                                                textUnformatted(outPin.getPinType().name());
-                                                textUnformatted("Type: " + outPin.getDataType());
-                                                textUnformatted("Value: " + outPin.getData().value);
+                                                textUnformatted(inPin.getPinType().name());
+                                                textUnformatted("Type: " + inPin.getDataType());
+                                                textUnformatted("Value: " + inPin.getData().value);
                                                 endTooltip();
                                             }
+                                            sameLine();
+                                            beginGroup();
+                                            configurePinUI(inPin);
+                                            text(inPin.getName());
+                                            endGroup();
                                         }
 
-                                        if (isItemClicked() && holdingPinID == -1) {
-                                            lastActivePin = outPin.getID();
+                                        if (node.width != -1) {
+                                            sameLine(node.width - 10);
                                         }
+
+                                        if (node.outputPins.size() > i) {
+                                            Pin outPin = node.outputPins.get(i);
+
+                                            if (outPin.getDataType() == null) {
+                                                NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
+                                                dummy(1f, 1f);
+                                                NodeEditor.endPin();
+                                            } else {
+
+                                                NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
+
+                                                drawPinShapeAndColor(outPin);
+                                                dummy(10, 10);
+                                                NodeEditor.pinPivotAlignment(1f, .5f);
+                                                sameLine();
+                                                ImVec2 pos = getCursorPos();
+                                                NodeEditor.endPin();
+
+                                                if (isItemHovered()) {
+                                                    setNextWindowPos(NodeEditor.toScreenX(getMousePosX()), NodeEditor.toScreenY(getMousePosY() + 10), ImGuiCond.Always);
+                                                    beginTooltip();
+                                                    textUnformatted(outPin.getPinType().name());
+                                                    textUnformatted("Type: " + outPin.getDataType());
+                                                    textUnformatted("Value: " + outPin.getData().value);
+                                                    endTooltip();
+                                                }
+                                            }
+
+                                            if (isItemClicked() && holdingPinID == -1) {
+                                                lastActivePin = outPin.getID();
+                                            }
 //                                        addPin(outPin);
-                                    }else{
-                                        dummy(10, 10);
+                                        } else {
+                                            dummy(10, 10);
+                                        }
+                                        newLine();
                                     }
-                                    newLine();
-                                }
 
 //                                NodeEditor.group(50, 50);
-                                headerMax = new ImVec2(getItemRectMax().x, headerMaxY);
-                            }
-                            NodeEditor.endNode();
-
-                            if(isItemVisible()){
-                                int alpha = (int) (getStyle().getAlpha() * 255);
-
-                                ImDrawList drawList = NodeEditor.getNodeBackgroundDrawList(node.getID());
-                                float halfBorderWidth = NodeEditor.getStyle().getNodeBorderWidth() * 0.5f;
-
-                                //headerColor = 0;
-
-                                float uvX = (headerMax.x - headerMin.x) / (4.0f * texture.width);
-                                float uvY = (headerMax.y - headerMin.y) / (4.0f * texture.height);
-
-                                if ((headerMax.x > headerMin.x) && (headerMax.y > headerMin.y))
-                                {
-                                    drawList.addImageRounded(texture.ID, headerMin.x - (8 - halfBorderWidth), headerMin.y - (4 - halfBorderWidth), headerMax.x + (8 - halfBorderWidth), headerMax.y + (0), 0, 0, uvX, uvY, rgbToInt(node.getRed(), node.getGreen(), node.getBlue(), node.getAlpha()), NodeEditor.getStyle().getNodeRounding() , ImDrawFlags.RoundCornersTop);
+                                    headerMax = new ImVec2(getItemRectMax().x, headerMaxY);
                                 }
+                                NodeEditor.endNode();
 
-                                ImVec2 headerSeparatorMin = new ImVec2(headerMin.x, headerMin.y);
-                                ImVec2 headerSeparatorMax = new ImVec2(headerMax.x, headerMax.y);
+                                if (isItemVisible()) {
+                                    int alpha = (int) (getStyle().getAlpha() * 255);
 
-                                if ((headerSeparatorMax.x > headerSeparatorMin.x) && (headerSeparatorMax.y > headerSeparatorMin.y))
-                                {
-                                    drawList.addLine(headerMin.x - 8 - halfBorderWidth, headerMax.y, headerMax.x + (8 - halfBorderWidth), headerMax.y, rgbToInt(node.getRed(), node.getGreen(), node.getBlue(), 96 * alpha / (3 * 255)), 1);
+                                    ImDrawList drawList = NodeEditor.getNodeBackgroundDrawList(node.getID());
+                                    float halfBorderWidth = NodeEditor.getStyle().getNodeBorderWidth() * 0.5f;
+
+                                    //headerColor = 0;
+
+                                    float uvX = (headerMax.x - headerMin.x) / (4.0f * texture.width);
+                                    float uvY = (headerMax.y - headerMin.y) / (4.0f * texture.height);
+
+                                    if ((headerMax.x > headerMin.x) && (headerMax.y > headerMin.y)) {
+                                        drawList.addImageRounded(texture.ID, headerMin.x - (8 - halfBorderWidth), headerMin.y - (4 - halfBorderWidth), headerMax.x + (8 - halfBorderWidth), headerMax.y + (0), 0, 0, uvX, uvY, rgbToInt(node.getRed(), node.getGreen(), node.getBlue(), node.getAlpha()), NodeEditor.getStyle().getNodeRounding(), ImDrawFlags.RoundCornersTop);
+                                    }
+
+                                    ImVec2 headerSeparatorMin = new ImVec2(headerMin.x, headerMin.y);
+                                    ImVec2 headerSeparatorMax = new ImVec2(headerMax.x, headerMax.y);
+
+                                    if ((headerSeparatorMax.x > headerSeparatorMin.x) && (headerSeparatorMax.y > headerSeparatorMin.y)) {
+                                        drawList.addLine(headerMin.x - 8 - halfBorderWidth, headerMax.y, headerMax.x + (8 - halfBorderWidth), headerMax.y, rgbToInt(node.getRed(), node.getGreen(), node.getBlue(), 96 * alpha / (3 * 255)), 1);
+                                    }
+
                                 }
-
-                            }
 //                            ImRect rect = new ImRect(getItemRectMin(), getItemRectMax());
 //                            getWindowDrawList().addRectFilled(rect.min.x, rect.min.y, rect.max.x, rect.max.y, TestNodeEditor.rgbToInt(0, 0, 255));
-                            if(node.width == -1) {
-                                node.width = NodeEditor.getNodeSizeX(node.getID());
+                                if (node.width == -1) {
+                                    node.width = NodeEditor.getNodeSizeX(node.getID());
+                                }
+
+                                //calculate connected pins values
+                                for (int i = 0; i < node.outputPins.size(); i++) {
+                                    Pin pin = node.outputPins.get(i);
+
+                                    if (pin.connectedTo != -1) {
+                                        //find the input pin that is connected to this output pin
+                                        Pin otherPin = graph.findPinById(pin.connectedTo);
+
+                                        switch (pin.getDataType()) {
+                                            case Bool:
+                                                NodeData<ImBoolean> boolOutData = otherPin.getData();
+                                                NodeData<ImBoolean> boolInData = pin.getData();
+                                                boolOutData.getValue().set(boolInData.value.get());
+                                                break;
+                                            case Int:
+                                                NodeData<ImInt> intOutData = otherPin.getData();
+                                                NodeData<ImInt> intInData = pin.getData();
+                                                intOutData.getValue().set(intInData.value.get());
+                                                break;
+                                            case Float:
+                                                NodeData<ImFloat> floatOutData = otherPin.getData();
+                                                NodeData<ImFloat> floatInData = pin.getData();
+                                                floatOutData.getValue().set(floatInData.value.get());
+                                                break;
+                                            case Double:
+                                                NodeData<ImDouble> doubleOutData = otherPin.getData();
+                                                NodeData<ImDouble> doubleInData = pin.getData();
+                                                doubleOutData.getValue().set(doubleInData.value.get());
+                                                break;
+                                            case String:
+                                                NodeData<ImString> stringOutData = otherPin.getData();
+                                                NodeData<ImString> stringInData = pin.getData();
+                                                stringOutData.getValue().set(stringInData.value.get());
+                                                break;
+                                        }
+                                    }
+                                }
+
+                                node.execute();
                             }
 
-                            //calculate connected pins values
-                            for (int i = 0; i < node.outputPins.size(); i++) {
-                                Pin pin = node.outputPins.get(i);
-
-                                if (pin.connectedTo != -1) {
-                                    //find the input pin that is connected to this output pin
-                                    Pin otherPin = graph.findPinById(pin.connectedTo);
-
-                                    switch (pin.getDataType()) {
-                                        case Bool:
-                                            NodeData<ImBoolean> boolOutData = otherPin.getData();
-                                            NodeData<ImBoolean> boolInData = pin.getData();
-                                            boolOutData.getValue().set(boolInData.value.get());
-                                            break;
-                                        case Int:
-                                            NodeData<ImInt> intOutData = otherPin.getData();
-                                            NodeData<ImInt> intInData = pin.getData();
-                                            intOutData.getValue().set(intInData.value.get());
-                                            break;
-                                        case Float:
-                                            NodeData<ImFloat> floatOutData = otherPin.getData();
-                                            NodeData<ImFloat> floatInData = pin.getData();
-                                            floatOutData.getValue().set(floatInData.value.get());
-                                            break;
-                                        case Double:
-                                            NodeData<ImDouble> doubleOutData = otherPin.getData();
-                                            NodeData<ImDouble> doubleInData = pin.getData();
-                                            doubleOutData.getValue().set(doubleInData.value.get());
-                                            break;
-                                        case String:
-                                            NodeData<ImString> stringOutData = otherPin.getData();
-                                            NodeData<ImString> stringInData = pin.getData();
-                                            stringOutData.getValue().set(stringInData.value.get());
-                                            break;
+                            //link node pins together
+                            int uniqueLinkId = 1;
+                            for (Node node : graph.getNodes().values()) {
+                                for (Pin pin : node.outputPins) {
+                                    if (pin.connectedTo != -1) {
+                                        float[] pincolor = getPinColor(pin);
+                                        NodeEditor.link(uniqueLinkId++, pin.getID(), pin.connectedTo, pincolor[0], pincolor[1], pincolor[2], pincolor[3], 1);
                                     }
                                 }
                             }
-
-                            node.execute();
                         }
-
-                        //link node pins together
-                        int uniqueLinkId = 1;
-                        for (Node node : graph.getNodes().values()) {
-                            for (Pin pin : node.outputPins) {
-                                if (pin.connectedTo != -1) {
-                                    float[] pincolor = getPinColor(pin);
-                                    NodeEditor.link(uniqueLinkId++, pin.getID(), pin.connectedTo, pincolor[0], pincolor[1], pincolor[2], pincolor[3], 1);
-                                }
-                            }
-                        }
-                    }
 //                    ImVec2 previewRect = getItemRectMax();
 //                    windowFocused = isWindowHovered();
 
-                    if(NodeEditor.beginCreate()) {
-                        holdingPinID = lastActivePin;
-                        curSelectedPinDataType = graph.findPinById((int) lastActivePin).getDataType();
-                        checkPinConnections();
-                    }else{
-                        //Open context menu if pin link dropped without connecting to another pin
-                        if(holdingPinID != -1 && !(LINKA.get() != 0 || LINKB.get() != 0)){
-                            holdingPinID = -1;
-                            curSelectedPinDataType = null;
+                        if (NodeEditor.beginCreate()) {
+                            holdingPinID = lastActivePin;
+                            curSelectedPinDataType = graph.findPinById((int) lastActivePin).getDataType();
+                            checkPinConnections();
+                        } else {
+                            //Open context menu if pin link dropped without connecting to another pin
+                            if (holdingPinID != -1 && !(LINKA.get() != 0 || LINKB.get() != 0)) {
+                                holdingPinID = -1;
+                                curSelectedPinDataType = null;
 //                            System.out.println(LINKA.get() + " : " + LINKB.get());
-                            setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Always);
-                            openPopup("context_menu" + id);
+                                setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Always);
+                                openPopup("context_menu" + id);
+                            }
+                            LINKA.set(0);
+                            LINKB.set(0);
                         }
-                        LINKA.set(0);
-                        LINKB.set(0);
-                    }
-                    NodeEditor.endCreate();
+                        NodeEditor.endCreate();
 
-                    if(NodeEditor.beginDelete()){
-                        ImLong link1 = new ImLong();
-                        ImLong link2 = new ImLong();
-                        ImLong link3 = new ImLong();
-                        if(NodeEditor.queryDeletedLink(link1, link2, link3)){
-                            Pin pin1 = graph.findPinById((int) link2.get());
-                            Pin pin2 = graph.findPinById((int) link3.get());
+                        if (NodeEditor.beginDelete()) {
+                            ImLong link1 = new ImLong();
+                            ImLong link2 = new ImLong();
+                            ImLong link3 = new ImLong();
+                            if (NodeEditor.queryDeletedLink(link1, link2, link3)) {
+                                Pin pin1 = graph.findPinById((int) link2.get());
+                                Pin pin2 = graph.findPinById((int) link3.get());
 
-                            pin1.connectedTo = -1;
-                            pin2.connectedTo = -1;
+                                pin1.connectedTo = -1;
+                                pin2.connectedTo = -1;
+                            }
+
+                            ImLong nodeID = new ImLong();
+                            if(NodeEditor.queryDeletedNode(nodeID)){
+                                graph.removeNode((int)nodeID.get());
+                            }
                         }
-                    }
-                    NodeEditor.endDelete();
+                        NodeEditor.endDelete();
 
-                    NodeEditor.suspend();
+                        NodeEditor.suspend();
 
-                    ImVec2 nodeSpawnPos = getMousePos();
+                        ImVec2 nodeSpawnPos = getMousePos();
 
-                    if(nodeNavigateTo != -1){
-                        NodeEditor.selectNode(nodeNavigateTo, false);
-                        NodeEditor.navigateToSelection(false, 1.5f);
-                        nodeNavigateTo = -1;
-                    }
+                        if (nodeNavigateTo != -1) {
+                            NodeEditor.selectNode(nodeNavigateTo, false);
+                            NodeEditor.navigateToSelection(false, 1.5f);
+                            nodeNavigateTo = -1;
+                        }
 
-                    final long pinWithContextMenu = NodeEditor.getPinWithContextMenu();
-                    if(pinWithContextMenu != -1){
-                        openPopup("pin_menu" + id);
-                        getStateStorage().setInt(getID("node_pin_id"), (int)pinWithContextMenu);
-                    }
+                        final long pinWithContextMenu = NodeEditor.getPinWithContextMenu();
+                        if (pinWithContextMenu != -1) {
+                            openPopup("pin_menu" + id);
+                            getStateStorage().setInt(getID("node_pin_id"), (int) pinWithContextMenu);
+                        }
 
-                    if(isPopupOpen("pin_menu" + id)){
-                        final int targetPin = getStateStorage().getInt(getID("node_pin_id"));
-                        Pin pin = graph.findPinById(targetPin);
-                        if(pin.isCanDelete()) {
-                            if (beginPopup("pin_menu" + id)) {
-                                if(menuItem("Delete Pin")) {
-                                    pin.getNode().removePinById(targetPin);
+                        if (isPopupOpen("pin_menu" + id)) {
+                            final int targetPin = getStateStorage().getInt(getID("node_pin_id"));
+                            Pin pin = graph.findPinById(targetPin);
+                            if (pin.isCanDelete()) {
+                                if (beginPopup("pin_menu" + id)) {
+                                    if (menuItem("Delete Pin")) {
+                                        pin.getNode().removePinById(targetPin);
+                                        closeCurrentPopup();
+                                    }
+                                }
+                                endPopup();
+                            }
+                        }
+
+                        final long nodeWithContextMenu = NodeEditor.getNodeWithContextMenu();
+                        if (nodeWithContextMenu != -1) {
+                            openPopup("node_menu" + id);
+                            getStateStorage().setInt(getID("delete_node_id"), (int) nodeWithContextMenu);
+                        }
+
+                        if (isPopupOpen("node_menu" + id)) {
+                            final int targetNode = getStateStorage().getInt(getID("delete_node_id"));
+                            if (beginPopup("node_menu" + id)) {
+                                if (menuItem("Duplicate " + graph.getNodes().get(targetNode).getName())) {
+                                    Node newInstance = null;
+                                    try {
+                                        Node target = graph.getNodes().get(targetNode);
+                                        newInstance = target.getClass().getDeclaredConstructor(Graph.class).newInstance(graph);
+                                        graph.addNode(newInstance);
+                                        newInstance.init();
+                                        nodeQPos.put(newInstance.getID(), new ImVec2());
+                                        NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+
+                                        for (int i = 0; i < newInstance.inputPins.size(); i++) {
+                                            Global.setPinValue(newInstance.inputPins.get(i), String.valueOf(target.inputPins.get(i).getData().value));
+                                        }
+
+                                        //output pins are usually set based on the input pins no need to duplicate
+//                                    for (int i = 0; i < newInstance.outputPins.size(); i++) {
+//                                      Global.setPinValue(newInstance.outputPins.get(i), String.valueOf(target.outputPins.get(i).getData().value));
+//                                    }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    closeCurrentPopup();
+                                }
+
+                                separator();
+                                if (menuItem("Delete " + graph.getNodes().get(targetNode).getName())) {
+                                    graph.removeNode(targetNode);
+                                    closeCurrentPopup();
+                                }
+
+                                if (menuItem("Preview Source")) {
+                                    currentNodeSourceID = targetNode;
+                                    openSourcePreview = 1;
+                                }
+                            }
+                            endPopup();
+                        }
+
+                        if (openSourcePreview == 1) {
+                            openSourcePreview = 0;
+                            openPopup("PreviewSource");
+                        }
+
+                        if (isPopupOpen("PreviewSource")) {
+                            if (beginPopupModal("PreviewSource", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize)) {
+                                StringBuilder sb = new StringBuilder();
+                                graph.getNodes().get(currentNodeSourceID).printSource(sb);
+                                text(sb.toString());
+
+                                if (button("Close")) {
+                                    closeCurrentPopup();
+                                }
+                                endPopup();
+//                        System.out.println(sb);
+                            }
+                        }
+
+                        final long linkWithContextMenu = NodeEditor.getLinkWithContextMenu();
+                        if (linkWithContextMenu != -1) {
+                            openPopup("link_menu" + id);
+                            getStateStorage().setInt(getID("delete_link_id"), (int) linkWithContextMenu);
+                        }
+
+                        if (isPopupOpen("link_menu" + id)) {
+                            final int targetLink = getStateStorage().getInt(getID("delete_link_id"));
+                            if (beginPopup("link_menu" + id)) {
+                                if (menuItem("Delete Link")) {
+                                    System.out.println(targetLink);
+                                    if (NodeEditor.deleteLink(targetLink)) {
+                                        System.out.println("Deleted link");
+                                    }
                                     closeCurrentPopup();
                                 }
                             }
                             endPopup();
                         }
-                    }
 
-                    final long nodeWithContextMenu = NodeEditor.getNodeWithContextMenu();
-                    if(nodeWithContextMenu != -1){
-                        openPopup("node_menu" + id);
-                        getStateStorage().setInt(getID("delete_node_id"), (int)nodeWithContextMenu);
-                    }
+                        if (NodeEditor.showBackgroundContextMenu()) {
+                            openPopup("context_menu" + id);
+                        }
 
-                    if(isPopupOpen("node_menu" + id)){
-                        final int targetNode = getStateStorage().getInt(getID("delete_node_id"));
-                        if(beginPopup("node_menu" + id)){
-                            if(menuItem("Duplicate " + graph.getNodes().get(targetNode).getName())){
-                                Node newInstance = null;
-                                try {
-                                    Node target = graph.getNodes().get(targetNode);
-                                    newInstance = target.getClass().getDeclaredConstructor(Graph.class).newInstance(graph);
-                                    graph.addNode(newInstance);
-                                    newInstance.init();
-                                    nodeQPos.put(newInstance.getID(), new ImVec2());
-                                    NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+                        if (isPopupOpen("context_menu" + id)) {
+                            if (beginPopup("context_menu" + id)) {
+                                ImVec2 newNodePosition = nodeSpawnPos;
+                                //get all loaded nodes and show them in the right click menu
+                                if (nodeInstanceCache.isEmpty()) {
+                                    //Create new instances from nodeList and store for later use
+                                    //this stops the constant spawning of new instances
+                                    for (Class<? extends Node> node : nodeList) {
+                                        Constructor<? extends Node> nodeClass = null;
+                                        Node instance = null;
+                                        try {
+                                            nodeClass = node.getDeclaredConstructor(Graph.class);
+                                            instance = nodeClass.newInstance(graph);
+                                            nodeInstanceCache.add(instance);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
-                                    for (int i = 0; i < newInstance.inputPins.size(); i++) {
-                                        Global.setPinValue(newInstance.inputPins.get(i), String.valueOf(target.inputPins.get(i).getData().value));
+                                        createContextMenuItem(instance, 0);
                                     }
-
-                                    //output pins are usually set based on the input pins no need to duplicate
-//                                    for (int i = 0; i < newInstance.outputPins.size(); i++) {
-//                                      Global.setPinValue(newInstance.outputPins.get(i), String.valueOf(target.outputPins.get(i).getData().value));
-//                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                closeCurrentPopup();
-                            }
-
-                            separator();
-                            if(menuItem("Delete " + graph.getNodes().get(targetNode).getName()))
-                            {
-                                graph.removeNode(targetNode);
-                                closeCurrentPopup();
-                            }
-
-                            if(menuItem("Preview Source")){
-                                currentNodeSourceID = targetNode;
-                                openSourcePreview = 1;
-                            }
-                        }
-                        endPopup();
-                    }
-
-                    if(openSourcePreview == 1){
-                        openSourcePreview = 0;
-                        openPopup("PreviewSource");
-                    }
-
-                    if(isPopupOpen("PreviewSource")) {
-                        if (beginPopupModal("PreviewSource", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize)) {
-                            StringBuilder sb = new StringBuilder();
-                            graph.getNodes().get(currentNodeSourceID).printSource(sb);
-                            text(sb.toString());
-
-                            if (button("Close")) {
-                                closeCurrentPopup();
-                            }
-                            endPopup();
-//                        System.out.println(sb);
-                        }
-                    }
-
-                    final long linkWithContextMenu = NodeEditor.getLinkWithContextMenu();
-                    if(linkWithContextMenu != -1){
-                        openPopup("link_menu" + id);
-                        getStateStorage().setInt(getID("delete_link_id"), (int)linkWithContextMenu);
-                    }
-
-                    if(isPopupOpen("link_menu" + id)){
-                        final int targetLink = getStateStorage().getInt(getID("delete_link_id"));
-                        if(beginPopup("link_menu" + id)){
-                            if(menuItem("Delete Link")){
-                                System.out.println(targetLink);
-                                if(NodeEditor.deleteLink(targetLink)){
-                                    System.out.println("Deleted link");
-                                }
-                                closeCurrentPopup();
-                            }
-                        }
-                        endPopup();
-                    }
-
-                    if(NodeEditor.showBackgroundContextMenu()){
-                        openPopup("context_menu" + id);
-                    }
-
-                    if(isPopupOpen("context_menu" + id)){
-                        if(beginPopup("context_menu" + id)) {
-                            ImVec2 newNodePosition = nodeSpawnPos;
-                            //get all loaded nodes and show them in the right click menu
-                            if (nodeInstanceCache.isEmpty()){
-                                //Create new instances from nodeList and store for later use
-                                //this stops the constant spawning of new instances
-                                for (Class<? extends Node> node : nodeList) {
-                                    Constructor<? extends Node> nodeClass = null;
-                                    Node instance = null;
-                                    try {
-                                        nodeClass = node.getDeclaredConstructor(Graph.class);
-                                        instance = nodeClass.newInstance(graph);
-                                        nodeInstanceCache.add(instance);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                } else {
+                                    for (Node instance : nodeInstanceCache) {
+                                        createContextMenuItem(instance, 0);
                                     }
-
-                                    createContextMenuItem(instance, 0);
                                 }
-                            }else{
-                                for(Node instance : nodeInstanceCache){
-                                    createContextMenuItem(instance, 0);
-                                }
+                                endPopup();
                             }
-                            endPopup();
                         }
-                    }
 
-                    NodeEditor.resume();
-                    NodeEditor.end();
+                        NodeEditor.resume();
+                        NodeEditor.end();
+                    }
+                    endGroup();
+
+                    //TODO try to add panel on the right side of the graph
+//                    sameLine();
+//                    beginGroup();
+//                    dummy(200, 200);
+//                    {
+//                        text("Other List");
+//                        for (Node node : graph.getNodes().values()) {
+//                            pushID(node.getID() + "1");
+//                            if(button(node.getName())){
+//                                nodeNavigateTo = node.getID();
+//                            }
+//                            popID();
+//                        }
+//                    }
+//                    endGroup();
 
                     endTabItem();
                 }
