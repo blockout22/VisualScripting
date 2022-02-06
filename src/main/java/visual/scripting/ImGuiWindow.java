@@ -121,6 +121,15 @@ public class ImGuiWindow {
                     button.addClickListener(new ClickListener() {
                         public void onClicked() {
                             Graph graph = GraphSaver.load(file.getName().split("\\.")[0]);
+                            boolean isAlreadyOpen = false;
+                            for(GraphWindow graphWindow : graphWindows){
+                                if(graphWindow.getId().equals(file.getName().split("\\.")[0])){
+                                    isAlreadyOpen = true;
+                                    setWindowFocus(file.getName().split("\\.")[0]);
+                                    return;
+                                }
+                            }
+
                             graphWindows.add(new GraphWindow(self, file.getName().split("\\.")[0], graph));
                         }
                     });

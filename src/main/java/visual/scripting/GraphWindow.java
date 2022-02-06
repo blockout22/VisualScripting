@@ -36,6 +36,7 @@ public class GraphWindow {
     private final ImBoolean closable = new ImBoolean(true);
 
     private ImGuiWindow window;
+
     private String id;
     protected Graph graph;
     private NodeEditorContext context;
@@ -1013,6 +1014,10 @@ public class GraphWindow {
                 break;
         }
         popItemWidth();
+    }
+
+    public String getId() {
+        return id;
     }
 
     private int rgbToInt(int r, int g, int b, int a){
