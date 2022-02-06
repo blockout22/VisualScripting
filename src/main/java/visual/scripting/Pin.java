@@ -17,9 +17,11 @@ public class Pin {
         Int,
         Float,
         Double,
+        Long,
         String,
         Object,
-        Function
+        Function,
+        SPACER
     }
 
     static {
@@ -38,6 +40,7 @@ public class Pin {
     private ImFloat Float = new ImFloat();
     private ImString String = new ImString();
     private ImDouble Double = new ImDouble();
+    private ImLong Long = new ImLong();
     //this doesn't exist but possibly a Object<T> kind of class might work
 //    private ImObject Object = new ImObject()
 
@@ -75,6 +78,9 @@ public class Pin {
                 break;
             case Double:
                 data.setValue(Double);
+                break;
+            case Long:
+                data.setValue(Long);
                 break;
             case String:
                 data.setValue(String);
@@ -147,6 +153,14 @@ public class Pin {
 
     public ImDouble getDouble() {
         return Double;
+    }
+
+    public ImLong getLong() {
+        return Long;
+    }
+
+    public void setLong(ImLong aLong) {
+        Long = aLong;
     }
 
     public NodeData getData() {

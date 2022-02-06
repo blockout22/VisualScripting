@@ -123,7 +123,7 @@ public class ImGuiWindow {
 
                     button.addLeftClickListener(new LeftClickListener() {
                         public void onClicked() {
-                            Graph graph = GraphSaver.load(file.getName().split("\\.")[0]);
+                            Graph graph = GraphSaver.load(file.getName());
                             boolean isAlreadyOpen = false;
                             for(GraphWindow graphWindow : graphWindows){
                                 if(graphWindow.getId().equals(file.getName().split("\\.")[0])){

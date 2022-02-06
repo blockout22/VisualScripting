@@ -114,7 +114,7 @@ public class Node {
      */
     public void addOutputSpacer(Node node){
         int id = Graph.getNextAvailablePinID();
-        Pin pin = new Pin(node, id, null, Pin.PinType.Output, linkID++);
+        Pin pin = new Pin(node, id, Pin.DataType.SPACER, Pin.PinType.Output, linkID++);
         outputPins.add(pin);
     }
 

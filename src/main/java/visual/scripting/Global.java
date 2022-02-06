@@ -25,6 +25,10 @@ public class Global {
                 NodeData<ImDouble> doubleData = pin.getData();
                 doubleData.value.set(Double.parseDouble(value));
                 break;
+            case Long:
+                NodeData<ImLong> longData = pin.getData();
+                longData.value.set(Long.parseLong(value));
+                break;
             case String:
                 NodeData<ImString> stringData = pin.getData();
                 stringData.value.set(value);

@@ -12,10 +12,7 @@ import imgui.extension.texteditor.TextEditor;
 import imgui.flag.*;
 import imgui.type.*;
 import org.lwjgl.opengl.GL11;
-import visual.scripting.node.Node;
-import visual.scripting.node.NodeVisualTest;
-import visual.scripting.node.NodeEntry;
-import visual.scripting.node.NodeSplitFlow;
+import visual.scripting.node.*;
 import visual.scripting.ui.Button;
 import visual.scripting.ui.listeners.LeftClickListener;
 import visual.scripting.ui.listeners.HoverListener;
@@ -87,7 +84,7 @@ public class GraphWindow {
         this.window = window;
         this.id = fileName;
         graph = new Graph(language);
-        graph.addNode(new NodeEntry(graph));
+//        graph.addNode(new NodeEntry(graph));
         init();
     }
 
@@ -96,10 +93,11 @@ public class GraphWindow {
         config.setSettingsFile(null);
         context = new NodeEditorContext(config);
 
-        //add a node to allow more than one flow
         addNodeToList(NodeEntry.class);
         addNodeToList(NodeSplitFlow.class);
         addNodeToList(NodeVisualTest.class);
+        addNodeToList(NodeTime.class);
+        addNodeToList(NodeLongToFloat.class);
         //add a starter node to the graph
 
         for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
@@ -277,7 +275,7 @@ public class GraphWindow {
                                             if (isItemHovered()) {
                                                 setNextWindowPos(NodeEditor.toScreenX(getMousePosX()), NodeEditor.toScreenY(getMousePosY() + 10), ImGuiCond.Always);
                                                 beginTooltip();
-                                                textUnformatted(inPin.getPinType().name());
+                                                textUnformatted(inPin.getName());
                                                 textUnformatted("Type: " + inPin.getDataType());
                                                 textUnformatted("Value: " + inPin.getData().value);
                                                 endTooltip();
@@ -296,7 +294,7 @@ public class GraphWindow {
                                         if (node.outputPins.size() > i) {
                                             Pin outPin = node.outputPins.get(i);
 
-                                            if (outPin.getDataType() == null) {
+                                            if (outPin.getDataType() == Pin.DataType.SPACER) {
                                                 NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
                                                 dummy(1f, 1f);
                                                 NodeEditor.endPin();
@@ -314,7 +312,7 @@ public class GraphWindow {
                                                 if (isItemHovered()) {
                                                     setNextWindowPos(NodeEditor.toScreenX(getMousePosX()), NodeEditor.toScreenY(getMousePosY() + 10), ImGuiCond.Always);
                                                     beginTooltip();
-                                                    textUnformatted(outPin.getPinType().name());
+                                                    textUnformatted(outPin.getName());
                                                     textUnformatted("Type: " + outPin.getDataType());
                                                     textUnformatted("Value: " + outPin.getData().value);
                                                     endTooltip();
@@ -393,6 +391,11 @@ public class GraphWindow {
                                                 NodeData<ImDouble> doubleOutData = otherPin.getData();
                                                 NodeData<ImDouble> doubleInData = pin.getData();
                                                 doubleOutData.getValue().set(doubleInData.value.get());
+                                                break;
+                                            case Long:
+                                                NodeData<ImLong> longOutData = otherPin.getData();
+                                                NodeData<ImLong> longInData = pin.getData();
+                                                longOutData.getValue().set(longInData.value.get());
                                                 break;
                                             case String:
                                                 NodeData<ImString> stringOutData = otherPin.getData();
@@ -705,6 +708,11 @@ public class GraphWindow {
                 color[2] = 0.31372549019f;
                 color[3] = 1;
                 break;
+            case Long:
+                color[0] = 0.952941176f;
+                color[0] = 0.647058824f;
+                color[0] = 0.0196078431f;
+                color[0] = 1;
             case String:
                 color[0] = 0.96078431372f;
                 color[1] = 0.25098039215f;
@@ -833,6 +841,14 @@ public class GraphWindow {
                     getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, doubleGrey);
                 }
                 break;
+            case Long:
+                int longGrey = (curSelectedPinDataType != Pin.DataType.Double && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(243, 165, 5, 255);
+                if(pin.connectedTo != -1) {
+                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, longGrey);
+                }else{
+                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, longGrey);
+                }
+                break;
             case String:
                 int stringGrey = (curSelectedPinDataType != Pin.DataType.String && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(245, 64, 33, 255);
                 if(pin.connectedTo != -1) {
@@ -914,94 +930,95 @@ public class GraphWindow {
 //        }
     }
 
-    private void addPin(Pin pin){
-        switch (pin.getPinType()){
-            case Input:
-                switch (pin.getDataType()){
-                    case Flow:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
-//                        beginInputAttribute(pin.getID(), ImNodesPinShape.Triangle);
-//                        ImNodes.popColorStyle();
-                        break;
-                    case Bool:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
-//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                        ImNodes.popColorStyle();
-                        break;
-                    case Int:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
-//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                        ImNodes.popColorStyle();
-                        break;
-                    case Float:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
-//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                        ImNodes.popColorStyle();
-                        break;
-                    case Double:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
-//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                        ImNodes.popColorStyle();
-                        break;
-                    case String:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
-//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                        ImNodes.popColorStyle();
-                        break;
-                    default:
-//                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                }
-                pushItemWidth(250);
-                configurePinUI(pin);
-                popItemWidth();
-//                endOutputAttribute();
-                sameLine();
-                break;
-            case Output:
-                switch (pin.getDataType()){
-                    case Flow:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
-//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.Triangle);
-//                        ImNodes.popColorStyle();
-                        break;
-                    case Bool:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
-//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                        ImNodes.popColorStyle();
-                        break;
-                    case Int:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
-//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                        ImNodes.popColorStyle();
-                        break;
-                    case Float:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
-//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                        ImNodes.popColorStyle();
-                        break;
-                    case Double:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
-//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                        ImNodes.popColorStyle();
-                        break;
-                    case String:
-//                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
-//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                        ImNodes.popColorStyle();
-                        break;
-                    default:
-//                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-                }
-//                sameLine(curNodeSize / 2);
-                sameLine();
-//                newLine();
-//                configurePinType(pin);
-                text(pin.getName());
-//                endOutputAttribute();
-                sameLine();
-                break;
-        }
-    }
+    //TODO to be removed
+//    private void addPin(Pin pin){
+//        switch (pin.getPinType()){
+//            case Input:
+//                switch (pin.getDataType()){
+//                    case Flow:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
+////                        beginInputAttribute(pin.getID(), ImNodesPinShape.Triangle);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    case Bool:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
+////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    case Int:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
+////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    case Float:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
+////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    case Double:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
+////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    case String:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
+////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    default:
+////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                }
+//                pushItemWidth(250);
+//                configurePinUI(pin);
+//                popItemWidth();
+////                endOutputAttribute();
+//                sameLine();
+//                break;
+//            case Output:
+//                switch (pin.getDataType()){
+//                    case Flow:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
+////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.Triangle);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    case Bool:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
+////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    case Int:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
+////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    case Float:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
+////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    case Double:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
+////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    case String:
+////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
+////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+////                        ImNodes.popColorStyle();
+//                        break;
+//                    default:
+////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
+//                }
+////                sameLine(curNodeSize / 2);
+//                sameLine();
+////                newLine();
+////                configurePinType(pin);
+//                text(pin.getName());
+////                endOutputAttribute();
+//                sameLine();
+//                break;
+//        }
+//    }
 
     /**
      * adds input fields to the Pin Type
@@ -1028,6 +1045,13 @@ public class GraphWindow {
                 break;
             case Double:
                 if(inputDouble("##" + pin.getID(), pin.getDouble())){
+
+                }
+                break;
+            case Long:
+                ImFloat toFloat = new ImFloat(pin.getLong().get());
+                if(inputFloat("##" + pin.getID(), toFloat))
+                {
 
                 }
                 break;

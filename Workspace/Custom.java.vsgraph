@@ -1,0 +1,112 @@
+{
+  "language": "java",
+  "nodeSaves": [
+    {
+      "className": "visual.scripting.node.NodeEntry",
+      "x": 0.0,
+      "y": 0.0,
+      "inputPins": [],
+      "outputPins": [
+        {
+          "ID": 1000,
+          "type": "Flow",
+          "connectedTo": -1
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeTime",
+      "x": 145.0,
+      "y": 81.0,
+      "inputPins": [
+        {
+          "ID": 1002,
+          "type": "Float",
+          "value": "1000.0",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1001,
+          "type": "Long",
+          "connectedTo": -1
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeVisualTest",
+      "x": 384.0,
+      "y": 53.0,
+      "inputPins": [
+        {
+          "ID": 1002,
+          "type": "Flow",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1003,
+          "type": "Bool",
+          "value": "false",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1004,
+          "type": "Int",
+          "value": "0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1005,
+          "type": "Float",
+          "value": "170.0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1006,
+          "type": "Double",
+          "value": "0.0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1007,
+          "type": "String",
+          "value": "",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1008,
+          "type": "SPACER",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1009,
+          "type": "Bool",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1010,
+          "type": "Int",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1011,
+          "type": "Float",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1012,
+          "type": "Double",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1013,
+          "type": "String",
+          "connectedTo": -1
+        }
+      ]
+    }
+  ]
+}

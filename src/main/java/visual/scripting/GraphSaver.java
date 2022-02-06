@@ -46,7 +46,7 @@ public class GraphSaver {
         }
 
         graphSave.language = graph.getLanguage();
-        System.out.println(graphSave.language);
+        System.out.println(graphSave.language + " : " + graph.getNodes().size());
 
         for(Node node : graph.getNodes().values()){
             String className = node.getClass().getName();
@@ -122,7 +122,7 @@ public class GraphSaver {
      */
     public static Graph load(String fileName) {
         try {
-            File file = new File(workspace + File.separator + fileName + ".vsgraph");
+            File file = new File(workspace + File.separator + fileName);
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             Gson json = new GsonBuilder().setPrettyPrinting().create();
