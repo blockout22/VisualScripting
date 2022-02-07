@@ -17,6 +17,8 @@ public abstract class UiComponent {
     protected ArrayList<LeftClickListener> leftClickListeners = new ArrayList<>();
     protected ArrayList<RightClickListener> rightClickListeners = new ArrayList<>();
 
+    public abstract void show();
+
     public void addHoverListener(HoverListener hoverListener){
         hoverListeners.add(hoverListener);
     }
