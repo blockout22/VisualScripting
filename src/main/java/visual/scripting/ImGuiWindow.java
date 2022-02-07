@@ -189,7 +189,6 @@ public class ImGuiWindow {
                 String[] languages = instance.getLanguages();
 
                 for(String language : languages){
-                    System.out.println("Added: " + language);
                     languageSet.add(language);
                 }
 
