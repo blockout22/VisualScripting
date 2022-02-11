@@ -710,9 +710,9 @@ public class GraphWindow {
                 break;
             case Long:
                 color[0] = 0.952941176f;
-                color[0] = 0.647058824f;
-                color[0] = 0.0196078431f;
-                color[0] = 1;
+                color[1] = 0.647058824f;
+                color[2] = 0.0196078431f;
+                color[3] = 1;
             case String:
                 color[0] = 0.96078431372f;
                 color[1] = 0.25098039215f;
@@ -918,107 +918,7 @@ public class GraphWindow {
 //                }
             }
         }
-
-//        if(isLinkDropped(LINK_A, false)) {
-//
-//            Pin pin1 = graph.findPinById(LINK_A.get());
-//            if (pin1.connectedTo != -1) {
-//                Pin pin2 = graph.findPinById(pin1.connectedTo);
-//                pin1.connectedTo = -1;
-//                pin2.connectedTo = -1;
-//            }
-//        }
     }
-
-    //TODO to be removed
-//    private void addPin(Pin pin){
-//        switch (pin.getPinType()){
-//            case Input:
-//                switch (pin.getDataType()){
-//                    case Flow:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
-////                        beginInputAttribute(pin.getID(), ImNodesPinShape.Triangle);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    case Bool:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
-////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    case Int:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
-////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    case Float:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
-////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    case Double:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
-////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    case String:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
-////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    default:
-////                        beginInputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                }
-//                pushItemWidth(250);
-//                configurePinUI(pin);
-//                popItemWidth();
-////                endOutputAttribute();
-//                sameLine();
-//                break;
-//            case Output:
-//                switch (pin.getDataType()){
-//                    case Flow:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 255, 255)));
-////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.Triangle);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    case Bool:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(255, 50, 50)));
-////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    case Int:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(80, 50, 200)));
-////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    case Float:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(5, 50, 190)));
-////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    case Double:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 250, 190)));
-////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    case String:
-////                        ImNodes.pushColorStyle(ImNodesColorStyle.Pin, ToNodeColor(new NodeColor(205, 50, 100)));
-////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-////                        ImNodes.popColorStyle();
-//                        break;
-//                    default:
-////                        beginOutputAttribute(pin.getID(), ImNodesPinShape.CircleFilled);
-//                }
-////                sameLine(curNodeSize / 2);
-//                sameLine();
-////                newLine();
-////                configurePinType(pin);
-//                text(pin.getName());
-////                endOutputAttribute();
-//                sameLine();
-//                break;
-//        }
-//    }
 
     /**
      * adds input fields to the Pin Type
@@ -1068,10 +968,6 @@ public class GraphWindow {
     }
 
     private int rgbToInt(int r, int g, int b, int a){
-//        int Red = (r << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
-//        int Green = (g << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
-//        int Blue = b & 0x000000FF; //Mask out anything not blue.
-
-        return ImColor.intToColor(r, g, b, a); // 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
+        return ImColor.intToColor(r, g, b, a);
     }
 }
