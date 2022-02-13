@@ -93,12 +93,15 @@ public class GraphWindow {
         config.setSettingsFile(null);
         context = new NodeEditorContext(config);
 
+        //add built-in nodes to the list
         addNodeToList(NodeEntry.class);
         addNodeToList(NodeSplitFlow.class);
         addNodeToList(NodeVisualTest.class);
         addNodeToList(NodeTime.class);
         addNodeToList(NodeLongToFloat.class);
         //add a starter node to the graph
+
+        addNodeToList(NodeVariable.class);
 
         for(VisualScriptingPlugin plugin : ImGuiWindow.pluginManager.getExtensions(VisualScriptingPlugin.class)){
             plugin.init(this);
@@ -217,10 +220,10 @@ public class GraphWindow {
 //                    NodeEditor.pushStyleColor(NodeEditorStyleColor.LinkSelRect, 255, 0, 0, 255);
 //                    TestNodeEditor.nodeStyleEditor();
 
-                    ImVec2 headerMin;
+                    ImVec2 headerMin = null;
                     ImVec2 headerMax;
 
-                    float headerMaxY;
+                    float headerMaxY = 0;
                     beginGroup();
                     {
                         NodeEditor.begin("Editor");
@@ -244,11 +247,15 @@ public class GraphWindow {
 ////                                    colID++;
 //                                }
 
-                                    text(node.getName());
-                                    headerMin = getItemRectMin();
+                                    if(node.hasTitleBar()) {
+                                        text(node.getName());
+                                        headerMin = getItemRectMin();
 //                                dummy(getItemRectMax().x, 2);
-                                    headerMaxY = getItemRectMax().y;
-                                    newLine();
+                                        headerMaxY = getItemRectMax().y;
+                                        newLine();
+                                    }else{
+                                        dummy(10, 10);
+                                    }
 
                                     for (Button nodeButton : node.buttons) {
                                         nodeButton.show();
@@ -300,6 +307,11 @@ public class GraphWindow {
                                                 NodeEditor.endPin();
                                             } else {
 
+//                                                beginGroup();
+//                                                text(outPin.getName());
+//                                                endGroup();
+//                                                sameLine();
+
                                                 NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
 
                                                 drawPinShapeAndColor(outPin);
@@ -326,7 +338,9 @@ public class GraphWindow {
                                         } else {
                                             dummy(10, 10);
                                         }
-                                        newLine();
+                                        if(node.hasTitleBar()) {
+                                            newLine();
+                                        }
                                     }
 
 //                                NodeEditor.group(50, 50);
@@ -334,7 +348,7 @@ public class GraphWindow {
                                 }
                                 NodeEditor.endNode();
 
-                                if (isItemVisible()) {
+                                if (isItemVisible() && node.hasTitleBar()) {
                                     int alpha = (int) (getStyle().getAlpha() * 255);
 
                                     ImDrawList drawList = NodeEditor.getNodeBackgroundDrawList(node.getID());

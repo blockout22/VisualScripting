@@ -14,6 +14,7 @@ public class Node {
     private String CATEGORY = null;
 
     private String[] languages = new String[0];
+    private boolean hasTitleBar = true;
     private final Graph graph;
     private int ID;
     private String name = "";
@@ -208,5 +209,13 @@ public class Node {
 
     public String getCategory(){
         return CATEGORY;
+    }
+
+    public boolean hasTitleBar() {
+        return hasTitleBar;
+    }
+
+    public void setHasTitleBar(boolean hasTitleBar) {
+        this.hasTitleBar = hasTitleBar;
     }
 }
