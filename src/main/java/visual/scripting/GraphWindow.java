@@ -57,6 +57,8 @@ public class GraphWindow {
     private long lastActivePin = -1;
     private ImVec2 cursorPos;
 
+    private ImString nodeSearch = new ImString();
+
     private Pin.DataType curSelectedPinDataType = null;
 
     private int openSourcePreview = 0;
@@ -65,6 +67,7 @@ public class GraphWindow {
     private Texture texture;
 
     private boolean justLoadedFromFile = false;
+    private boolean justOpenedContextMenu = false;
 
     private Button convertAndSaveBtn = new Button("Save & Convert");
     private Button clearGraphBtn = new Button("Clear Graph");
@@ -453,6 +456,7 @@ public class GraphWindow {
 //                            System.out.println(LINKA.get() + " : " + LINKB.get());
                                 setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Always);
                                 openPopup("context_menu" + id);
+                                justOpenedContextMenu = true;
                             }
                             LINKA.set(0);
                             LINKB.set(0);
@@ -596,6 +600,7 @@ public class GraphWindow {
 
                         if (NodeEditor.showBackgroundContextMenu()) {
                             openPopup("context_menu" + id);
+                            justOpenedContextMenu = true;
                         }
 
                         if (isPopupOpen("context_menu" + id)) {
@@ -619,6 +624,12 @@ public class GraphWindow {
                                         createContextMenuItem(instance, 0);
                                     }
                                 } else {
+                                    if(justOpenedContextMenu) {
+                                        setKeyboardFocusHere(0);
+                                        justOpenedContextMenu = false;
+                                    }
+
+                                    inputTextWithHint("##", "Search node", nodeSearch);
                                     for (Node instance : nodeInstanceCache) {
                                         createContextMenuItem(instance, 0);
                                     }
@@ -749,6 +760,11 @@ public class GraphWindow {
     }
 
     private void createContextMenuItem(Node instance, int depth) {
+        if(nodeSearch.get().toLowerCase().length() > 0){
+            if(!instance.getName().toLowerCase().contains(nodeSearch.get())){
+                return;
+            }
+        }
         if(instance.getCategory() != null) {
             String[] languages = instance.getLanguages();
             boolean shouldAdd = false;

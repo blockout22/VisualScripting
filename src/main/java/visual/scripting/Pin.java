@@ -128,6 +128,16 @@ public class Pin {
     }
 
     public boolean connect(Pin targetPin){
+        //remove old connections
+        if (connectedTo != -1) {
+            Pin oldPin = getNode().getGraph().findPinById(connectedTo);
+            oldPin.connectedTo = -1;
+        }
+
+        if (targetPin.connectedTo != -1) {
+            Pin oldPin = getNode().getGraph().findPinById(targetPin.connectedTo);
+            oldPin.connectedTo = -1;
+        }
         if (connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || connectedTo == -1)) {
             connectedTo = targetPin.getID();
             targetPin.connectedTo = getID();
