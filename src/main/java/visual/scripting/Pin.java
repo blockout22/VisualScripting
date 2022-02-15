@@ -127,6 +127,15 @@ public class Pin {
         return this;
     }
 
+    public boolean connect(Pin targetPin){
+        if (connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || connectedTo == -1)) {
+            connectedTo = targetPin.getID();
+            targetPin.connectedTo = getID();
+            return true;
+        }
+        return false;
+    }
+
     public String getName(){
         return name;
     }

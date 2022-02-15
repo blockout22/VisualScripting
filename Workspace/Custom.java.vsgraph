@@ -94,7 +94,7 @@
         {
           "ID": 1011,
           "type": "Float",
-          "connectedTo": -1
+          "connectedTo": 1018
         },
         {
           "ID": 1012,
@@ -103,6 +103,80 @@
         },
         {
           "ID": 1013,
+          "type": "String",
+          "connectedTo": -1
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeVisualTest",
+      "x": 864.0,
+      "y": 67.0,
+      "inputPins": [
+        {
+          "ID": 1015,
+          "type": "Flow",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1016,
+          "type": "Bool",
+          "value": "false",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1017,
+          "type": "Int",
+          "value": "0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1018,
+          "type": "Float",
+          "value": "0.0",
+          "connectedTo": 1011
+        },
+        {
+          "ID": 1019,
+          "type": "Double",
+          "value": "0.0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1020,
+          "type": "String",
+          "value": "",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1021,
+          "type": "SPACER",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1022,
+          "type": "Bool",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1023,
+          "type": "Int",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1024,
+          "type": "Float",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1025,
+          "type": "Double",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1026,
           "type": "String",
           "connectedTo": -1
         }

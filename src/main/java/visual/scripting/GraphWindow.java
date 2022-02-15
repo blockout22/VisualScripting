@@ -53,6 +53,7 @@ public class GraphWindow {
     private int nodeNavigateTo = -1;
     private boolean firstFrame = true;
     private long holdingPinID = -1;
+    private long lastHoldingPinID = -1;
     private long lastActivePin = -1;
     private ImVec2 cursorPos;
 
@@ -307,10 +308,12 @@ public class GraphWindow {
                                                 NodeEditor.endPin();
                                             } else {
 
+                                                if(!node.hasTitleBar()) {
 //                                                beginGroup();
-//                                                text(outPin.getName());
+                                                    text(outPin.getName());
 //                                                endGroup();
-//                                                sameLine();
+                                                    sameLine();
+                                                }
 
                                                 NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
 
@@ -444,6 +447,7 @@ public class GraphWindow {
                         } else {
                             //Open context menu if pin link dropped without connecting to another pin
                             if (holdingPinID != -1 && !(LINKA.get() != 0 || LINKB.get() != 0)) {
+                                lastHoldingPinID = holdingPinID;
                                 holdingPinID = -1;
                                 curSelectedPinDataType = null;
 //                            System.out.println(LINKA.get() + " : " + LINKB.get());
@@ -773,6 +777,36 @@ public class GraphWindow {
                                 newInstance.init();
                                 nodeQPos.put(newInstance.getID(), new ImVec2());
                                 NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+
+                                //check if context menu opened by dragging a pin
+                                if(lastHoldingPinID != -1){
+                                    Pin pin = graph.findPinById((int)lastActivePin);
+                                    switch (pin.getPinType()){
+                                        case Input:
+                                            for (int i = 0; i < newInstance.outputPins.size(); i++) {
+                                                Pin instancePin = newInstance.outputPins.get(i);
+                                                if(instancePin.getDataType() == pin.getDataType()){
+                                                    //if a successful connection is made then return/break
+                                                    if(pin.connect(instancePin)){
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        case Output:
+                                            for (int i = 0; i < newInstance.inputPins.size(); i++) {
+                                                Pin instancePin = newInstance.inputPins.get(i);
+                                                if(instancePin.getDataType() == pin.getDataType()){
+                                                    //if a successful connection is made then return/break
+                                                    if(pin.connect(instancePin)){
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                    }
+                                    lastActivePin = -1;
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 return;
