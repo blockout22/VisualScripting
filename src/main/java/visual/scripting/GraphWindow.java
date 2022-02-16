@@ -176,6 +176,8 @@ public class GraphWindow {
 //    private ImRect rect = new ImRect();
 //    private float outputInputSpacing = 0.0f;
 
+    float h = 300f;
+
     /**
      *  Shows the Graphs window
      */
@@ -207,7 +209,7 @@ public class GraphWindow {
                             beginGroup();
                             {
                                 beginGroup();
-                                dummy(200, 0);
+                                dummy(200, h);
                                 {
                                     text("Node List");
                                     for (Node node : graph.getNodes().values()) {
@@ -219,7 +221,10 @@ public class GraphWindow {
                                     }
                                 }
                                 endGroup();
-                                separator();
+                                invisibleButton("invisButonToMoveLikeSplitter", 200, 50);
+                                if (isItemActive()) {
+                                    h += getIO().getMouseDeltaY();
+                                }
 
                                 beginGroup();
                                 text("Variable List");
