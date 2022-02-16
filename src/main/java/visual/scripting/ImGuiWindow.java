@@ -19,8 +19,12 @@ import visual.scripting.ui.Button;
 import visual.scripting.ui.listeners.LeftClickListener;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.lang.reflect.Constructor;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -275,6 +279,11 @@ public class ImGuiWindow {
                 lastMenuAction = null;
             }
 
+            if(lastMenuAction == "Error_get_more_plugins"){
+                openPopup("Error_get_more_plugins");
+                lastMenuAction = null;
+            }
+
             //TODO have user specify the language they are writing in this will be used to filter nodes that are for the selected language
             //languages can(/should) be setup in nodes and then a list of languages can be populated into a combo box
             if(beginPopupModal("new_file_popup", NoTitleBar | NoResize | AlwaysAutoResize )){
@@ -298,6 +307,20 @@ public class ImGuiWindow {
                     textUnformatted("Create");
                 }
                 sameLine();
+                if(button("Close")){
+                    closeCurrentPopup();
+                }
+                endPopup();
+            }
+
+            if(beginPopupModal("Error_get_more_plugins", NoTitleBar | NoResize | AlwaysAutoResize)){
+                text("Error opening URL \n[https://github.com/blockout22/VisualScripting#plugins] \ntry opening manually");
+                if(button("Copy URL")){
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipboard.setContents(new StringSelection("https://github.com/blockout22/VisualScripting#plugins"), null);
+                    closeCurrentPopup();
+                }
+
                 if(button("Close")){
                     closeCurrentPopup();
                 }
@@ -347,6 +370,15 @@ public class ImGuiWindow {
             }
             if(beginMenu("Plugins")){
                 text("List Of Plugins Loaded");
+                separator();
+                if(menuItem("Get More")){
+                    try {
+                        Desktop.getDesktop().browse(new URI("https://github.com/blockout22/VisualScripting#plugins"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        lastMenuAction = "Error_get_more_plugins";
+                    }
+                }
                 separator();
                 for(PluginWrapper plugin : pluginManager.getPlugins()){
 //                    if(menuItem(plugin.getPluginId())) {
