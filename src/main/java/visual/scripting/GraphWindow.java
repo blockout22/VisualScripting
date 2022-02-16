@@ -202,20 +202,37 @@ public class GraphWindow {
             if(beginTabBar("TabBar")) {
                 if(beginTabItem("NodeEditor")) {
 //                    if(beginChild("SideBar", 100, 350))
-                    beginGroup();
-                    dummy(200, 0);
-                    {
-                        text("Node List");
-                        for (Node node : graph.getNodes().values()) {
-                            pushID(node.getID());
-                            if(button(node.getName())){
-                                nodeNavigateTo = node.getID();
+                    if(beginTabBar("ContentTabBar")) {
+                        if (beginTabItem("ContentArea")) {
+                            beginGroup();
+                            {
+                                beginGroup();
+                                dummy(200, 0);
+                                {
+                                    text("Node List");
+                                    for (Node node : graph.getNodes().values()) {
+                                        pushID(node.getID());
+                                        if (button(node.getName())) {
+                                            nodeNavigateTo = node.getID();
+                                        }
+                                        popID();
+                                    }
+                                }
+                                endGroup();
+                                separator();
+
+                                beginGroup();
+                                text("Variable List");
+                                for (int i = 0; i < 10; i++) {
+                                    button("placeholder var: " + i);
+                                }
+                                endGroup();
                             }
-                            popID();
+                            endGroup();
                         }
+                        endTabItem();
                     }
-                    endGroup();
-//                    endChild();
+                    endTabBar();
 
                     sameLine();
 
