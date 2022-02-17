@@ -14,6 +14,7 @@ import imgui.type.*;
 import org.lwjgl.opengl.GL11;
 import visual.scripting.node.*;
 import visual.scripting.ui.Button;
+import visual.scripting.ui.ListView;
 import visual.scripting.ui.listeners.LeftClickListener;
 import visual.scripting.ui.listeners.HoverListener;
 
@@ -30,6 +31,7 @@ import static imgui.ImGui.*;
 
 public class GraphWindow {
 
+    private boolean requiresSave = false;
     private final ImBoolean closable = new ImBoolean(true);
 
     private ImGuiWindow window;
@@ -63,14 +65,18 @@ public class GraphWindow {
 
     private int openSourcePreview = 0;
     private int currentNodeSourceID = -1;
+    private float h = 300f;
 
     private Texture texture;
 
     private boolean justLoadedFromFile = false;
     private boolean justOpenedContextMenu = false;
 
+    //UiComponents
     private Button convertAndSaveBtn = new Button("Save & Convert");
     private Button clearGraphBtn = new Button("Clear Graph");
+
+    private ListView nodeListView = new ListView("Node List");
 
     protected GraphWindow(){
         graph = new Graph("");
@@ -163,6 +169,10 @@ public class GraphWindow {
                 graph.getNodes().clear();
             }
         });
+
+        nodeListView.addLeftClickListener(() -> {
+            System.out.println(nodeListView.getSelectedItem());
+        });
     }
 
 //    public int ToNodeColor(NodeColor nodeColor){
@@ -175,8 +185,6 @@ public class GraphWindow {
 
 //    private ImRect rect = new ImRect();
 //    private float outputInputSpacing = 0.0f;
-
-    float h = 300f;
 
     /**
      *  Shows the Graphs window
@@ -191,6 +199,13 @@ public class GraphWindow {
         if(begin(id, closable, ImGuiWindowFlags.NoCollapse)){
             //checks is value has been changed from clicking the close button
             if(!closable.get()){
+                if(!requiresSave){
+                    System.out.println("Should save?");
+                    closable.set(true);
+//                    return;
+                    // if no then return;
+                    //else continue
+                }
                 //should init save
                 GL11.glDeleteTextures(texture.ID);
                 window.removeGraphWindow(this);
@@ -200,7 +215,6 @@ public class GraphWindow {
             //clears all nodes from the graph and resets the graph
             clearGraphBtn.show();
 
-
             if(beginTabBar("TabBar")) {
                 if(beginTabItem("NodeEditor")) {
 //                    if(beginChild("SideBar", 100, 350))
@@ -208,6 +222,7 @@ public class GraphWindow {
                         if (beginTabItem("ContentArea")) {
                             beginGroup();
                             {
+//                                nodeListView.show();
                                 beginGroup();
                                 dummy(200, h);
                                 {
@@ -816,35 +831,7 @@ public class GraphWindow {
                                 nodeQPos.put(newInstance.getID(), new ImVec2());
                                 NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
 
-                                //check if context menu opened by dragging a pin
-                                if(lastHoldingPinID != -1){
-                                    Pin pin = graph.findPinById((int)lastActivePin);
-                                    switch (pin.getPinType()){
-                                        case Input:
-                                            for (int i = 0; i < newInstance.outputPins.size(); i++) {
-                                                Pin instancePin = newInstance.outputPins.get(i);
-                                                if(instancePin.getDataType() == pin.getDataType()){
-                                                    //if a successful connection is made then return/break
-                                                    if(pin.connect(instancePin)){
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                            break;
-                                        case Output:
-                                            for (int i = 0; i < newInstance.inputPins.size(); i++) {
-                                                Pin instancePin = newInstance.inputPins.get(i);
-                                                if(instancePin.getDataType() == pin.getDataType()){
-                                                    //if a successful connection is made then return/break
-                                                    if(pin.connect(instancePin)){
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                            break;
-                                    }
-                                    lastActivePin = -1;
-                                }
+                                autoConnectLink(newInstance);
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 return;
@@ -863,12 +850,49 @@ public class GraphWindow {
                     newInstance.init();
                     nodeQPos.put(newInstance.getID(), new ImVec2());
                     NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
+
+                    autoConnectLink(newInstance);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return;
                 }
                 closeCurrentPopup();
             }
+        }
+    }
+
+    private void autoConnectLink(Node newInstance){
+        //check if context menu opened by dragging a pin
+        if(lastHoldingPinID != -1){
+            Pin pin = graph.findPinById((int)lastActivePin);
+            System.out.println(pin.getPinType());
+            switch (pin.getPinType()){
+                case Input:
+                    for (int i = 0; i < newInstance.outputPins.size(); i++) {
+                        Pin instancePin = newInstance.outputPins.get(i);
+                        if(instancePin.getDataType() == pin.getDataType()){
+                            System.out.println("Found input");
+                            //if a successful connection is made then return/break
+                            if(pin.connect(instancePin)){
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                case Output:
+                    for (int i = 0; i < newInstance.inputPins.size(); i++) {
+                        Pin instancePin = newInstance.inputPins.get(i);
+                        if(instancePin.getDataType() == pin.getDataType()){
+                            System.out.println("Found Output");
+                            //if a successful connection is made then return/break
+                            if(pin.connect(instancePin)){
+                                break;
+                            }
+                        }
+                    }
+                    break;
+            }
+            lastHoldingPinID = -1;
         }
     }
 
