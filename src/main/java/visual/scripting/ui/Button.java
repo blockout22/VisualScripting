@@ -10,6 +10,10 @@ public class Button extends UiComponent{
         this.text = text;
     }
 
+    public void setText(String text){
+        this.text = text;
+    }
+
     public void show(){
         if(ImGui.button(text + "##" + uniqueID)){
         }

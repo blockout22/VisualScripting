@@ -3,9 +3,11 @@ package visual.scripting;
 import imgui.ImColor;
 import imgui.ImDrawList;
 import imgui.ImVec2;
+import imgui.extension.imnodes.flag.ImNodesColorStyle;
 import imgui.extension.nodeditor.NodeEditor;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
+import imgui.extension.nodeditor.NodeEditorStyle;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
 import imgui.extension.nodeditor.flag.NodeEditorStyleVar;
 import imgui.extension.texteditor.TextEditor;
@@ -75,6 +77,7 @@ public class GraphWindow {
     //UiComponents
     private Button convertAndSaveBtn = new Button("Save & Convert");
     private Button clearGraphBtn = new Button("Clear Graph");
+    private Button showFlowBtn = new Button("Show Flow");
 
     private ListView nodeListView = new ListView("Node List");
 
@@ -170,6 +173,17 @@ public class GraphWindow {
             }
         });
 
+        showFlowBtn.addLeftClickListener(() -> {
+            int uniqueLinkId = 1;
+            for (Node node : graph.getNodes().values()) {
+                for (Pin pin : node.outputPins) {
+                    if (pin.connectedTo != -1) {
+                        NodeEditor.flow(uniqueLinkId++);
+                    }
+                }
+            }
+        });
+
         nodeListView.addLeftClickListener(() -> {
             System.out.println(nodeListView.getSelectedItem());
         });
@@ -214,6 +228,7 @@ public class GraphWindow {
             convertAndSaveBtn.show();
             //clears all nodes from the graph and resets the graph
             clearGraphBtn.show();
+            showFlowBtn.show();
 
             if(beginTabBar("TabBar")) {
                 if(beginTabItem("NodeEditor")) {
@@ -472,7 +487,15 @@ public class GraphWindow {
                                 for (Pin pin : node.outputPins) {
                                     if (pin.connectedTo != -1) {
                                         float[] pincolor = getPinColor(pin);
+                                        NodeEditor.pushStyleVar(NodeEditorStyleVar.FlowMarkerDistance, 50);
+                                        NodeEditor.pushStyleVar(NodeEditorStyleVar.FlowDuration, 1000);
+                                        NodeEditor.pushStyleVar(NodeEditorStyleVar.FlowSpeed, 25);
                                         NodeEditor.link(uniqueLinkId++, pin.getID(), pin.connectedTo, pincolor[0], pincolor[1], pincolor[2], pincolor[3], 1);
+
+//                                        if(showFlow) {
+//
+//                                        }
+                                        NodeEditor.popStyleVar(3);
                                     }
                                 }
                             }
