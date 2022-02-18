@@ -216,7 +216,7 @@ Image of the [Json](https://github.com/blockout22/VisualScriptingJson) plugin
 | -------------------------------------------------------------------------------------------------- | ------------------ |
 | Nodes update automatically                                                                         | :heavy_check_mark: |
 | Convert to source/text                                                                             | :heavy_check_mark: |
-| Save/Load nodes from file                                                                          | :pinching_hand:    |
+| Save/Load nodes from file (I need more info saved)                                                 | :pinching_hand:    |
 | Plugin Support                                                                                     | :heavy_check_mark: |
 | Hierarchy of current Nodes in graph                                                                | :heavy_check_mark: |
 | Workspace design for File Viewer                                                                   | :x:                |
