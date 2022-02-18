@@ -213,9 +213,9 @@ public class GraphWindow {
         if(begin(id, closable, ImGuiWindowFlags.NoCollapse)){
             //checks is value has been changed from clicking the close button
             if(!closable.get()){
-                if(!requiresSave){
+                if(requiresSave){
                     System.out.println("Should save?");
-                    closable.set(true);
+//                    closable.set(true);
 //                    return;
                     // if no then return;
                     //else continue
