@@ -3,181 +3,198 @@
   "nodeSaves": [
     {
       "className": "visual.scripting.node.NodeEntry",
-      "x": 0.0,
-      "y": 0.0,
+      "x": -299.0,
+      "y": -138.0,
       "inputPins": [],
       "outputPins": [
         {
-          "ID": 1000,
-          "type": "Flow",
-          "connectedTo": -1
-        }
-      ]
-    },
-    {
-      "className": "visual.scripting.node.NodeTime",
-      "x": 145.0,
-      "y": 81.0,
-      "inputPins": [
-        {
-          "ID": 1002,
-          "type": "Float",
-          "value": "1000.0",
-          "connectedTo": -1
-        }
-      ],
-      "outputPins": [
-        {
-          "ID": 1001,
-          "type": "Long",
-          "connectedTo": -1
-        }
-      ]
-    },
-    {
-      "className": "visual.scripting.node.NodeVisualTest",
-      "x": 384.0,
-      "y": 53.0,
-      "inputPins": [
-        {
-          "ID": 1002,
-          "type": "Flow",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1003,
-          "type": "Bool",
-          "value": "false",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1004,
-          "type": "Int",
-          "value": "0",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1005,
-          "type": "Float",
-          "value": "170.0",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1006,
-          "type": "Double",
-          "value": "0.0",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1007,
-          "type": "String",
-          "value": "",
-          "connectedTo": -1
-        }
-      ],
-      "outputPins": [
-        {
-          "ID": 1008,
-          "type": "SPACER",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1009,
-          "type": "Bool",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1010,
-          "type": "Int",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1011,
-          "type": "Float",
-          "connectedTo": 1018
-        },
-        {
-          "ID": 1012,
-          "type": "Double",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1013,
-          "type": "String",
-          "connectedTo": -1
-        }
-      ]
-    },
-    {
-      "className": "visual.scripting.node.NodeVisualTest",
-      "x": 864.0,
-      "y": 67.0,
-      "inputPins": [
-        {
-          "ID": 1015,
-          "type": "Flow",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1016,
-          "type": "Bool",
-          "value": "false",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1017,
-          "type": "Int",
-          "value": "0",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1018,
-          "type": "Float",
-          "value": "0.0",
-          "connectedTo": 1011
-        },
-        {
-          "ID": 1019,
-          "type": "Double",
-          "value": "0.0",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1020,
-          "type": "String",
-          "value": "",
-          "connectedTo": -1
-        }
-      ],
-      "outputPins": [
-        {
-          "ID": 1021,
-          "type": "SPACER",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1022,
-          "type": "Bool",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1023,
-          "type": "Int",
-          "connectedTo": -1
-        },
-        {
           "ID": 1024,
-          "type": "Float",
-          "connectedTo": -1
-        },
+          "type": "Flow",
+          "connectedTo": 1025
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeSplitFlow",
+      "x": -200.0,
+      "y": -162.0,
+      "inputPins": [
         {
           "ID": 1025,
+          "type": "Flow",
+          "connectedTo": 1024
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1026,
+          "type": "Flow",
+          "connectedTo": 1028
+        },
+        {
+          "ID": 1027,
+          "type": "Flow",
+          "connectedTo": 1040
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeVisualTest",
+      "x": 128.0,
+      "y": -239.0,
+      "inputPins": [
+        {
+          "ID": 1028,
+          "type": "Flow",
+          "connectedTo": 1026
+        },
+        {
+          "ID": 1029,
+          "type": "Bool",
+          "value": "false",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1030,
+          "type": "Int",
+          "value": "0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1031,
+          "type": "Float",
+          "value": "0.0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1032,
+          "type": "Double",
+          "value": "0.0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1033,
+          "type": "String",
+          "value": "",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1034,
+          "type": "SPACER",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1035,
+          "type": "Bool",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1036,
+          "type": "Int",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1037,
+          "type": "Float",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1038,
           "type": "Double",
           "connectedTo": -1
         },
         {
-          "ID": 1026,
+          "ID": 1039,
           "type": "String",
+          "connectedTo": -1
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeVisualTest",
+      "x": -104.0,
+      "y": 51.0,
+      "inputPins": [
+        {
+          "ID": 1040,
+          "type": "Flow",
+          "connectedTo": 1027
+        },
+        {
+          "ID": 1041,
+          "type": "Bool",
+          "value": "false",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1042,
+          "type": "Int",
+          "value": "0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1043,
+          "type": "Float",
+          "value": "0.0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1044,
+          "type": "Double",
+          "value": "0.0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1045,
+          "type": "String",
+          "value": "",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1046,
+          "type": "SPACER",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1047,
+          "type": "Bool",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1048,
+          "type": "Int",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1049,
+          "type": "Float",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1050,
+          "type": "Double",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1051,
+          "type": "String",
+          "connectedTo": -1
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeEntry",
+      "x": 185.0,
+      "y": 264.0,
+      "inputPins": [],
+      "outputPins": [
+        {
+          "ID": 1081,
+          "type": "Flow",
           "connectedTo": -1
         }
       ]

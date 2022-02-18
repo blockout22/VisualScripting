@@ -16,6 +16,7 @@ import imgui.type.*;
 import org.lwjgl.opengl.GL11;
 import visual.scripting.node.*;
 import visual.scripting.ui.Button;
+import visual.scripting.ui.ConfirmSaveDialog;
 import visual.scripting.ui.ListView;
 import visual.scripting.ui.listeners.LeftClickListener;
 import visual.scripting.ui.listeners.HoverListener;
@@ -74,6 +75,8 @@ public class GraphWindow {
     private boolean justLoadedFromFile = false;
     private boolean justOpenedContextMenu = false;
 
+    private ConfirmSaveDialog saveDialog = new ConfirmSaveDialog();
+
     //UiComponents
     private Button convertAndSaveBtn = new Button("Save & Convert");
     private Button clearGraphBtn = new Button("Clear Graph");
@@ -131,28 +134,7 @@ public class GraphWindow {
         convertAndSaveBtn.addLeftClickListener(new LeftClickListener() {
             @Override
             public void onClicked() {
-                //used to convert the nodes to source text
-                //Converts to Source
-                String text = nodeCompiler.compile(graph);
-                File file = new File(ImGuiWindow.workingDir.getAbsolutePath().toString() + File.separator + id + "." + graph.getLanguage());
-                if(!file.exists()){
-                    try {
-                        file.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    BufferedWriter br = new BufferedWriter(new FileWriter(file));
-                    br.write(text);
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                EDITOR.setText(text);
-                //Saves Node Graph information (nodes, nodes positions, node links etc...)
-                GraphSaver.save(id + "." + graph.getLanguage(), graph);
+                save();
             }
         });
 
@@ -189,16 +171,32 @@ public class GraphWindow {
         });
     }
 
-//    public int ToNodeColor(NodeColor nodeColor){
-//        int Red = (nodeColor.r << 16) & 0x00FF0000; //Shift red 16-bits and mask out other stuff
-//        int Green = (nodeColor.g << 8) & 0x0000FF00; //Shift Green 8-bits and mask out other stuff
-//        int Blue = nodeColor.b & 0x000000FF; //Mask out anything not blue.
-//
-//        return 0xFF000000 | Red | Green | Blue; //0xFF000000 for 100% Alpha. Bitwise OR everything together.
-//    }
 
-//    private ImRect rect = new ImRect();
-//    private float outputInputSpacing = 0.0f;
+    private void save(){
+        //used to convert the nodes to source text
+        //Converts to Source
+        String text = nodeCompiler.compile(graph);
+        File file = new File(ImGuiWindow.workingDir.getAbsolutePath().toString() + File.separator + id + "." + graph.getLanguage());
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            BufferedWriter br = new BufferedWriter(new FileWriter(file));
+            br.write(text);
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        EDITOR.setText(text);
+        //Saves Node Graph information (nodes, nodes positions, node links etc...)
+        GraphSaver.save(id + "." + graph.getLanguage(), graph);
+        requiresSave = false;
+    }
 
     /**
      *  Shows the Graphs window
@@ -214,15 +212,23 @@ public class GraphWindow {
             //checks is value has been changed from clicking the close button
             if(!closable.get()){
                 if(requiresSave){
-                    System.out.println("Should save?");
-//                    closable.set(true);
-//                    return;
-                    // if no then return;
-                    //else continue
+                    int state = saveDialog.show();
+                    if(state == 0) {
+                        System.out.println("Don't save");
+                        requiresSave = false;
+
+                        GL11.glDeleteTextures(texture.ID);
+                        window.removeGraphWindow(this);
+                    }else if (state == 1){
+                        System.out.println("Save");
+                        save();
+                        GL11.glDeleteTextures(texture.ID);
+                        window.removeGraphWindow(this);
+                    }
+                }else {
+                    GL11.glDeleteTextures(texture.ID);
+                    window.removeGraphWindow(this);
                 }
-                //should init save
-                GL11.glDeleteTextures(texture.ID);
-                window.removeGraphWindow(this);
             }
 
             convertAndSaveBtn.show();
@@ -853,7 +859,7 @@ public class GraphWindow {
                                 newInstance.init();
                                 nodeQPos.put(newInstance.getID(), new ImVec2());
                                 NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
-
+                                requiresSave = true;
                                 autoConnectLink(newInstance);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -873,7 +879,7 @@ public class GraphWindow {
                     newInstance.init();
                     nodeQPos.put(newInstance.getID(), new ImVec2());
                     NodeEditor.setNodePosition(newInstance.getID(), NodeEditor.toCanvasX(getCursorScreenPosX()), NodeEditor.toCanvasY(getCursorScreenPosY()));
-
+                    requiresSave = true;
                     autoConnectLink(newInstance);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1027,6 +1033,7 @@ public class GraphWindow {
 ////                NodeEditor.pushStyleColor(NodeEditorStyleColor.Flow, 1, 1, 0, 1);
 //            }
             if (NodeEditor.acceptNewItem(0, 1, 0, 1, 1)) {
+                requiresSave = true;
 //                if (!(sourcePin.getDataType() == targetPin.getDataType())) {
 //                    System.out.println("Types are not the same");
 //                } else {
@@ -1040,6 +1047,7 @@ public class GraphWindow {
                         oldPin.connectedTo = -1;
                     }
 
+                    //Create a new Link connections
                     if (sourcePin != null && targetPin != null) {
                         if (sourcePin.connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || sourcePin.connectedTo == -1)) {
                             sourcePin.connectedTo = targetPin.getID();

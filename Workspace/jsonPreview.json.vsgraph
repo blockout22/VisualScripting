@@ -2,6 +2,32 @@
   "language": "json",
   "nodeSaves": [
     {
+      "className": "nodes.Node_String",
+      "x": -208.0,
+      "y": 476.0,
+      "inputPins": [
+        {
+          "ID": 1017,
+          "type": "String",
+          "value": "Fifth",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1018,
+          "type": "String",
+          "value": "last one",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1019,
+          "type": "String",
+          "connectedTo": 1004
+        }
+      ]
+    },
+    {
       "className": "nodes.JsonEntry",
       "x": 152.0,
       "y": -34.0,
@@ -41,8 +67,8 @@
     },
     {
       "className": "nodes.Node_String",
-      "x": -208.0,
-      "y": -164.0,
+      "x": 128.0,
+      "y": -180.0,
       "inputPins": [
         {
           "ID": 1005,
@@ -140,32 +166,6 @@
           "ID": 1016,
           "type": "String",
           "connectedTo": 1002
-        }
-      ]
-    },
-    {
-      "className": "nodes.Node_String",
-      "x": -208.0,
-      "y": 476.0,
-      "inputPins": [
-        {
-          "ID": 1017,
-          "type": "String",
-          "value": "Fifth",
-          "connectedTo": -1
-        },
-        {
-          "ID": 1018,
-          "type": "String",
-          "value": "last one",
-          "connectedTo": -1
-        }
-      ],
-      "outputPins": [
-        {
-          "ID": 1019,
-          "type": "String",
-          "connectedTo": 1004
         }
       ]
     }
