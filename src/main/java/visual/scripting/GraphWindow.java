@@ -67,7 +67,7 @@ public class GraphWindow {
 
     private int openSourcePreview = 0;
     private int currentNodeSourceID = -1;
-    private float h = 300f;
+    private float h = 0f;
 
     private Texture texture;
 
