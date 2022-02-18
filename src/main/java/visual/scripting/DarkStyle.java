@@ -88,7 +88,7 @@ public class DarkStyle {
         set(ImGuiCol_ScrollbarGrab, new ImVec4(0.31f,0.31f,0.31f,1.00f));
         set(ImGuiCol_ScrollbarGrabHovered, new ImVec4(0.41f,0.41f,0.41f,1.00f));
         set(ImGuiCol_ScrollbarGrabActive, new ImVec4(0.51f,0.51f,0.51f,1.00f));
-        set(ImGuiCol_CheckMark, new ImVec4(0.16f,0.17f,0.18f,1.00f));
+        set(ImGuiCol_CheckMark, new ImVec4(0,1f,1f,1.00f));
         set(ImGuiCol_SliderGrab, new ImVec4(0.24f,0.52f,0.88f,1.00f));
         set(ImGuiCol_SliderGrabActive, new ImVec4(0.26f,0.59f,0.98f,1.00f));
         set(ImGuiCol_Button, new ImVec4(0.32f,0.32f,0.32f,0.40f));
