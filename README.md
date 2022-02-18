@@ -224,3 +224,4 @@ Image of the [Json](https://github.com/blockout22/VisualScriptingJson) plugin
 | Examples [wiki](https://github.com/blockout22/VisualScripting/wiki)                                | :heavy_check_mark: |
 | Convert to the more advanced Node Editor More info here https://tinyurl.com/y75w75re               | :heavy_check_mark: |
 | Variables                                                                                          | :x:                |
+| Graph Node Styling (allow custom node styles using a text file)                                    | :x:                |
