@@ -9,6 +9,7 @@ import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
 import imgui.extension.nodeditor.NodeEditorStyle;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
+import imgui.extension.nodeditor.flag.NodeEditorStyleColor;
 import imgui.extension.nodeditor.flag.NodeEditorStyleVar;
 import imgui.extension.texteditor.TextEditor;
 import imgui.flag.*;
@@ -290,6 +291,8 @@ public class GraphWindow {
                     {
                         NodeEditor.begin("Editor");
                         {
+                            NodeEditor.pushStyleColor(NodeEditorStyleColor.Flow, .5f, .5f, .5f, 1);
+                            NodeEditor.pushStyleColor(NodeEditorStyleColor.FlowMarker, 1, 1, 1, 1);
                             //check if loaded from save file
                             if (justLoadedFromFile) {
                                 System.out.println("Setting node positions from loaded file");
@@ -496,11 +499,9 @@ public class GraphWindow {
                                         NodeEditor.pushStyleVar(NodeEditorStyleVar.FlowMarkerDistance, 50);
                                         NodeEditor.pushStyleVar(NodeEditorStyleVar.FlowDuration, 1000);
                                         NodeEditor.pushStyleVar(NodeEditorStyleVar.FlowSpeed, 25);
+
                                         NodeEditor.link(uniqueLinkId++, pin.getID(), pin.connectedTo, pincolor[0], pincolor[1], pincolor[2], pincolor[3], 1);
 
-//                                        if(showFlow) {
-//
-//                                        }
                                         NodeEditor.popStyleVar(3);
                                     }
                                 }
