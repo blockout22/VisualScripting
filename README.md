@@ -1,5 +1,7 @@
 ![Maven Build Action](https://github.com/blockout22/VisualScripting/actions/workflows/maven.yml/badge.svg)
 
+#### Some upcoming changes will break some thing but will improve the ability to add custom pins and control the contents that get shown alongside the pins  
+
 # VisualScripting
 Make code using nodes 
 
