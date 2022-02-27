@@ -427,6 +427,12 @@ public class GraphWindow {
 
 //                                NodeEditor.group(50, 50);
                                     headerMax = new ImVec2(getItemRectMax().x, headerMaxY);
+
+                                    if(node.getError().length() > 0) {
+                                        pushStyleColor(ImGuiCol.Text, ImColor.intToColor(255, 0, 0, 255));
+                                        text(node.getError());
+                                        popStyleColor();
+                                    }
                                 }
                                 NodeEditor.endNode();
 

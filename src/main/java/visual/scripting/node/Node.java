@@ -34,6 +34,8 @@ public class Node {
 
     public ArrayList<Button> buttons = new ArrayList<>();
 
+    private String error = "";
+
     public Node(Graph graph){
         this.self = this;
         this.graph = graph;
@@ -46,6 +48,14 @@ public class Node {
 
     public void init(){
 
+    }
+
+    public void setError(String error){
+        this.error = error;
+    }
+
+    public String getError(){
+        return error;
     }
 
     public void setColor(int r, int g, int b, int a){
