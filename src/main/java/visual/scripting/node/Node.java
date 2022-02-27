@@ -2,8 +2,8 @@ package visual.scripting.node;
 
 import imgui.ImVec2;
 import visual.scripting.Graph;
-import visual.scripting.Pin;
 import visual.scripting.node.style.NodeStyle;
+import visual.scripting.pin.Pin;
 import visual.scripting.ui.Button;
 
 import java.util.ArrayList;
@@ -103,11 +103,26 @@ public class Node {
         this.ID = id;
     }
 
-    public Pin addOutputPin(Pin.DataType dataType, Node node){
+//    public Pin addOutputPin(Pin.DataType dataType, Node node){
+//        int id = Graph.getNextAvailablePinID();
+////        Pin pin = new Pin(node, id, dataType, Pin.PinType.Output, linkID++);
+//        Pin pin = new Pin(node, id, dataType, Pin.PinType.Output);
+//        outputPins.add(pin);
+//        return pin;
+//    }
+
+    public void addCustomInput(Pin pin){
         int id = Graph.getNextAvailablePinID();
-        Pin pin = new Pin(node, id, dataType, Pin.PinType.Output, linkID++);
+        pin.setID(id);
+        pin.setPinType(Pin.PinType.Input);
+        inputPins.add(pin);
+    }
+
+    public void addCustomOutput(Pin pin){
+        int id = Graph.getNextAvailablePinID();
+        pin.setID(id);
+        pin.setPinType(Pin.PinType.Output);
         outputPins.add(pin);
-        return pin;
     }
 
     /**
@@ -115,16 +130,18 @@ public class Node {
      */
     public void addOutputSpacer(Node node){
         int id = Graph.getNextAvailablePinID();
-        Pin pin = new Pin(node, id, Pin.DataType.SPACER, Pin.PinType.Output, linkID++);
+//        Pin pin = new Pin(node, id, Pin.DataType.SPACER, Pin.PinType.Output, linkID++);
+        Pin pin = new Pin(node, id, Pin.DataType.SPACER, Pin.PinType.Output);
         outputPins.add(pin);
     }
 
-    public Pin addInputPin(Pin.DataType dataType, Node node){
-        int id = Graph.getNextAvailablePinID();
-        Pin pin = new Pin(node, id, dataType, Pin.PinType.Input, linkID++);
-        inputPins.add(pin);
-        return pin;
-    }
+//    public Pin addInputPin(Pin.DataType dataType, Node node){
+//        int id = Graph.getNextAvailablePinID();
+////        Pin pin = new Pin(node, id, dataType, Pin.PinType.Input, linkID++);
+//        Pin pin = new Pin(node, id, dataType, Pin.PinType.Input);
+//        inputPins.add(pin);
+//        return pin;
+//    }
 
     public Button addButton(String text){
         Button button = new Button(text);

@@ -1,0 +1,121 @@
+{
+  "language": "java",
+  "nodeSaves": [
+    {
+      "className": "visual.scripting.node.NodeEntry",
+      "x": -139.0,
+      "y": 166.0,
+      "inputPins": [],
+      "outputPins": [
+        {
+          "ID": 1000,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": 1001
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeSplitFlow",
+      "x": -56.0,
+      "y": 126.0,
+      "inputPins": [
+        {
+          "ID": 1001,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": 1000
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1002,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1003,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1004,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": 1005
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeVisualTest",
+      "x": 128.0,
+      "y": 161.0,
+      "inputPins": [
+        {
+          "ID": 1005,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": 1004
+        },
+        {
+          "ID": 1006,
+          "type": "visual.scripting.pin.Pin",
+          "value": "false",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1007,
+          "type": "visual.scripting.pin.Pin",
+          "value": "0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1008,
+          "type": "visual.scripting.pin.Pin",
+          "value": "0.0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1009,
+          "type": "visual.scripting.pin.Pin",
+          "value": "0.0",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1010,
+          "type": "visual.scripting.pin.Pin",
+          "value": "",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1011,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1012,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1013,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1014,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1015,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1016,
+          "type": "visual.scripting.pin.Pin",
+          "connectedTo": -1
+        }
+      ]
+    }
+  ]
+}

@@ -18,6 +18,7 @@ import visual.scripting.node.NodeVisualTest;
 import visual.scripting.ui.Button;
 import visual.scripting.ui.listeners.LeftClickListener;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -379,6 +380,20 @@ public class ImGuiWindow {
                         lastMenuAction = "Error_get_more_plugins";
                     }
                 }
+
+                if(menuItem("Install Plugin")){
+                    new Thread(() ->{
+                        JFileChooser fc = new JFileChooser();
+
+                        int choice = fc.showOpenDialog(null);
+                        if(choice != JFileChooser.APPROVE_OPTION) return;
+
+                        File file = fc.getSelectedFile();
+                        System.out.println(file);
+                    }).start();
+
+                }
+
                 separator();
                 for(PluginWrapper plugin : pluginManager.getPlugins()){
 //                    if(menuItem(plugin.getPluginId())) {

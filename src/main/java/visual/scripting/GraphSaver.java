@@ -8,11 +8,13 @@ import imgui.extension.nodeditor.NodeEditor;
 import imgui.type.*;
 import org.pf4j.PluginWrapper;
 import visual.scripting.node.Node;
+import visual.scripting.pin.Pin;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Flow;
 
 public class GraphSaver {
 
@@ -46,7 +48,7 @@ public class GraphSaver {
         }
 
         graphSave.language = graph.getLanguage();
-        System.out.println(graphSave.language + " : " + graph.getNodes().size());
+//        System.out.println(graphSave.language + " : " + graph.getNodes().size());
 
         for(Node node : graph.getNodes().values()){
             String className = node.getClass().getName();
@@ -62,9 +64,10 @@ public class GraphSaver {
             for(Pin inputs : node.inputPins){
                 PinData pinData = new PinData();
                 pinData.ID = inputs.getID();
-                pinData.type = inputs.getDataType().name();
+                pinData.type = inputs.getClass().getName(); //inputs.getDataType().name();
                 pinData.connectedTo = inputs.connectedTo;
                 if(inputs.getData() != null) {
+                    System.out.println("Pin Save: " + inputs.getData().getValue());
                     if(inputs.getData().getValue() != null) {
                         pinData.value = inputs.getData().getValue().toString();
                     }
@@ -77,7 +80,7 @@ public class GraphSaver {
             for(Pin outputs : node.outputPins){
                 PinData pinData = new PinData();
                 pinData.ID = outputs.getID();
-                pinData.type = outputs.getDataType().name();
+                pinData.type = outputs.getClass().getName(); //outputs.getDataType().name();
 
                 pinData.connectedTo = outputs.connectedTo;
 
@@ -201,7 +204,7 @@ public class GraphSaver {
 
 
 
-            //setup connections between and nodes that have connectedTo != -1
+            //setup connections between any nodes that have connectedTo != -1
 
             for (int i = 0; i < loadedNode.length; i++) {
                 Node node = loadedNode[i];
@@ -226,13 +229,22 @@ public class GraphSaver {
                     for (int j = 0; j < save.inputPins.size(); j++) {
                         //TODO check data type before adding
                         if(j >= node.inputPins.size()){
-                            Pin customPin = node.addInputPin(Pin.DataType.valueOf(save.inputPins.get(j).type), node);
+//                            Pin customPin = node.addInputPin(Pin.DataType.valueOf(save.inputPins.get(j).type), node);
+//                            //TODO get pin class name and create pin
+                            Pin customPin = new Pin();
+//                            node.addCustomInput();
                             //any extra pins added will be allowed for deletion
                             customPin.setCanDelete(true);
                         }
 
                         node.inputPins.get(j).setID(save.inputPins.get(j).ID);
-                        Global.setPinValue(node.inputPins.get(j), save.inputPins.get(j).value);
+//                        Global.setPinValue(node.inputPins.get(j), save.inputPins.get(j).value);
+
+                        //TODO do this for output pins too
+                        if(node.inputPins.get(j).getData() != null) {
+                            node.inputPins.get(j).loadValue(save.inputPins.get(j).value);
+//                            node.inputPins.get(j).getData().setValue();
+                        }
 
                         if(save.inputPins.get(j).connectedTo != -1){
                             node.inputPins.get(j).connectedTo = save.inputPins.get(j).connectedTo;
@@ -243,9 +255,48 @@ public class GraphSaver {
 
                         //TODO check data type before adding
                         if(j >= node.outputPins.size()){
-                            Pin customPin = node.addOutputPin(Pin.DataType.valueOf(save.outputPins.get(j).type), node);
+                            Class classNode = null;
+
+                            try {
+                                //try to load the node from the current jar classpath
+                                classNode = Class.forName(save.outputPins.get(j).type, true, null);
+                            } catch (Exception e) {
+//                    e.printStackTrace();
+                            }
+
+                            List<PluginWrapper> listWrapper = ImGuiWindow.pluginManager.getPlugins();
+                            if(listWrapper.size() > 0) {
+                                for (PluginWrapper f : listWrapper) {
+                                    try {
+                                        System.out.println(save.outputPins.get(j).type);
+                                        ClassLoader loader = f.getPluginClassLoader();
+                                        classNode = Class.forName(save.outputPins.get(j).type, true, loader);
+                                    } catch (ClassNotFoundException e) {
+                                        //e.printStackTrace();
+                                    }
+                                }
+                            }else{
+                                try{
+                                    ClassLoader loader = GraphSaver.class.getClassLoader();
+                                    classNode = Class.forName(save.outputPins.get(j).type, true, loader);
+                                }catch (ClassNotFoundException e){
+
+                                }
+                            }
+
+                            if (classNode == null) {
+                                System.out.println("Class was null, couldn't load");
+                                return null;
+                            }
+
+                            int id = Graph.getNextAvailablePinID();
+                            Pin pin = (Pin) classNode.getDeclaredConstructor(Node.class, int.class, Pin.DataType.class, Pin.PinType.class).newInstance(node, id, Pin.DataType.Flow, Pin.PinType.Output);
+
+                            pin.setCanDelete(true);
+//                            Pin customPin = node.addOutputPin(Pin.DataType.valueOf(save.outputPins.get(j).type), node);
+//                            Pin customPin = node.addOutputPin(Pin.DataType.valueOf("Flow"), node);
                             //any extra pins added will be allowed for deletion
-                            customPin.setCanDelete(true);
+//                            customPin.setCanDelete(true);
                         }
 
                         node.outputPins.get(j).setID(save.outputPins.get(j).ID);

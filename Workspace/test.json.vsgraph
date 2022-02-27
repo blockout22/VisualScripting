@@ -1,0 +1,104 @@
+{
+  "language": "json",
+  "nodeSaves": [
+    {
+      "className": "visual.scripting.node.NodeEntry",
+      "x": 306.0,
+      "y": 85.0,
+      "inputPins": [
+        {
+          "ID": 1014,
+          "type": "visual.scripting.pin.PinFlow",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1012,
+          "type": "visual.scripting.pin.PinFlow",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1013,
+          "type": "visual.scripting.pin.PinFlow",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1015,
+          "type": "visual.scripting.pin.PinFloat",
+          "connectedTo": -1
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeSplitFlow",
+      "x": 456.0,
+      "y": 229.0,
+      "inputPins": [
+        {
+          "ID": 1016,
+          "type": "visual.scripting.pin.PinFlow",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1019,
+          "type": "visual.scripting.pin.PinFloat",
+          "value": "1.6460056E7",
+          "connectedTo": 1023
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1017,
+          "type": "visual.scripting.pin.PinFlow",
+          "connectedTo": -1
+        },
+        {
+          "ID": 1018,
+          "type": "visual.scripting.pin.PinFlow",
+          "connectedTo": -1
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeTime",
+      "x": 168.0,
+      "y": 261.0,
+      "inputPins": [
+        {
+          "ID": 1021,
+          "type": "visual.scripting.pin.PinFloat",
+          "value": "99999.0",
+          "connectedTo": -1
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1020,
+          "type": "visual.scripting.pin.PinLong",
+          "connectedTo": 1022
+        }
+      ]
+    },
+    {
+      "className": "visual.scripting.node.NodeLongToFloat",
+      "x": 168.0,
+      "y": 373.0,
+      "inputPins": [
+        {
+          "ID": 1022,
+          "type": "visual.scripting.pin.PinLong",
+          "value": "16460056",
+          "connectedTo": 1020
+        }
+      ],
+      "outputPins": [
+        {
+          "ID": 1023,
+          "type": "visual.scripting.pin.PinFloat",
+          "connectedTo": 1019
+        }
+      ]
+    }
+  ]
+}

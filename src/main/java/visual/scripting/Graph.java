@@ -1,6 +1,7 @@
 package visual.scripting;
 
 import visual.scripting.node.Node;
+import visual.scripting.pin.Pin;
 
 import java.util.ArrayList;
 import java.util.HashMap;

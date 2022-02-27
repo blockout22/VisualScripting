@@ -2,6 +2,8 @@ package visual.scripting;
 
 import visual.scripting.node.Node;
 import visual.scripting.node.NodeEntry;
+import visual.scripting.pin.Pin;
+import visual.scripting.pin.PinFlow;
 
 public class NodeCompiler {
 
@@ -17,6 +19,7 @@ public class NodeCompiler {
         for(Node node : graph.getNodes().values()){
 //            handleNode(graph, node);
             if(node instanceof NodeEntry){
+                System.out.println("Foiund Entry Node");
                 handleNode(graph, node);
             }
         }
@@ -28,10 +31,13 @@ public class NodeCompiler {
         node.printSource(output);
 
         for(Pin pin : node.outputPins){
-            if(pin.getDataType() == Pin.DataType.Flow){
+//            if(pin.getDataType() == Pin.DataType.Flow)
+            if(pin.getClass() == PinFlow.class)
+            {
                 if(pin.connectedTo != -1) {
                     Pin p = graph.findPinById(pin.connectedTo);
                     //goto next node
+                    System.out.println(pin.getClass());
                     handleNode(graph, p.getNode());
                 }
             }

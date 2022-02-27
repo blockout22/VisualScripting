@@ -4,7 +4,9 @@ import imgui.type.ImFloat;
 import imgui.type.ImLong;
 import visual.scripting.Graph;
 import visual.scripting.NodeData;
-import visual.scripting.Pin;
+import visual.scripting.pin.Pin;
+import visual.scripting.pin.PinFloat;
+import visual.scripting.pin.PinLong;
 
 public class NodeTime extends Node{
 
@@ -18,11 +20,17 @@ public class NodeTime extends Node{
 
     @Override
     public void init() {
-        pin = addOutputPin(Pin.DataType.Long, this);
-        pin.setName("System time");
+        pin = new PinLong();
+//        pin = addOutputPin(Pin.DataType.Long, this);
+        pin.setNode(this);
+        addCustomOutput(pin);
+//        pin.setName("System time");
 
-        pinDivide = addInputPin(Pin.DataType.Float, this);
-        pinDivide.setName("Modifier");
+        pinDivide = new PinFloat();
+        pinDivide.setNode(this);
+        addCustomInput(pinDivide);
+//        pinDivide = addInputPin(Pin.DataType.Float, this);
+//        pinDivide.setName("Modifier");
     }
 
     @Override
