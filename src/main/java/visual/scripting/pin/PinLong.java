@@ -20,7 +20,7 @@ public class PinLong extends Pin{
 
     @Override
     public void draw(ImDrawList windowDrawList, float posX, float posY, boolean isConnected, boolean pinDragSame) {
-        drawDefaultCircle(windowDrawList, posX, posY,isConnected,pinDragSame);
+        drawDefaultCircle(windowDrawList, posX, posY,isConnected,pinDragSame, 49, 125, 255);
     }
 
     public void UI(){

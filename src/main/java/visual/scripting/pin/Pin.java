@@ -65,9 +65,9 @@ public class Pin {
 
     }
 
-    public void drawDefaultCircle(ImDrawList windowDrawList, float posX, float posY, boolean isConnected, boolean pinDragSame){
+    public void drawDefaultCircle(ImDrawList windowDrawList, float posX, float posY, boolean isConnected, boolean pinDragSame, int r, int g, int b){
         float size = 10f;
-        int doubleGrey = pinDragSame ? rgbToInt(49, 102, 80, 255) : rgbToInt(50, 50, 50, 255);
+        int doubleGrey = pinDragSame ? rgbToInt(r, g, b, 255) : rgbToInt(50, 50, 50, 255);
         if(isConnected) {
             windowDrawList.addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, doubleGrey);
         }else{
