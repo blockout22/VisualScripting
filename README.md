@@ -108,8 +108,17 @@ public class Node_PrintString extends Node {
 
     @Override
     public void init() {
-        flowIn = addInputPin(Pin.DataType.Flow, this);
-        strIn = addInputPin(Pin.DataType.String, this);
+        flowIn = new PinFlow();
+        flowIn.setNode(this);
+        addCustomInput(flowIn);
+        
+        strIn = new PinString();
+        strIn.setNode(this);
+        addCustomInput(strIn);
+        
+        flowOut = new PinFlow();
+        flowOut.setNode(this);
+        addCustomOutput(flowOut);
 
         flowOut = addOutputPin(Pin.DataType.Flow, this);
     }
@@ -152,9 +161,13 @@ public class Node_IntToString extends Node {
 
     @Override
     public void init() {
-        in = addInputPin(Pin.DataType.Int, this);
-
-        out = addOutputPin(Pin.DataType.String, this);
+        in = new PinFloat();
+        in.setNode(this);
+        addCustomInput(in);
+        
+        out = new PinString(); // PinString is a custom Pin that needs to be created
+        out.setNode(this);
+        addCustomOutput(out);
 
         // call getGraph().getNextLocalVariableID(); to avoid having same variable names in the same function
         String var = "intToString" + getGraph().getNextLocalVariableID();
