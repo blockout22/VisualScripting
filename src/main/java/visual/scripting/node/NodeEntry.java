@@ -1,13 +1,11 @@
 package visual.scripting.node;
 
 import visual.scripting.Graph;
-import visual.scripting.pin.PinFloat;
 import visual.scripting.pin.PinFlow;
 
 public class NodeEntry extends Node{
 
-    private PinFlow input, output, output2;
-    private PinFloat pinFloat;
+    private PinFlow output;
 
     public NodeEntry(Graph graph) {
         super(graph);
@@ -22,18 +20,6 @@ public class NodeEntry extends Node{
         output = new PinFlow();
         output.setNode(this);
         addCustomOutput(output);
-
-        output2 = new PinFlow();
-        output2.setNode(this);
-        addCustomOutput(output2);
-
-        input = new PinFlow();
-        input.setNode(this);
-        addCustomInput(input);
-
-        pinFloat = new PinFloat();
-        pinFloat.setNode(this);
-        addCustomOutput(pinFloat);
     }
 
     @Override

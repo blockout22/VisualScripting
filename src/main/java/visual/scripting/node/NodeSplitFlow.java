@@ -10,7 +10,6 @@ import visual.scripting.pin.PinFlow;
 public class NodeSplitFlow extends Node{
 
     private PinFlow input, output1, output2;
-    private PinFloat pinFloat;
 
     public NodeSplitFlow(Graph graph) {
         super(graph);
@@ -38,13 +37,9 @@ public class NodeSplitFlow extends Node{
         output2 = new PinFlow();
         output2.setNode(this);
 
-        pinFloat = new PinFloat();
-        pinFloat.setNode(this);
-
         addCustomInput(input);
         addCustomOutput(output1);
         addCustomOutput(output2);
-        addCustomInput(pinFloat);
         //        input = addInputPin(Pin.DataType.Flow, this);
 //        output1 = addOutputPin(Pin.DataType.Flow, this);
 //        output2 = addOutputPin(Pin.DataType.Flow, this);
@@ -52,13 +47,6 @@ public class NodeSplitFlow extends Node{
 
     @Override
     public void execute() {
-        NodeData<ImFloat> input = pinFloat.getData();
-
-        if(pinFloat.connectedTo != -1){
-            Pin pin = getGraph().findPinById(pinFloat.connectedTo);
-            NodeData<ImFloat> conPin = pin.getData();
-            input.getValue().set(conPin.value.get());
-        }
     }
 
     @Override
