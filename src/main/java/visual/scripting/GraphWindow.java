@@ -379,7 +379,7 @@ public class GraphWindow {
                                             {
                                                 beginGroup();
                                                 //TODO get custom pin to handle inputs
-                                                configurePinUI(outPin);
+//                                                configurePinUI(outPin);
                                                 text(outPin.getName());
                                                 endGroup();
                                                 sameLine();

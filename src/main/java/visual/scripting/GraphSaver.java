@@ -231,10 +231,46 @@ public class GraphSaver {
                         if(j >= node.inputPins.size()){
 //                            Pin customPin = node.addInputPin(Pin.DataType.valueOf(save.inputPins.get(j).type), node);
 //                            //TODO get pin class name and create pin
-                            Pin customPin = new Pin();
-//                            node.addCustomInput();
-                            //any extra pins added will be allowed for deletion
-                            customPin.setCanDelete(true);
+                            Class classNode = null;
+
+                            try {
+                                //try to load the node from the current jar classpath
+                                classNode = Class.forName(save.inputPins.get(j).type, true, null);
+                            } catch (Exception e) {
+//                    e.printStackTrace();
+                            }
+
+                            List<PluginWrapper> listWrapper = ImGuiWindow.pluginManager.getPlugins();
+                            if(listWrapper.size() > 0) {
+                                for (PluginWrapper f : listWrapper) {
+                                    try {
+                                        System.out.println(save.inputPins.get(j).type);
+                                        ClassLoader loader = f.getPluginClassLoader();
+                                        classNode = Class.forName(save.inputPins.get(j).type, true, loader);
+                                    } catch (ClassNotFoundException e) {
+                                        //e.printStackTrace();
+                                    }
+                                }
+                            }else{
+                                try{
+                                    ClassLoader loader = GraphSaver.class.getClassLoader();
+                                    classNode = Class.forName(save.inputPins.get(j).type, true, loader);
+                                }catch (ClassNotFoundException e){
+
+                                }
+                            }
+
+                            if (classNode == null) {
+                                System.out.println("Class was null, couldn't load");
+                                return null;
+                            }
+
+                            int id = Graph.getNextAvailablePinID();
+                            Pin pin = (Pin) classNode.getDeclaredConstructor().newInstance();
+                            pin.setNode(node);
+
+                            pin.setCanDelete(true);
+                            node.inputPins.add(pin);
                         }
 
                         node.inputPins.get(j).setID(save.inputPins.get(j).ID);
@@ -290,9 +326,10 @@ public class GraphSaver {
                             }
 
                             int id = Graph.getNextAvailablePinID();
-                            Pin pin = (Pin) classNode.getDeclaredConstructor(Node.class, int.class, Pin.DataType.class, Pin.PinType.class).newInstance(node, id, Pin.DataType.Flow, Pin.PinType.Output);
+                            Pin pin = (Pin) classNode.getDeclaredConstructor().newInstance();
 
                             pin.setCanDelete(true);
+                            node.outputPins.add(pin);
 //                            Pin customPin = node.addOutputPin(Pin.DataType.valueOf(save.outputPins.get(j).type), node);
 //                            Pin customPin = node.addOutputPin(Pin.DataType.valueOf("Flow"), node);
                             //any extra pins added will be allowed for deletion
