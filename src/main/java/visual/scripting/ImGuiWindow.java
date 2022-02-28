@@ -26,10 +26,10 @@ import java.io.*;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static imgui.ImGui.*;
 import static imgui.flag.ImGuiWindowFlags.*;
@@ -40,6 +40,10 @@ import static imgui.flag.ImGuiWindowFlags.*;
  * This class is setup to be ready to add to your OpenGL GLFW window by calling {@link #update()} in your game loop
  */
 public class ImGuiWindow {
+
+    private boolean hasClosed = false;
+    private WatchKey key;
+    WatchService watchService;
 
     private ImGuiWindow self;
 
@@ -119,6 +123,36 @@ public class ImGuiWindow {
             e.printStackTrace();
         }
 
+        new Thread(() -> {
+            try {
+                watchService = FileSystems.getDefault().newWatchService();
+                Path path = Paths.get(workingDir.getPath());
+                path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
+
+                while(!hasClosed){
+                    key = watchService.take();
+                    Thread.sleep(2000);
+                    for(WatchEvent<?> event : key.pollEvents()){
+                        updateFileViewer();
+                        System.out.println(event.kind() + " : " + event.context());
+                    }
+                    key.reset();
+                }
+            } catch (ClosedWatchServiceException e) {
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+
+
+        updateFileViewer();
+    }
+
+    private void updateFileViewer(){
+        fileButtons.clear();
         for(File file : workingDir.listFiles()){
             if(file.isDirectory()){
 
@@ -409,5 +443,12 @@ public class ImGuiWindow {
     public void close(){
         ImNodes.destroyContext();
         ImGui.destroyContext();
+        hasClosed = true;
+
+        try {
+            watchService.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

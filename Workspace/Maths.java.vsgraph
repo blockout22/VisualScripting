@@ -22,7 +22,7 @@
         {
           "ID": 1054,
           "type": "visual.scripting.pin.PinFloat",
-          "value": "3.3666216E7",
+          "value": "9655.0",
           "connectedTo": 1062
         },
         {
@@ -53,7 +53,7 @@
         {
           "ID": 1058,
           "type": "visual.scripting.pin.PinFloat",
-          "value": "3.3666216E7",
+          "value": "9655.036",
           "connectedTo": 1056
         }
       ],
@@ -73,7 +73,7 @@
         {
           "ID": 1060,
           "type": "visual.scripting.pin.PinFloat",
-          "value": "3.366656E7",
+          "value": "9999.0",
           "connectedTo": -1
         },
         {

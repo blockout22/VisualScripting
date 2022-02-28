@@ -9,7 +9,7 @@
         {
           "ID": 1021,
           "type": "visual.scripting.pin.PinFloat",
-          "value": "99999.0",
+          "value": "9999.0",
           "connectedTo": -1
         }
       ],
@@ -29,7 +29,7 @@
         {
           "ID": 1022,
           "type": "visual.scripting.pin.PinLong",
-          "value": "16460192",
+          "value": "164621059",
           "connectedTo": 1020
         }
       ],
