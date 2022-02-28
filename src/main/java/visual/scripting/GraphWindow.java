@@ -473,6 +473,12 @@ public class GraphWindow {
                                         //find the input pin that is connected to this output pin
                                         Pin otherPin = graph.findPinById(pin.connectedTo);
 
+                                        //TODO decide if we automatically set connected pin values or let the plugin handle it
+                                        //
+//                                        if(otherPin.getData() != null && pin.getData() != null) {
+//                                            pin.getData().value = otherPin.getData().getValue();
+//                                        }
+
                                         //TODO get pin to handle the output flow
 //                                        switch (pin.getDataType()) {
 //                                            case Bool:
@@ -860,6 +866,7 @@ public class GraphWindow {
                 return;
             }
         }
+
         if(instance.getCategory() != null) {
             String[] languages = instance.getLanguages();
             boolean shouldAdd = false;
@@ -868,6 +875,10 @@ public class GraphWindow {
                     shouldAdd = true;
                     break;
                 }
+            }
+
+            if(languages.length <= 0){
+                shouldAdd = true;
             }
 
             if(!shouldAdd){
