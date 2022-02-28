@@ -22,14 +22,14 @@
         {
           "ID": 1054,
           "type": "visual.scripting.pin.PinFloat",
-          "value": "0.0",
-          "connectedTo": -1
+          "value": "3.3666216E7",
+          "connectedTo": 1062
         },
         {
           "ID": 1055,
           "type": "visual.scripting.pin.PinFloat",
-          "value": "0.4",
-          "connectedTo": 1065
+          "value": "0.035714287",
+          "connectedTo": 1068
         }
       ],
       "outputPins": [
@@ -53,7 +53,7 @@
         {
           "ID": 1058,
           "type": "visual.scripting.pin.PinFloat",
-          "value": "0.4",
+          "value": "3.3666216E7",
           "connectedTo": 1056
         }
       ],
@@ -73,13 +73,13 @@
         {
           "ID": 1060,
           "type": "visual.scripting.pin.PinFloat",
-          "value": "10.0",
+          "value": "3.366656E7",
           "connectedTo": -1
         },
         {
           "ID": 1061,
           "type": "visual.scripting.pin.PinFloat",
-          "value": "10.0",
+          "value": "344.0",
           "connectedTo": -1
         }
       ],
@@ -87,7 +87,7 @@
         {
           "ID": 1062,
           "type": "visual.scripting.pin.PinFloat",
-          "connectedTo": -1
+          "connectedTo": 1054
         }
       ]
     },
@@ -97,21 +97,21 @@
       "y": 268.0,
       "inputPins": [
         {
-          "ID": 1063,
+          "ID": 1066,
           "type": "visual.scripting.pin.PinFloat",
           "value": "2.0",
           "connectedTo": -1
         },
         {
-          "ID": 1064,
+          "ID": 1067,
           "type": "visual.scripting.pin.PinFloat",
-          "value": "5.0",
+          "value": "56.0",
           "connectedTo": -1
         }
       ],
       "outputPins": [
         {
-          "ID": 1065,
+          "ID": 1068,
           "type": "visual.scripting.pin.PinFloat",
           "connectedTo": 1055
         }

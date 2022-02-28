@@ -523,12 +523,12 @@ public class GraphWindow {
                             for (Node node : graph.getNodes().values()) {
                                 for (Pin pin : node.outputPins) {
                                     if (pin.connectedTo != -1) {
-                                        float[] pincolor = getPinColor(pin);
+//                                        float[] pincolor = getPinColor(pin);
                                         NodeEditor.pushStyleVar(NodeEditorStyleVar.FlowMarkerDistance, 50);
                                         NodeEditor.pushStyleVar(NodeEditorStyleVar.FlowDuration, 1000);
                                         NodeEditor.pushStyleVar(NodeEditorStyleVar.FlowSpeed, 25);
 
-                                        NodeEditor.link(uniqueLinkId++, pin.getID(), pin.connectedTo, pincolor[0], pincolor[1], pincolor[2], pincolor[3], 1);
+                                        NodeEditor.link(uniqueLinkId++, pin.getID(), pin.connectedTo, pin.getColor().x, pin.getColor().y, pin.getColor().z, pin.getColor().w, 1);
 
                                         NodeEditor.popStyleVar(3);
                                     }

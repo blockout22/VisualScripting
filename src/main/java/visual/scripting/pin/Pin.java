@@ -48,7 +48,7 @@ public class Pin {
     private String variable;
     private boolean canDelete = false;
 
-    public ImVec4 color = new ImVec4();
+    public ImVec4 color = new ImVec4(1f, 1f, 1f, 1f);
 
 //    public ImVec2 spacing;
 
@@ -65,9 +65,9 @@ public class Pin {
 
     }
 
-    public void drawDefaultCircle(ImDrawList windowDrawList, float posX, float posY, boolean isConnected, boolean pinDragSame, int r, int g, int b){
+    public void drawDefaultCircle(ImDrawList windowDrawList, float posX, float posY, boolean isConnected, boolean pinDragSame){
         float size = 10f;
-        int doubleGrey = pinDragSame ? rgbToInt(r, g, b, 255) : rgbToInt(50, 50, 50, 255);
+        int doubleGrey = pinDragSame ? rgbToInt(color.x, color.y, color.z, color.w) : rgbToInt(50, 50, 50, 255);
         if(isConnected) {
             windowDrawList.addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, doubleGrey);
         }else{
@@ -79,8 +79,17 @@ public class Pin {
 
     }
 
-    public int rgbToInt(int r, int g, int b, int a){
-        return ImColor.intToColor(r, g, b, a);
+    public ImVec4 getColor() {
+        return color;
+    }
+
+    public void setColor(float r, float g, float b, float a) {
+        this.color.set(r, g, b, a);
+    }
+
+    public int rgbToInt(float r, float g, float b, float a){
+        return ImColor.floatToColor(r, g, b, a);
+//        return ImColor.intToColor((int)r * 255, (int)g * 255, (int)b * 255, (int)a * 255);
     }
 
     public Pin(){

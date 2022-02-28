@@ -10,7 +10,7 @@ public class PinFlow extends Pin{
     @Override
     public void draw(ImDrawList windowDrawList, float posX, float posY, boolean isConnected, boolean pinDragSame) {
         float size = 10f;
-        int flowGrey = pinDragSame ? rgbToInt(255, 255, 255, 255) : rgbToInt(50, 50, 50, 255);
+        int flowGrey = pinDragSame ? rgbToInt(1, 1, 1, 1) : rgbToInt(50, 50, 50, 255);
         if(isConnected) {
             windowDrawList.addTriangleFilled(posX + 2.5f, posY, posX + 2.5f, posY + size, posX + (size / 2) + 2.5f, posY + (size / 2), flowGrey);
         }else{

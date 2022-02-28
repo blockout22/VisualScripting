@@ -11,6 +11,7 @@ public class PinLong extends Pin{
     public PinLong(){
         setData(data);
         data.setValue(new ImLong());
+        setColor(0.19f, 0.49f, 1f, 1f);
     }
 
     @Override
@@ -20,7 +21,7 @@ public class PinLong extends Pin{
 
     @Override
     public void draw(ImDrawList windowDrawList, float posX, float posY, boolean isConnected, boolean pinDragSame) {
-        drawDefaultCircle(windowDrawList, posX, posY,isConnected,pinDragSame, 49, 125, 255);
+        drawDefaultCircle(windowDrawList, posX, posY,isConnected,pinDragSame);
     }
 
     public void UI(){
