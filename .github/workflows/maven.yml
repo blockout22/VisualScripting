@@ -23,7 +23,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
   build-linux:
-    runs-on: linux-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
