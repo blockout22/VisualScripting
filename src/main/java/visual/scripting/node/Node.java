@@ -6,6 +6,7 @@ import visual.scripting.node.style.NodeStyle;
 import visual.scripting.pin.Pin;
 import visual.scripting.pin.PinSpacer;
 import visual.scripting.ui.Button;
+import visual.scripting.ui.UiComponent;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class Node {
     public float width = -1;
     private ImVec2 loadedPosition = new ImVec2();
 
-    public ArrayList<Button> buttons = new ArrayList<>();
+    public ArrayList<UiComponent> uiComponents = new ArrayList<>();
 
     private String error = "";
 
@@ -156,10 +157,8 @@ public class Node {
 //        return pin;
 //    }
 
-    public Button addButton(String text){
-        Button button = new Button(text);
-        buttons.add(button);
-        return button;
+    public void addUiComponent(UiComponent uiComponent){
+        uiComponents.add(uiComponent);
     }
 
     public boolean removePinById(int id){

@@ -20,6 +20,7 @@ import visual.scripting.pin.Pin;
 import visual.scripting.ui.Button;
 import visual.scripting.ui.ConfirmSaveDialog;
 import visual.scripting.ui.ListView;
+import visual.scripting.ui.UiComponent;
 import visual.scripting.ui.listeners.LeftClickListener;
 import visual.scripting.ui.listeners.HoverListener;
 
@@ -326,8 +327,8 @@ public class GraphWindow {
                                         dummy(10, 10);
                                     }
 
-                                    for (Button nodeButton : node.buttons) {
-                                        nodeButton.show();
+                                    for (UiComponent uiComponent : node.uiComponents) {
+                                        uiComponent.show();
                                     }
 
                                     //add node pins

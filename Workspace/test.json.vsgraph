@@ -29,7 +29,7 @@
         {
           "ID": 1022,
           "type": "visual.scripting.pin.PinLong",
-          "value": "164621059",
+          "value": "164634128",
           "connectedTo": 1020
         }
       ],
@@ -67,14 +67,20 @@
         {
           "ID": 1035,
           "type": "pins.PinJsonString",
-          "value": "\"testrrr\": true",
-          "connectedTo": 1049
+          "value": "\"testrr\": true",
+          "connectedTo": -1
         },
         {
           "ID": 1046,
           "type": "pins.PinJsonString",
           "value": "\"tests\": false",
           "connectedTo": 1052
+        },
+        {
+          "ID": 1053,
+          "type": "pins.PinJsonString",
+          "value": "\"testrrr\": true",
+          "connectedTo": 1049
         }
       ],
       "outputPins": []
@@ -190,7 +196,7 @@
         {
           "ID": 1049,
           "type": "pins.PinJsonString",
-          "connectedTo": 1035
+          "connectedTo": 1053
         }
       ]
     },
