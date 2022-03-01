@@ -360,7 +360,6 @@ public class GraphWindow {
                                             }
                                             sameLine();
                                             beginGroup();
-                                            //TODO get custom pin to handle inputs
                                             configurePinUI(inPin);
                                             text(inPin.getName());
                                             endGroup();
@@ -379,7 +378,6 @@ public class GraphWindow {
 //                                            } else
                                             {
                                                 beginGroup();
-                                                //TODO get custom pin to handle inputs
 //                                                configurePinUI(outPin);
                                                 text(outPin.getName());
                                                 endGroup();
@@ -485,40 +483,6 @@ public class GraphWindow {
                                         //
 //                                        if(otherPin.getData() != null && pin.getData() != null) {
 //                                            pin.getData().value = otherPin.getData().getValue();
-//                                        }
-
-                                        //TODO get pin to handle the output flow
-//                                        switch (pin.getDataType()) {
-//                                            case Bool:
-//                                                NodeData<ImBoolean> boolOutData = otherPin.getData();
-//                                                NodeData<ImBoolean> boolInData = pin.getData();
-//                                                boolOutData.getValue().set(boolInData.value.get());
-//                                                break;
-//                                            case Int:
-//                                                NodeData<ImInt> intOutData = otherPin.getData();
-//                                                NodeData<ImInt> intInData = pin.getData();
-//                                                intOutData.getValue().set(intInData.value.get());
-//                                                break;
-//                                            case Float:
-//                                                NodeData<ImFloat> floatOutData = otherPin.getData();
-//                                                NodeData<ImFloat> floatInData = pin.getData();
-//                                                floatOutData.getValue().set(floatInData.value.get());
-//                                                break;
-//                                            case Double:
-//                                                NodeData<ImDouble> doubleOutData = otherPin.getData();
-//                                                NodeData<ImDouble> doubleInData = pin.getData();
-//                                                doubleOutData.getValue().set(doubleInData.value.get());
-//                                                break;
-//                                            case Long:
-//                                                NodeData<ImLong> longOutData = otherPin.getData();
-//                                                NodeData<ImLong> longInData = pin.getData();
-//                                                longOutData.getValue().set(longInData.value.get());
-//                                                break;
-//                                            case String:
-//                                                NodeData<ImString> stringOutData = otherPin.getData();
-//                                                NodeData<ImString> stringInData = pin.getData();
-//                                                stringOutData.getValue().set(stringInData.value.get());
-//                                                break;
 //                                        }
                                     }
                                 }
@@ -783,90 +747,17 @@ public class GraphWindow {
                 }
             firstFrame = false;
         }
-
-
-        //set nodes position to the current graphs pos
-//        for(Integer id : nodeQPos.keySet()){
-//            ImVec2 pos = nodeQPos.get(id);
-//            getNodeEditorSpacePos(id, pos);
-//            setNodeGridSpacePos(id, -pos.x + 300, -pos.y + 300);
-//
-//        }
-//        nodeQPos.clear();
-
-
-//        if(isMouseDown(ImGuiMouseButton.Left)){
-//            final int hoveredNode = getHoveredNode();
-//            if(hoveredNode != -1){
-//                openPopup("node_menu" + id);
-//                getStateStorage().setInt(getID("delete_node_id"), hoveredNode);
-//            }else{
-//                if(windowFocused) {
-//                    openPopup("context_menu" + id);
-//                }
-//            }
-//        }
     }
 
-    private float[] getPinColor(Pin pin){
-        float[] color = new float[4];
-        //TODO set link colors here
-        color[0] = 1;
-        color[1] = 1;
-        color[2] = 1;
-        color[3] = 1;
-//        switch (pin.getDataType()) {
-//            case Flow:
-//                color[0] = 1;
-//                color[1] = 1;
-//                color[2] = 1;
-//                color[3] = 1;
-//                break;
-//            case Bool:
-//                color[0] = 1;
-//                color[1] = 1;
-//                color[2] = 0.196078431f;
-//                color[3] = 1;
-//                break;
-//            case Int:
-//                color[0] = 0.705882353f;
-//                color[1] = 0.298039216f;
-//                color[2] = 0.262745098f;
-//                color[3] = 1;
-//                break;
-//            case Float:
-//                color[0] = 0.65098039215f;
-//                color[1] = 0.36862745098f;
-//                color[2] = 0.18039215686f;
-//                color[3] = 1;
-//                break;
-//            case Double:
-//                color[0] = 0.19215686274f;
-//                color[1] = 0.4f;
-//                color[2] = 0.31372549019f;
-//                color[3] = 1;
-//                break;
-//            case Long:
-//                color[0] = 0.952941176f;
-//                color[1] = 0.647058824f;
-//                color[2] = 0.0196078431f;
-//                color[3] = 1;
-//            case String:
-//                color[0] = 0.96078431372f;
-//                color[1] = 0.25098039215f;
-//                color[2] = 0.1294117647f;
-//                color[3] = 1;
-//                break;
-//            default:
-//                color[0] = 0.196078431f;
-//                color[1] = 1;
-//                color[2] = 0.196078431f;
-//                color[3] = 1;
-//                break;
-//        }
-
-        return color;
-    }
+//    private float[] getPinColor(Pin pin){
+//        float[] color = new float[4];
+//        //TODO set link colors here
+//        color[0] = 1;
+//        color[1] = 1;
+//        color[2] = 1;
+//        color[3] = 1;
+//        return color;
+//    }
 
     private void createContextMenuItem(Node instance, int depth) {
         if(nodeSearch.get().toLowerCase().length() > 0){
@@ -996,72 +887,6 @@ public class GraphWindow {
             pinDragSame = pin.getClass() == curSelectedPinDataType.getClass();
         }
         pin.draw(getWindowDrawList(), posX, posY, pin.connectedTo != -1, pinDragSame);
-//        switch (pin.getDataType()){
-//            case Flow:
-//                int flowGrey = (curSelectedPinDataType != Pin.DataType.Flow && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(255, 255, 255, 255);
-//                if(pin.connectedTo != -1) {
-//                    getWindowDrawList().addTriangleFilled(posX + 2.5f, posY, posX + 2.5f, posY + size, posX + (size / 2) + 2.5f, posY + (size / 2), flowGrey);
-//                }else {
-//                    getWindowDrawList().addTriangle(posX + 2.5f, posY, posX + 2.5f, posY + size, posX + (size / 2) + 2.5f, posY + (size / 2), flowGrey);
-//                }
-//                break;
-//            case Bool:
-//                int boolGrey = (curSelectedPinDataType != Pin.DataType.Bool && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(255, 255, 50, 255);
-//                if(pin.connectedTo != -1) {
-//                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, boolGrey);
-//                }else{
-//                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, boolGrey);
-//                }
-//                break;
-//            case Int:
-//                int intGrey = (curSelectedPinDataType != Pin.DataType.Int && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(180, 76, 67, 255);
-//                if(pin.connectedTo != -1) {
-//                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, intGrey);
-//                }else{
-//                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, intGrey);
-//                }
-//                break;
-//            case Float:
-//                int floatGrey = (curSelectedPinDataType != Pin.DataType.Float && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(166, 94, 46, 255);;
-//                if(pin.connectedTo != -1) {
-//                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, floatGrey);
-//                }else{
-//                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, floatGrey);
-//                }
-//                break;
-//            case Double:
-//                int doubleGrey = (curSelectedPinDataType != Pin.DataType.Double && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(49, 102, 80, 255);
-//                if(pin.connectedTo != -1) {
-//                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, doubleGrey);
-//                }else{
-//                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, doubleGrey);
-//                }
-//                break;
-//            case Long:
-//                int longGrey = (curSelectedPinDataType != Pin.DataType.Double && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(243, 165, 5, 255);
-//                if(pin.connectedTo != -1) {
-//                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, longGrey);
-//                }else{
-//                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, longGrey);
-//                }
-//                break;
-//            case String:
-//                int stringGrey = (curSelectedPinDataType != Pin.DataType.String && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(245, 64, 33, 255);
-//                if(pin.connectedTo != -1) {
-//                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, stringGrey);
-//                }else{
-//                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, stringGrey);
-//                }
-//                break;
-//            default:
-//                int defaultGrey = (curSelectedPinDataType != Pin.DataType.Flow && curSelectedPinDataType != null) ? rgbToInt(50, 50, 50, 255) : rgbToInt(50, 255, 50, 255);
-//                if(pin.connectedTo != -1) {
-//                    getWindowDrawList().addCircleFilled(posX + (size / 2), posY + (size / 2), size / 2, defaultGrey);
-//                }else{
-//                    getWindowDrawList().addCircle(posX + (size / 2), posY + (size / 2), size / 2, defaultGrey);
-//                }
-//                break;
-//        }
     }
 
     /**
@@ -1126,41 +951,6 @@ public class GraphWindow {
     private void configurePinUI(Pin pin) {
         pushItemWidth(150);
         pin.UI();
-//        switch (pin.getDataType()){
-//            case Flow:
-//                break;
-//            case Bool:
-//                if(checkbox("##" + pin.getID(), pin.getBoolean())){
-//
-//                }
-//                break;
-//            case Int:
-//                if(inputInt("##" + pin.getID(), pin.getInt())){
-//
-//                }
-//                break;
-//            case Float:
-//                if(inputFloat("##" + pin.getID(), pin.getFloat())){
-//
-//                }
-//                break;
-//            case Double:
-//                if(inputDouble("##" + pin.getID(), pin.getDouble())){
-//
-//                }
-//                break;
-//            case Long:
-//                ImFloat toFloat = new ImFloat(pin.getLong().get());
-//                if(inputFloat("##" + pin.getID(), toFloat))
-//                {
-//
-//                }
-//                break;
-//            case String:
-//                if(inputText("##" + pin.getID(), pin.getString())){
-//                }
-//                break;
-//        }
         popItemWidth();
     }
 
