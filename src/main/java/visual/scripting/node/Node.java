@@ -4,6 +4,7 @@ import imgui.ImVec2;
 import visual.scripting.Graph;
 import visual.scripting.node.style.NodeStyle;
 import visual.scripting.pin.Pin;
+import visual.scripting.pin.PinSpacer;
 import visual.scripting.ui.Button;
 
 import java.util.ArrayList;
@@ -139,10 +140,12 @@ public class Node {
      * Used to fix alignment of output pins with an input pin of choice
      */
     public void addOutputSpacer(Node node){
-        int id = Graph.getNextAvailablePinID();
-//        Pin pin = new Pin(node, id, Pin.DataType.SPACER, Pin.PinType.Output, linkID++);
-        Pin pin = new Pin(node, id, Pin.DataType.SPACER, Pin.PinType.Output);
-        outputPins.add(pin);
+        Pin pin = new PinSpacer(node);
+        addCustomOutput(pin);
+//        int id = Graph.getNextAvailablePinID();
+////        Pin pin = new Pin(node, id, Pin.DataType.SPACER, Pin.PinType.Output, linkID++);
+//        Pin pin = new Pin(node, id, Pin.DataType.SPACER, Pin.PinType.Output);
+//        outputPins.add(pin);
     }
 
 //    public Pin addInputPin(Pin.DataType dataType, Node node){

@@ -287,7 +287,7 @@ public class GraphWindow {
 //                    TestNodeEditor.nodeStyleEditor();
 
                     ImVec2 headerMin = null;
-                    ImVec2 headerMax;
+                    ImVec2 headerMax = null;
 
                     float headerMaxY = 0;
                     beginGroup();
@@ -306,6 +306,7 @@ public class GraphWindow {
                             }
 
                             for (Node node : graph.getNodes().values()) {
+                                float maxWidth = 0;
 //                            headerMin = new ImVec2();
 //                            headerMax = new ImVec2();
                                 NodeEditor.pushStyleVar(NodeEditorStyleVar.NodePadding, 8, 4, 8, 8);
@@ -423,10 +424,17 @@ public class GraphWindow {
                                         if(node.hasTitleBar()) {
                                             newLine();
                                         }
+
+                                        if(maxWidth < getItemRectMax().x){
+                                            maxWidth = getItemRectMax().x;
+                                        }
                                     }
 
 //                                NodeEditor.group(50, 50);
-                                    headerMax = new ImVec2(getItemRectMax().x, headerMaxY);
+
+
+                                    headerMax = new ImVec2(maxWidth, headerMaxY);
+
 
                                     if(node.getError().length() > 0) {
                                         pushStyleColor(ImGuiCol.Text, ImColor.intToColor(255, 0, 0, 255));

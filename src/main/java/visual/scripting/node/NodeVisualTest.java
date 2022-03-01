@@ -4,6 +4,7 @@ import visual.scripting.Graph;
 import visual.scripting.pin.Pin;
 import visual.scripting.pin.PinFloat;
 import visual.scripting.pin.PinFlow;
+import visual.scripting.pin.PinSpacer;
 
 public class NodeVisualTest extends Node {
 
@@ -39,8 +40,10 @@ public class NodeVisualTest extends Node {
         addCustomOutput(flowOut);
 
         floatOut = new PinFloat();
-        flowOut.setNode(this);
-        addCustomInput(floatOut);
+        floatOut.setNode(this);
+//        addOutputSpacer(this);
+//        addOutputSpacer(this);
+//        addCustomOutput(floatOut);
 //        addOutputPin(Pin.DataType.Flow, this);
 //        addOutputSpacer(this);
 //        addOutputPin(Pin.DataType.Bool, this);
