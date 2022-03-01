@@ -433,7 +433,7 @@ public class GraphWindow {
 //                                NodeEditor.group(50, 50);
 
 
-                                    headerMax = new ImVec2(maxWidth, headerMaxY);
+                                    headerMax = new ImVec2(NodeEditor.getNodePositionX(node.getID()) < 0 ? getItemRectMax().x : maxWidth, headerMaxY);
 
 
                                     if(node.getError().length() > 0) {
