@@ -3,11 +3,9 @@ package visual.scripting;
 import imgui.ImColor;
 import imgui.ImDrawList;
 import imgui.ImVec2;
-import imgui.extension.imnodes.flag.ImNodesColorStyle;
 import imgui.extension.nodeditor.NodeEditor;
 import imgui.extension.nodeditor.NodeEditorConfig;
 import imgui.extension.nodeditor.NodeEditorContext;
-import imgui.extension.nodeditor.NodeEditorStyle;
 import imgui.extension.nodeditor.flag.NodeEditorPinKind;
 import imgui.extension.nodeditor.flag.NodeEditorStyleColor;
 import imgui.extension.nodeditor.flag.NodeEditorStyleVar;
@@ -34,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static imgui.ImGui.*;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class GraphWindow {
 
@@ -447,6 +446,52 @@ public class GraphWindow {
                                     }
                                 }
                                 NodeEditor.endNode();
+
+                                //handle node movement with arrow keys
+                                //TODO figure out how to consume input
+                                if(isKeyPressed(GLFW_KEY_UP)){
+                                    int size = 10;
+                                    long[] selectedNode = new long[size];
+                                    NodeEditor.getSelectedNodes(selectedNode, size);
+                                    for(long id : selectedNode){
+                                        if(id != 0){
+                                            NodeEditor.setNodePosition(id, NodeEditor.getNodePositionX(id), NodeEditor.getNodePositionY(id) - 1);
+                                        }
+                                    }
+                                }
+
+                                if(isKeyPressed(GLFW_KEY_DOWN)){
+                                    int size = 10;
+                                    long[] selectedNode = new long[size];
+                                    NodeEditor.getSelectedNodes(selectedNode, size);
+                                    for(long id : selectedNode){
+                                        if(id != 0){
+                                            NodeEditor.setNodePosition(id, NodeEditor.getNodePositionX(id), NodeEditor.getNodePositionY(id) + 1);
+                                        }
+                                    }
+                                }
+
+                                if(isKeyPressed(GLFW_KEY_LEFT)){
+                                    int size = 10;
+                                    long[] selectedNode = new long[size];
+                                    NodeEditor.getSelectedNodes(selectedNode, size);
+                                    for(long id : selectedNode){
+                                        if(id != 0){
+                                            NodeEditor.setNodePosition(id, NodeEditor.getNodePositionX(id) - 1, NodeEditor.getNodePositionY(id));
+                                        }
+                                    }
+                                }
+
+                                if(isKeyPressed(GLFW_KEY_RIGHT)){
+                                    int size = 10;
+                                    long[] selectedNode = new long[size];
+                                    NodeEditor.getSelectedNodes(selectedNode, size);
+                                    for(long id : selectedNode){
+                                        if(id != 0){
+                                            NodeEditor.setNodePosition(id, NodeEditor.getNodePositionX(id) + 1, NodeEditor.getNodePositionY(id));
+                                        }
+                                    }
+                                }
 
                                 if (isItemVisible() && node.hasTitleBar()) {
                                     int alpha = (int) (getStyle().getAlpha() * 255);
