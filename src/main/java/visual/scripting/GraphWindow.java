@@ -119,6 +119,7 @@ public class GraphWindow {
         addNodeToList(NodeVisualTest.class);
         addNodeToList(NodeTime.class);
         addNodeToList(NodeLongToFloat.class);
+        addNodeToList(NodeReroute.class);
         //add a starter node to the graph
 
         addNodeToList(NodeVariable.class);
@@ -324,7 +325,7 @@ public class GraphWindow {
                                         headerMaxY = getItemRectMax().y;
                                         newLine();
                                     }else{
-                                        dummy(10, 10);
+//                                        dummy(10, 10);
                                     }
 
                                     for (UiComponent uiComponent : node.uiComponents) {
@@ -367,7 +368,11 @@ public class GraphWindow {
                                         }
 
                                         if (node.width != -1) {
-                                            sameLine(node.width - 10);
+                                            if(!node.hasTitleBar()){
+                                                sameLine(1);
+                                            }else {
+                                                sameLine(node.width - 10);
+                                            }
                                         }
 
                                         if (node.outputPins.size() > i) {
@@ -396,7 +401,7 @@ public class GraphWindow {
                                                 drawPinShapeAndColor(outPin);
                                                 dummy(10, 10);
                                                 NodeEditor.pinPivotAlignment(1f, .5f);
-                                                sameLine();
+//                                                sameLine();
                                                 ImVec2 pos = getCursorPos();
                                                 NodeEditor.endPin();
 
@@ -554,6 +559,12 @@ public class GraphWindow {
                         NodeEditor.suspend();
 
                         ImVec2 nodeSpawnPos = getMousePos();
+
+                        //Double-clicked on link
+                        long doubleClickLinkID = NodeEditor.getDoubleClickedLink();
+                        if(doubleClickLinkID != 0){
+                            System.out.println(doubleClickLinkID);
+                        }
 
                         if (nodeNavigateTo != -1) {
                             NodeEditor.selectNode(nodeNavigateTo, false);

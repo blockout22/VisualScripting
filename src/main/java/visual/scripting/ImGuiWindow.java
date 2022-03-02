@@ -69,7 +69,7 @@ public class ImGuiWindow {
 
     private ArrayList<Button> fileButtons = new ArrayList<>();
 
-    public ImGuiWindow(){
+    public ImGuiWindow(long glfwWindowID){
         self = this;
         //Create ImGui
         ImNodes.createContext();
@@ -101,7 +101,7 @@ public class ImGuiWindow {
 
         fontConfig.destroy();
 
-        imGuiGLFW.init(GLFWWindow.getWindowID(), true);
+        imGuiGLFW.init(glfwWindowID, true);
         imGuiGl3.init("#version 150");
 
         darkStyle = new DarkStyle();

@@ -19,7 +19,7 @@ public class NodeCompiler {
         for(Node node : graph.getNodes().values()){
 //            handleNode(graph, node);
             if(node instanceof NodeEntry){
-                System.out.println("Foiund Entry Node");
+                System.out.println("Found Entry Node");
                 handleNode(graph, node);
             }
         }
