@@ -223,6 +223,14 @@ Image of the [Json](https://github.com/blockout22/VisualScriptingJson) plugin
 ### 
 ![img](Images/example5.png)
 
+## Dependencies (Not required for plugin development)
+|                                                           |
+|---------------                                            |
+| [LWJGL](https://www.lwjgl.org/)                           |
+| [pf4j](https://github.com/pf4j/pf4j)                      |
+| [GSON](https://github.com/google/gson)                    |
+| [ImGui-JavaBindings](https://github.com/SpaiR/imgui-java) |
+
 ## Feature List / TODO LIST
 
 | TODO                                                                                               | Completed          |
