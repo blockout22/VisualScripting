@@ -342,6 +342,11 @@ public class GraphWindow {
                                             drawPinShapeAndColor(inPin);
                                             dummy(10, 10);
 
+                                            if(inPin.getName().length() > 0) {
+                                                sameLine();
+                                                text(inPin.getName());
+                                            }
+
                                             NodeEditor.pinPivotAlignment(0f, .5f);
                                             NodeEditor.endPin();
 
@@ -362,7 +367,6 @@ public class GraphWindow {
                                             sameLine();
                                             beginGroup();
                                             configurePinUI(inPin);
-                                            text(inPin.getName());
                                             endGroup();
                                         }
 
@@ -382,11 +386,11 @@ public class GraphWindow {
 //                                                NodeEditor.endPin();
 //                                            } else
                                             {
-                                                beginGroup();
-//                                                configurePinUI(outPin);
-                                                text(outPin.getName());
-                                                endGroup();
-                                                sameLine();
+//                                                beginGroup();
+////                                                configurePinUI(outPin);
+//                                                text(outPin.getName());
+//                                                endGroup();
+//                                                sameLine();
 
                                                 if(!node.hasTitleBar()) {
 //                                                beginGroup();
@@ -396,6 +400,11 @@ public class GraphWindow {
                                                 }
 
                                                 NodeEditor.beginPin(outPin.getID(), NodeEditorPinKind.Output);
+
+                                                if(outPin.getName().length() > 0) {
+                                                    textUnformatted(outPin.getName());
+                                                    sameLine();
+                                                }
 
                                                 drawPinShapeAndColor(outPin);
                                                 dummy(10, 10);
@@ -963,7 +972,7 @@ public class GraphWindow {
             if(!(sourcePin.getClass() == targetPin.getClass()) || !(sourcePin.getPinType() != targetPin.getPinType())){
                 NodeEditor.rejectNewItem(1, 0, 0, 1, 1);
                 holdingPinID = -1;
-                curSelectedPinDataType = null;
+//                curSelectedPinDataType = null;
                 return;
             }
 
