@@ -3,34 +3,33 @@ package visual.scripting.pin;
 import imgui.ImColor;
 import imgui.ImDrawList;
 import imgui.ImVec4;
-import imgui.type.*;
 import visual.scripting.NodeData;
 import visual.scripting.node.Node;
 
-public class Pin {
+public abstract class Pin {
 
     public enum PinType{
         Output,
         Input
     }
 
-    public enum DataType{
-        Flow,
-        Bool,
-        Int,
-        Float,
-        Double,
-        Long,
-        String,
-        Object,
-        Function,
-        SPACER
-    }
+//    public enum DataType{
+//        Flow,
+//        Bool,
+//        Int,
+//        Float,
+//        Double,
+//        Long,
+//        String,
+//        Object,
+//        Function,
+//        SPACER
+//    }
 
     private Node node;
     private int ID;
     private PinType pinType;
-    private DataType dataType;
+//    private DataType dataType;
     private String name = "";
     public int connectedTo = -1;
 
@@ -52,17 +51,17 @@ public class Pin {
 
 //    public ImVec2 spacing;
 
-    public Pin(Node node, int ID, DataType dataType, PinType pinType){
-        this.node = node;
-        this.ID = ID;
-        this.dataType = dataType;
-        this.pinType = pinType;
-        data = new NodeData();
-//        setupData();
-    }
+//    public Pin(Node node, int ID, DataType dataType, PinType pinType){
+//        this.node = node;
+//        this.ID = ID;
+//        this.dataType = dataType;
+//        this.pinType = pinType;
+//        data = new NodeData();
+////        setupData();
+//    }
 
     public void draw(ImDrawList windowDrawList, float posX, float posY, boolean isConnected, boolean pinDragSame){
-
+        drawDefaultCircle(windowDrawList,posX,posY,isConnected,pinDragSame);
     }
 
     public void drawDefaultCircle(ImDrawList windowDrawList, float posX, float posY, boolean isConnected, boolean pinDragSame){
