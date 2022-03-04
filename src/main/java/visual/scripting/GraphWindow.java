@@ -772,6 +772,22 @@ public class GraphWindow {
                             }
                         }
 
+                        //Popup handling for inside Graph WIP
+                        for(Popup popup : PopupHandler.openPopups){
+                            if(isPopupOpen(popup.id.toString())){
+                                if(beginPopup(popup.id.toString())){
+                                    //context here
+                                    if(popup.show()){
+                                        PopupHandler.remove(popup);
+                                        closeCurrentPopup();
+                                    };
+                                }
+                                endPopup();
+                            }
+                        }
+
+                        PopupHandler.update();
+
                         NodeEditor.resume();
                         NodeEditor.end();
                     }
