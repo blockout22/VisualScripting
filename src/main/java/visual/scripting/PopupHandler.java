@@ -6,22 +6,18 @@ import java.util.ArrayList;
 
 public class PopupHandler {
 
-    protected static ArrayList<Popup> openPopups = new ArrayList<>();
-    protected static ArrayList<Popup> openPopupsToRemove = new ArrayList<>();
+//    protected static ArrayList<Popup> openPopups = new ArrayList<>();
+    protected static Popup currentPopup = null;
+//    protected static ArrayList<Popup> openPopupsToRemove = new ArrayList<>();
 
     public static void open(Popup popup){
         ImGui.openPopup(popup.id.toString());
-        openPopups.add(popup);
+        currentPopup = popup;
+//        openPopups.add(popup);
     }
 
     protected static void remove(Popup popup){
-        openPopupsToRemove.add(popup);
-    }
-
-    protected static void update(){
-        for(Popup s : openPopupsToRemove){
-            openPopups.remove(s);
-        }
-        openPopupsToRemove.clear();
+//        openPopupsToRemove.add(popup);
+        currentPopup = null;
     }
 }

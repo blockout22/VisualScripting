@@ -582,7 +582,7 @@ public class GraphWindow {
                                 holdingPinID = -1;
                                 curSelectedPinDataType = null;
 //                            System.out.println(LINKA.get() + " : " + LINKB.get());
-                                setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Always);
+//                                setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Always);
                                 openPopup("context_menu" + id);
                                 justOpenedContextMenu = true;
                             }
@@ -773,8 +773,12 @@ public class GraphWindow {
                         }
 
                         //Popup handling for inside Graph WIP
-                        for(Popup popup : PopupHandler.openPopups){
+//                        for(Popup popup : PopupHandler.openPopups){
+                        Popup popup = PopupHandler.currentPopup;
+                        if(popup != null){
+                            setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Appearing);
                             if(isPopupOpen(popup.id.toString())){
+
                                 if(beginPopup(popup.id.toString())){
                                     //context here
                                     if(popup.show()){
@@ -785,8 +789,6 @@ public class GraphWindow {
                                 endPopup();
                             }
                         }
-
-                        PopupHandler.update();
 
                         NodeEditor.resume();
                         NodeEditor.end();

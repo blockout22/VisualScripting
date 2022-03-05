@@ -13,7 +13,6 @@ public class Combobox extends UiComponent{
             if(ImGui.menuItem("Hello Menu")){
                 return true;
             }
-
             return false;
         }
     };
