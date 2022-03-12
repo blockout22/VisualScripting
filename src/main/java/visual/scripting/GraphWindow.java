@@ -592,6 +592,9 @@ public class GraphWindow {
                         NodeEditor.endCreate();
 
                         if (NodeEditor.beginDelete()) {
+                            int size = 10;
+                            long[] list = new long[size];
+                            NodeEditor.getSelectedNodes(list, size);
                             ImLong link1 = new ImLong();
                             ImLong link2 = new ImLong();
                             ImLong link3 = new ImLong();

@@ -1,7 +1,5 @@
 package visual.scripting;
 
-import imgui.type.*;
-import visual.scripting.node.Node;
 import visual.scripting.pin.Pin;
 
 /**
