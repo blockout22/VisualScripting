@@ -615,11 +615,13 @@ public class GraphWindow {
 
                                 pin1.connectedTo = -1;
                                 pin2.connectedTo = -1;
+                                requiresSave = true;
                             }
 
                             ImLong nodeID = new ImLong();
                             if(NodeEditor.queryDeletedNode(nodeID)){
                                 graph.removeNode((int)nodeID.get());
+                                requiresSave = true;
                             }
                         }
                         NodeEditor.endDelete();
@@ -695,7 +697,8 @@ public class GraphWindow {
 
                                 separator();
                                 if (menuItem("Delete " + graph.getNodes().get(targetNode).getName())) {
-                                    graph.removeNode(targetNode);
+                                    NodeEditor.deleteNode(targetNode);
+//                                    graph.removeNode(targetNode);
                                     closeCurrentPopup();
                                 }
 
