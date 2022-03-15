@@ -155,6 +155,7 @@ public class GraphWindow {
         clearGraphBtn.addLeftClickListener(new LeftClickListener() {
             @Override
             public void onClicked() {
+                requiresSave = true;
                 graph.getNodes().clear();
             }
         });
@@ -307,6 +308,21 @@ public class GraphWindow {
                             }
 
                             for (Node node : graph.getNodes().values()) {
+                                if(firstFrame){
+                                    node.posX = NodeEditor.getNodePositionX(node.getID());
+                                    node.posY = NodeEditor.getNodePositionY(node.getID());
+                                }
+
+                                if(NodeEditor.getNodePositionX(node.getID()) != node.posX){
+                                    node.posX = NodeEditor.getNodePositionX(node.getID());
+                                    requiresSave = true;
+                                }
+
+                                if(NodeEditor.getNodePositionY(node.getID()) != node.posY){
+                                    node.posY = NodeEditor.getNodePositionY(node.getID());
+                                    requiresSave = true;
+                                }
+
                                 float maxWidth = 0;
 //                            headerMin = new ImVec2();
 //                            headerMax = new ImVec2();
@@ -458,9 +474,9 @@ public class GraphWindow {
 
                                 //handle node movement with arrow keys
                                 //TODO figure out how to consume input
+                                int size = 10;
+                                long[] selectedNode = new long[size];
                                 if(isKeyPressed(GLFW_KEY_UP)){
-                                    int size = 10;
-                                    long[] selectedNode = new long[size];
                                     NodeEditor.getSelectedNodes(selectedNode, size);
                                     for(long id : selectedNode){
                                         if(id != 0){
@@ -470,8 +486,7 @@ public class GraphWindow {
                                 }
 
                                 if(isKeyPressed(GLFW_KEY_DOWN)){
-                                    int size = 10;
-                                    long[] selectedNode = new long[size];
+
                                     NodeEditor.getSelectedNodes(selectedNode, size);
                                     for(long id : selectedNode){
                                         if(id != 0){
@@ -481,8 +496,6 @@ public class GraphWindow {
                                 }
 
                                 if(isKeyPressed(GLFW_KEY_LEFT)){
-                                    int size = 10;
-                                    long[] selectedNode = new long[size];
                                     NodeEditor.getSelectedNodes(selectedNode, size);
                                     for(long id : selectedNode){
                                         if(id != 0){
@@ -492,8 +505,6 @@ public class GraphWindow {
                                 }
 
                                 if(isKeyPressed(GLFW_KEY_RIGHT)){
-                                    int size = 10;
-                                    long[] selectedNode = new long[size];
                                     NodeEditor.getSelectedNodes(selectedNode, size);
                                     for(long id : selectedNode){
                                         if(id != 0){

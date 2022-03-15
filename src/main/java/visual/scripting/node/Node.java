@@ -5,7 +5,6 @@ import visual.scripting.Graph;
 import visual.scripting.node.style.NodeStyle;
 import visual.scripting.pin.Pin;
 import visual.scripting.pin.PinSpacer;
-import visual.scripting.ui.Button;
 import visual.scripting.ui.UiComponent;
 
 import java.util.ArrayList;
@@ -31,6 +30,9 @@ public class Node {
     private int b = 125;
     private int a = 125;
 
+
+    public float posX = 0;
+    public float posY = 0;
     public float width = -1;
     private ImVec2 loadedPosition = new ImVec2();
 
