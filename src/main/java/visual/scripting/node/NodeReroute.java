@@ -3,6 +3,7 @@ package visual.scripting.node;
 import visual.scripting.Graph;
 import visual.scripting.pin.Pin;
 import visual.scripting.pin.PinFlow;
+import visual.scripting.pin.PinUnset;
 
 public class NodeReroute extends Node{
 
@@ -16,11 +17,11 @@ public class NodeReroute extends Node{
 
     @Override
     public void init() {
-        pinIn = new PinFlow();
+        pinIn = new PinUnset();
         pinIn.setNode(this);
         addCustomInput(pinIn);
 
-        pinOut = new PinFlow();
+        pinOut = new PinUnset();
         pinOut.setNode(this);
         addCustomOutput(pinOut);
     }

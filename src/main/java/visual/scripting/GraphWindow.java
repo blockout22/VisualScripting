@@ -15,6 +15,7 @@ import imgui.type.*;
 import org.lwjgl.opengl.GL11;
 import visual.scripting.node.*;
 import visual.scripting.pin.Pin;
+import visual.scripting.pin.PinUnset;
 import visual.scripting.ui.Button;
 import visual.scripting.ui.ConfirmSaveDialog;
 import visual.scripting.ui.ListView;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -596,6 +598,7 @@ public class GraphWindow {
                                 curSelectedPinDataType = null;
 //                            System.out.println(LINKA.get() + " : " + LINKB.get());
 //                                setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Always);
+                                setNextWindowPos(cursorPos.x, cursorPos.y, ImGuiCond.Appearing);
                                 openPopup("context_menu" + id);
                                 justOpenedContextMenu = true;
                             }
@@ -997,8 +1000,8 @@ public class GraphWindow {
      */
     private void checkPinConnections(){
         if(NodeEditor.queryNewLink(LINKA, LINKB)) {
-            final Pin sourcePin = graph.findPinById((int) LINKA.get());
-            final Pin targetPin = graph.findPinById((int) LINKB.get());
+            Pin sourcePin = graph.findPinById((int) LINKA.get());
+            Pin targetPin = graph.findPinById((int) LINKB.get());
             //ignore connection attempts to self
             if(sourcePin.getNode() == targetPin.getNode()){
                 return;
@@ -1006,11 +1009,26 @@ public class GraphWindow {
 
 
 //            if (!(sourcePin.getDataType() == targetPin.getDataType()) || !(sourcePin.getPinType() != targetPin.getPinType())) {
+
+            boolean forceAccept = false;
+            //check if pin is unset
+            if(!(sourcePin.getPinType() == targetPin.getPinType())) {
+                if (sourcePin.getClass() == PinUnset.class) {
+                    forceAccept = true;
+                }
+
+                if (targetPin.getClass() == PinUnset.class) {
+                    forceAccept = true;
+                }
+            }
+
             if(!(sourcePin.getClass() == targetPin.getClass()) || !(sourcePin.getPinType() != targetPin.getPinType())){
-                NodeEditor.rejectNewItem(1, 0, 0, 1, 1);
-                holdingPinID = -1;
+                if(!forceAccept) {
+                    NodeEditor.rejectNewItem(1, 0, 0, 1, 1);
+                    holdingPinID = -1;
 //                curSelectedPinDataType = null;
-                return;
+                    return;
+                }
             }
 
 //            if (!(sourcePin.getDataType() == targetPin.getDataType())) {
@@ -1024,25 +1042,60 @@ public class GraphWindow {
 //                if (!(sourcePin.getDataType() == targetPin.getDataType())) {
 //                    System.out.println("Types are not the same");
 //                } else {
-                    if (sourcePin.connectedTo != -1) {
-                        Pin oldPin = graph.findPinById(sourcePin.connectedTo);
-                        oldPin.connectedTo = -1;
-                    }
 
-                    if (targetPin.connectedTo != -1) {
-                        Pin oldPin = graph.findPinById(targetPin.connectedTo);
-                        oldPin.connectedTo = -1;
-                    }
+                Pin convertedInputPin = null;
+                Pin convertedOutputPin = null;
 
-                    //Create a new Link connections
-                    if (sourcePin != null && targetPin != null) {
-                        if (sourcePin.connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || sourcePin.connectedTo == -1)) {
-                            sourcePin.connectedTo = targetPin.getID();
-                            targetPin.connectedTo = sourcePin.getID();
-                            holdingPinID = -1;
-                            curSelectedPinDataType = null;
-                        }
+//                if (sourcePin.getClass() == PinUnset.class) {
+//                    Node unset = sourcePin.getNode();
+//                    try {
+//                        convertedInputPin = targetPin.getClass().getDeclaredConstructor().newInstance();
+//                        convertedOutputPin = targetPin.getClass().getDeclaredConstructor().newInstance();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    //this won't let me set both of these arrays without freezing
+//                    unset.inputPins.remove(0);
+//                    unset.inputPins.add(convertedInputPin);
+//
+//                    System.out.println("Changed Source");
+//                    sourcePin = convertedInputPin;
+//
+//                }else if (targetPin.getClass() == PinUnset.class) {
+//                    Node unset = targetPin.getNode();
+//                    try {
+//                        convertedInputPin = sourcePin.getClass().getDeclaredConstructor().newInstance();
+//                        convertedOutputPin = sourcePin.getClass().getDeclaredConstructor().newInstance();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                    unset.inputPins.set(0, convertedInputPin);
+//                    //this won't let me set both of these arrays without freezing
+//                    unset.outputPins.set(0, convertedOutputPin);
+//                    targetPin = convertedOutputPin;
+//                }
+
+                if (sourcePin.connectedTo != -1) {
+                    Pin oldPin = graph.findPinById(sourcePin.connectedTo);
+                    oldPin.connectedTo = -1;
+                }
+
+                if (targetPin.connectedTo != -1) {
+                    Pin oldPin = graph.findPinById(targetPin.connectedTo);
+                    oldPin.connectedTo = -1;
+                }
+
+                //Create a new Link connections
+                if (sourcePin != null && targetPin != null) {
+                    if (sourcePin.connectedTo != targetPin.connectedTo || (targetPin.connectedTo == -1 || sourcePin.connectedTo == -1)) {
+                        sourcePin.connectedTo = targetPin.getID();
+                        targetPin.connectedTo = sourcePin.getID();
+                        holdingPinID = -1;
+                        curSelectedPinDataType = null;
+                        System.out.println("REset");
                     }
+                }
 //                }
             }
         }
