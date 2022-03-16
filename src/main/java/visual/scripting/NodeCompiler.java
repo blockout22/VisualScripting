@@ -5,9 +5,12 @@ import visual.scripting.node.NodeEntry;
 import visual.scripting.pin.Pin;
 import visual.scripting.pin.PinFlow;
 
+import java.util.LinkedHashSet;
+
 public class NodeCompiler {
 
     private StringBuilder output = new StringBuilder();
+    private LinkedHashSet<String> requires = new LinkedHashSet<>();
 
     /**
      * converts nodes to source each section starting from NodeEntry
@@ -18,16 +21,25 @@ public class NodeCompiler {
         output.setLength(0);
         for(Node node : graph.getNodes().values()){
 //            handleNode(graph, node);
+
             if(node instanceof NodeEntry){
                 System.out.println("Found Entry Node");
                 handleNode(graph, node);
             }
         }
 
-        return output.toString();
+        StringBuilder out = new StringBuilder();
+        for(String s : requires) {
+            out.append(s + "\n");
+        }
+
+        out.append(output);
+
+        return out.toString();
     }
 
     private void handleNode(Graph graph, Node node) {
+        requires.add(node.requires());
         node.printSource(output);
 
         for(Pin pin : node.outputPins){

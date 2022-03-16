@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static imgui.ImGui.*;
+import static imgui.ImGui.getCursorScreenPosX;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class GraphWindow {
@@ -301,6 +302,7 @@ public class GraphWindow {
                             //check if loaded from save file
                             if (justLoadedFromFile) {
                                 System.out.println("Setting node positions from loaded file");
+
                                 for (Node node : graph.getNodes().values()) {
                                     NodeEditor.setNodePosition(node.getID(), node.getLoadedPosition().x, node.getLoadedPosition().y);
                                 }

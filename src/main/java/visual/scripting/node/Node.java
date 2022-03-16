@@ -219,6 +219,12 @@ public class Node {
         return "";
     }
 
+    /**
+     * used to add your import / #include / require etc...
+     * @return
+     */
+    public String requires(){return "";};
+
     public String getName()
     {
         return name;
