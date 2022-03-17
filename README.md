@@ -218,6 +218,7 @@ Plugin-Version: 0.0.1
 ![img](Images/example2.png)
 ![img](Images/example3.png)
 ![img](Images/example4.png)
+![img](Images/example6.png)
 
 Image of the [Json](https://github.com/blockout22/VisualScriptingJson) plugin
 ### 
