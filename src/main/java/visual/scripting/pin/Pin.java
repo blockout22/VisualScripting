@@ -48,6 +48,7 @@ public abstract class Pin {
     private boolean canDelete = false;
 
     public ImVec4 color = new ImVec4(1f, 1f, 1f, 1f);
+    public boolean ignoreUI = false;
 
 //    public ImVec2 spacing;
 

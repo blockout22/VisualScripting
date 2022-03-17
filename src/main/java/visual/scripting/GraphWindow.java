@@ -1046,35 +1046,63 @@ public class GraphWindow {
                 Pin convertedInputPin = null;
                 Pin convertedOutputPin = null;
 
-//                if (sourcePin.getClass() == PinUnset.class) {
-//                    Node unset = sourcePin.getNode();
-//                    try {
-//                        convertedInputPin = targetPin.getClass().getDeclaredConstructor().newInstance();
-//                        convertedOutputPin = targetPin.getClass().getDeclaredConstructor().newInstance();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    //this won't let me set both of these arrays without freezing
-//                    unset.inputPins.remove(0);
-//                    unset.inputPins.add(convertedInputPin);
-//
-//                    System.out.println("Changed Source");
-//                    sourcePin = convertedInputPin;
-//
-//                }else if (targetPin.getClass() == PinUnset.class) {
-//                    Node unset = targetPin.getNode();
-//                    try {
-//                        convertedInputPin = sourcePin.getClass().getDeclaredConstructor().newInstance();
-//                        convertedOutputPin = sourcePin.getClass().getDeclaredConstructor().newInstance();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                    unset.inputPins.set(0, convertedInputPin);
-//                    //this won't let me set both of these arrays without freezing
-//                    unset.outputPins.set(0, convertedOutputPin);
-//                    targetPin = convertedOutputPin;
-//                }
+                if (sourcePin.getClass() == PinUnset.class) {
+                    Node unset = sourcePin.getNode();
+                    try {
+                        convertedInputPin = targetPin.getClass().getDeclaredConstructor().newInstance();
+                        convertedInputPin.ignoreUI = true;
+                        convertedOutputPin = targetPin.getClass().getDeclaredConstructor().newInstance();
+                        convertedOutputPin.ignoreUI = true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    convertedInputPin.setNode(unset);
+                    convertedOutputPin.setNode(unset);
+
+                    unset.inputPins.remove(0);
+                    unset.outputPins.remove(0);
+                    unset.addCustomInput(convertedInputPin);
+                    unset.addCustomOutput(convertedOutputPin);
+
+
+                    System.out.println("Source: " + sourcePin.getClass());
+                    switch (targetPin.getPinType()){
+                        case Input:
+                            sourcePin = convertedOutputPin;
+                            break;
+                        case Output:
+                            sourcePin = convertedInputPin;
+                            break;
+                    }
+
+                }else if (targetPin.getClass() == PinUnset.class) {
+                    Node unset = targetPin.getNode();
+                    try {
+                        convertedInputPin = sourcePin.getClass().getDeclaredConstructor().newInstance();
+                        convertedOutputPin = sourcePin.getClass().getDeclaredConstructor().newInstance();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    convertedInputPin.setNode(unset);
+                    convertedOutputPin.setNode(unset);
+
+                    unset.inputPins.remove(0);
+                    unset.outputPins.remove(0);
+                    unset.addCustomInput(convertedInputPin);
+                    unset.addCustomOutput(convertedOutputPin);
+
+                    System.out.println("Target: " + targetPin.getClass());
+
+                    switch (targetPin.getPinType()){
+                        case Input:
+                            targetPin = convertedInputPin;
+                            break;
+                        case Output:
+                            targetPin = convertedOutputPin;
+                            break;
+                    }
+                }
 
                 if (sourcePin.connectedTo != -1) {
                     Pin oldPin = graph.findPinById(sourcePin.connectedTo);
@@ -1093,7 +1121,6 @@ public class GraphWindow {
                         targetPin.connectedTo = sourcePin.getID();
                         holdingPinID = -1;
                         curSelectedPinDataType = null;
-                        System.out.println("REset");
                     }
                 }
 //                }
@@ -1106,7 +1133,9 @@ public class GraphWindow {
      */
     private void configurePinUI(Pin pin) {
         pushItemWidth(150);
-        pin.UI();
+        if(!pin.ignoreUI) {
+            pin.UI();
+        }
         popItemWidth();
     }
 
